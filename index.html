@@ -3,6 +3,480 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Contract Templates - Professional Legal Documents | ZuoYouXianTan</title>
+    <meta name="description" content="Browse and download professional rental contract templates for various property types. Legally-sound documents for landlords and tenants.">
+    <link rel="canonical" href="https://zuoyouxiantan.xyz/contracts/rental-agreement" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        apple: {
+                            blue: '#0071e3',
+                            lightblue: '#76d0ff',
+                            gray: '#f5f5f7',
+                            darkgray: '#86868b',
+                            black: '#1d1d1f',
+                            silver: '#e8e8ed'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        // Admin authentication check
+        function checkAdminAuth() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isAdmin = urlParams.get('admin') === 'true';
+            
+            if (isAdmin) {
+                document.getElementById('admin-panel').classList.remove('hidden');
+                document.getElementById('admin-login-link').classList.add('hidden');
+                document.getElementById('admin-indicator').classList.remove('hidden');
+            }
+        }
+        
+        // Search functionality
+        function searchContracts() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const contractItems = document.querySelectorAll('.contract-item');
+            let resultsCount = 0;
+            
+            contractItems.forEach(item => {
+                const contractTitle = item.querySelector('.contract-title').textContent.toLowerCase();
+                const contractDesc = item.querySelector('.contract-desc').textContent.toLowerCase();
+                
+                if (contractTitle.includes(searchTerm) || contractDesc.includes(searchTerm)) {
+                    item.classList.remove('hidden');
+                    resultsCount++;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+            
+            // Update results count
+            document.getElementById('search-results-count').textContent = resultsCount;
+            document.getElementById('search-results-wrapper').classList.remove('hidden');
+        }
+        
+        // Reset search
+        function resetSearch() {
+            document.getElementById('search-input').value = '';
+            document.querySelectorAll('.contract-item').forEach(item => {
+                item.classList.remove('hidden');
+            });
+            document.getElementById('search-results-wrapper').classList.add('hidden');
+        }
+        
+        // Admin file upload handling
+        function handleFileSelect() {
+            const fileInput = document.getElementById('contract-file-input');
+            const fileNameEl = document.getElementById('selected-filename');
+            const submitBtn = document.getElementById('upload-submit-btn');
+            
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                fileNameEl.textContent = fileName;
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                
+                // Auto-fill the title field with the filename (minus extension)
+                const titleField = document.getElementById('contract-title');
+                if (!titleField.value) {
+                    titleField.value = fileName.replace(/\.[^/.]+$/, "").replace(/_/g, " ");
+                }
+            }
+        }
+        
+        // Simulate contract upload
+        function simulateContractUpload(event) {
+            event.preventDefault();
+            
+            const uploadBtn = document.getElementById('upload-submit-btn');
+            const statusMsg = document.getElementById('upload-status');
+            const title = document.getElementById('contract-title').value;
+            const category = document.getElementById('contract-category').value;
+            
+            // Validate
+            if (!title) {
+                statusMsg.textContent = "Please enter a contract title";
+                statusMsg.classList.add('text-red-500');
+                statusMsg.classList.remove('text-green-600', 'hidden');
+                return;
+            }
+            
+            // Show loading state
+            uploadBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+            uploadBtn.disabled = true;
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                // Success
+                statusMsg.textContent = "Contract uploaded successfully! A new page has been created.";
+                statusMsg.classList.add('text-green-600');
+                statusMsg.classList.remove('text-red-500', 'hidden');
+                uploadBtn.innerHTML = 'Upload Complete';
+                
+                // Add to contract list (for demo purposes)
+                const contractsGrid = document.getElementById('contracts-grid');
+                const newContract = document.createElement('div');
+                newContract.className = 'contract-item bg-white rounded-xl shadow-md overflow-hidden';
+                newContract.innerHTML = `
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="contract-title text-lg font-bold text-apple-blue">${title}</h3>
+                                <p class="contract-desc text-sm text-apple-darkgray mt-1">${category} Template</p>
+                            </div>
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">New</span>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <a href="#" class="text-apple-blue hover:underline text-sm">View Details</a>
+                            <button class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
+                        </div>
+                    </div>
+                `;
+                contractsGrid.prepend(newContract);
+                
+                // Reset form
+                document.getElementById('contract-upload-form').reset();
+                document.getElementById('selected-filename').textContent = "No file selected";
+                uploadBtn.disabled = true;
+                uploadBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }, 2000);
+        }
+        
+        // Download functionality
+        function downloadContract(contractId) {
+            const downloadBtn = document.getElementById(`download-btn-${contractId}`);
+            const originalText = downloadBtn.innerHTML;
+            
+            downloadBtn.innerHTML = '<svg class="animate-spin h-4 w-4 mr-1 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Preparing...';
+            
+            // Simulate download process
+            setTimeout(() => {
+                downloadBtn.innerHTML = originalText;
+                
+                // Create a fake download
+                const link = document.createElement('a');
+                link.href = '#';
+                link.download = `${contractId}.docx`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }, 1000);
+            
+            return false;
+        }
+        
+        // Initialize page
+        window.onload = function() {
+            checkAdminAuth();
+        }
+    </script>
+</head>
+<body class="bg-apple-gray text-apple-black min-h-screen flex flex-col">
+    <header class="bg-apple-blue text-white py-4 shadow-md">
+        <div class="container mx-auto px-4">
+            <nav class="flex justify-between items-center">
+                <a href="https://zuoyouxiantan.xyz" class="text-2xl font-bold">ZuoYouXianTan</a>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#" class="hover:underline">Home</a>
+                    <a href="#" class="hover:underline">Templates</a>
+                    <a href="#" class="hover:underline">About</a>
+                    <a href="#" class="hover:underline">Contact</a>
+                    <a href="?admin=true" id="admin-login-link" class="hover:underline text-white/80">Admin Login</a>
+                    <span id="admin-indicator" class="hidden bg-green-500 text-white text-xs px-2 py-1 rounded-full">Admin Mode</span>
+                </div>
+                <button class="md:hidden text-2xl">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        <!-- Admin Panel (Hidden by default) -->
+        <section id="admin-panel" class="hidden mb-12 bg-white p-6 md:p-8 rounded-xl shadow-md border-l-4 border-apple-blue">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-apple-blue">Contract Management</h2>
+                <span class="bg-apple-blue text-white text-xs px-3 py-1 rounded-full">Administrator</span>
+            </div>
+            
+            <form id="contract-upload-form" onsubmit="simulateContractUpload(event)" class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="contract-title" class="block text-sm font-medium mb-1">Contract Title</label>
+                        <input type="text" id="contract-title" class="w-full px-3 py-2 border border-apple-darkgray/30 rounded-lg" placeholder="Enter contract title">
+                    </div>
+                    <div>
+                        <label for="contract-category" class="block text-sm font-medium mb-1">Category</label>
+                        <select id="contract-category" class="w-full px-3 py-2 border border-apple-darkgray/30 rounded-lg">
+                            <option value="Residential Rental">Residential Rental</option>
+                            <option value="Commercial Lease">Commercial Lease</option>
+                            <option value="Room Rental">Room Rental</option>
+                            <option value="Vacation Property">Vacation Property</option>
+                            <option value="Sublease">Sublease Agreement</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="contract-description" class="block text-sm font-medium mb-1">Brief Description</label>
+                    <textarea id="contract-description" class="w-full px-3 py-2 border border-apple-darkgray/30 rounded-lg" rows="2" placeholder="Enter a brief description of this contract"></textarea>
+                </div>
+                
+                <div class="border-2 border-dashed border-apple-darkgray/30 rounded-lg p-4">
+                    <label for="contract-file-input" class="cursor-pointer flex flex-col items-center justify-center py-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-apple-blue mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span class="text-sm font-medium">Click to upload Word document</span>
+                        <span id="selected-filename" class="text-sm text-apple-darkgray mt-1">No file selected</span>
+                        <input type="file" id="contract-file-input" accept=".doc,.docx" class="hidden" onchange="handleFileSelect()">
+                    </label>
+                </div>
+                
+                <div class="flex items-center">
+                    <button id="upload-submit-btn" type="submit" class="bg-apple-blue text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors duration-300 opacity-50 cursor-not-allowed" disabled>
+                        Upload Contract
+                    </button>
+                    <p id="upload-status" class="ml-4 hidden"></p>
+                </div>
+                
+                <div class="text-sm text-apple-darkgray bg-apple-gray p-3 rounded-lg">
+                    <p>Uploading a contract will automatically:</p>
+                    <ol class="list-decimal ml-5 mt-1 space-y-1">
+                        <li>Extract content from the Word document</li>
+                        <li>Create a new webpage with that content</li>
+                        <li>Make the original document available for download</li>
+                    </ol>
+                </div>
+            </form>
+        </section>
+
+        <!-- Search Section -->
+        <section class="mb-8">
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Search for contract templates..." 
+                        class="w-full px-4 py-3 pr-12 border border-apple-darkgray/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-apple-blue"
+                        onkeyup="if(event.key === 'Enter') searchContracts()"
+                    >
+                    <button 
+                        onclick="searchContracts()" 
+                        class="absolute right-3 top-1/2 -translate-y-1/2"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-apple-darkgray" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="search-results-wrapper" class="mt-2 text-sm text-apple-darkgray hidden">
+                    Found <span id="search-results-count">0</span> results
+                    <button onclick="resetSearch()" class="ml-2 text-apple-blue hover:underline">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contracts Listing -->
+        <section class="mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold mb-6 text-apple-blue">Rental Contract Templates</h1>
+            
+            <div id="contracts-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Contract Item 1 -->
+                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="contract-title text-lg font-bold text-apple-blue">Standard Residential Lease</h3>
+                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Residential Rental Template</p>
+                            </div>
+                            <span class="bg-apple-blue/10 text-apple-blue text-xs px-2 py-1 rounded">Popular</span>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <a href="/contracts/standard-residential-lease" class="text-apple-blue hover:underline text-sm">View Details</a>
+                            <button id="download-btn-standard-lease" onclick="downloadContract('standard-lease')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contract Item 2 -->
+                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="contract-title text-lg font-bold text-apple-blue">Commercial Office Lease</h3>
+                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Commercial Lease Template</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <a href="/contracts/commercial-office-lease" class="text-apple-blue hover:underline text-sm">View Details</a>
+                            <button id="download-btn-commercial-lease" onclick="downloadContract('commercial-lease')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contract Item 3 -->
+                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="contract-title text-lg font-bold text-apple-blue">Month-to-Month Rental Agreement</h3>
+                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Residential Rental Template</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <a href="/contracts/month-to-month-rental" class="text-apple-blue hover:underline text-sm">View Details</a>
+                            <button id="download-btn-monthly-rental" onclick="downloadContract('monthly-rental')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contract Item 4 -->
+                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="contract-title text-lg font-bold text-apple-blue">Studio Apartment Lease</h3>
+                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Residential Rental Template</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <a href="/contracts/studio-apartment-lease" class="text-apple-blue hover:underline text-sm">View Details</a>
+                            <button id="download-btn-studio-lease" onclick="downloadContract('studio-lease')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contract Item 5 -->
+                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="contract-title text-lg font-bold text-apple-blue">Vacation Property Rental</h3>
+                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Vacation Property Template</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <a href="/contracts/vacation-property-rental" class="text-apple-blue hover:underline text-sm">View Details</a>
+                            <button id="download-btn-vacation-rental" onclick="downloadContract('vacation-rental')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contract Item 6 -->
+                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="contract-title text-lg font-bold text-apple-blue">Room Rental Agreement</h3>
+                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Room Rental Template</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <a href="/contracts/room-rental-agreement" class="text-apple-blue hover:underline text-sm">View Details</a>
+                            <button id="download-btn-room-rental" onclick="downloadContract('room-rental')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Example Individual Contract Page Content -->
+        <section class="hidden mb-12 bg-white p-6 md:p-8 rounded-xl shadow-md">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-apple-blue">Standard Residential Lease</h1>
+                <button onclick="downloadContract('standard-lease')" class="bg-apple-blue hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors duration-300">
+                    Download Template
+                </button>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-6 mb-6">
+                <div class="bg-apple-gray rounded-lg p-4 md:w-1/3">
+                    <h2 class="text-xl font-bold mb-2">Template Details</h2>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <span class="text-apple-darkgray mr-2">Category:</span>
+                            <span class="font-medium">Residential Rental</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-apple-darkgray mr-2">Format:</span>
+                            <span class="font-medium">.docx (Word Document)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-apple-darkgray mr-2">Size:</span>
+                            <span class="font-medium">56 KB</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-apple-darkgray mr-2">Last Updated:</span>
+                            <span class="font-medium">March 15, 2025</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="md:w-2/3">
+                    <h2 class="text-xl font-bold mb-2">Description</h2>
+                    <p>This Standard Residential Lease template is suitable for most standard house and apartment rentals. It includes all essential legal provisions to protect both landlord and tenant rights while establishing clear responsibilities for both parties.</p>
+                </div>
+            </div>
+            
+            <div class="prose max-w-none">
+                <!-- Contract content would be extracted from Word document and inserted here -->
+                <div class="border-b pb-4 mb-6">
+                    <h2 class="text-xl font-bold mb-3">RESIDENTIAL RENTAL AGREEMENT</h2>
+                    <p class="italic mb-4">This Rental Agreement ("Agreement") is entered into on this date between the following parties:</p>
+                    
+                    <p><strong>LANDLORD:</strong> _________________________ ("Landlord")</p>
+                    <p><strong>TENANT(S):</strong> _________________________ ("Tenant")</p>
+                </div>
+                
+                <!-- Additional contract content would appear here -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-apple-black text-white py-8 mt-8">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">ZuoYouXianTan</h3>
+                    <p>Your trusted source for professional document templates and legal forms.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contract Categories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:underline">Residential Leases</a></li>
+                        <li><a href="#" class="hover:underline">Commercial Leases</a></li>
+                        <li><a href="#" class="hover:underline">Room Rentals</a></li>
+                        <li><a href="#" class="hover:underline">Vacation Rentals</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:underline">Legal Guide</a></li>
+                        <li><a href="#" class="hover:underline">Contract FAQ</a></li>
+                        <li><a href="#" class="hover:underline">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:underline">Terms of Use</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/20 mt-8 pt-6 text-center">
+                <p>&copy; 2025 ZuoYouXianTan.xyz. All rights reserved.</p>
+                <p class="mt-2 text-sm text-gray-400">Disclaimer: Templates provided on this website are for informational purposes only and do not constitute legal advice.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rental Contract Templates - Professional Housing Agreement Documents | ZuoYouXianTan</title>
     <meta name="description" content="Download professional rental contract templates for apartments, houses, and commercial properties. Legally-sound documents for landlords and tenants.">
     <link rel="canonical" href="https://zuoyouxiantan.xyz/rental-contract-templates" />
