@@ -25,6 +25,65 @@
             }
         }
     </script>
+    <!-- File upload/download functionality -->
+    <script>
+        function handleFileUpload() {
+            const fileInput = document.getElementById('contract-file');
+            const fileNameDisplay = document.getElementById('file-name');
+            const uploadBtn = document.getElementById('upload-btn');
+            
+            if (fileInput.files.length > 0) {
+                fileNameDisplay.textContent = fileInput.files[0].name;
+                uploadBtn.disabled = false;
+                uploadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                uploadBtn.classList.add('hover:bg-blue-700');
+            } else {
+                fileNameDisplay.textContent = "No file selected";
+                uploadBtn.disabled = true;
+                uploadBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                uploadBtn.classList.remove('hover:bg-blue-700');
+            }
+        }
+        
+        function simulateUpload(event) {
+            event.preventDefault();
+            const uploadStatus = document.getElementById('upload-status');
+            const uploadBtn = document.getElementById('upload-btn');
+            
+            uploadBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...';
+            
+            // Simulate upload process
+            setTimeout(() => {
+                uploadStatus.textContent = "File uploaded successfully!";
+                uploadStatus.classList.remove('hidden', 'text-red-500');
+                uploadStatus.classList.add('text-green-600');
+                uploadBtn.innerHTML = 'Upload Complete';
+                
+                // Enable download section
+                document.getElementById('download-section').classList.remove('opacity-50', 'pointer-events-none');
+            }, 1500);
+        }
+        
+        function simulateDownload() {
+            const downloadBtn = document.getElementById('download-btn');
+            downloadBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Preparing...';
+            
+            // Simulate download process
+            setTimeout(() => {
+                downloadBtn.innerHTML = 'Download Word Template';
+                
+                // Create a fake download
+                const link = document.createElement('a');
+                link.href = '#';
+                link.download = 'Rental_Contract_Template.docx';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }, 1500);
+            
+            return false;
+        }
+    </script>
 </head>
 <body class="bg-apple-gray text-apple-black min-h-screen flex flex-col">
     <header class="bg-apple-blue text-white py-4 shadow-md">
@@ -46,9 +105,47 @@
         <section class="mb-12 text-center max-w-4xl mx-auto">
             <h1 class="text-4xl md:text-5xl font-bold mb-4 text-apple-blue">Rental Contract Template</h1>
             <p class="text-xl md:text-2xl mb-8 text-apple-darkgray">Professional, legally-sound rental agreement templates for residential properties.</p>
-            <a href="#download" class="inline-block bg-apple-blue hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-300">
-                Download Template
-            </a>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#upload" class="inline-block bg-apple-blue hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-300">
+                    Upload Template
+                </a>
+                <a href="#download" class="inline-block bg-white border-2 border-apple-blue hover:bg-apple-gray text-apple-blue font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-300">
+                    Download Template
+                </a>
+            </div>
+        </section>
+        
+        <section id="upload" class="mb-12 bg-white p-6 md:p-8 rounded-xl shadow-md">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-apple-blue">Upload Your Contract Template</h2>
+            <p class="mb-6">Upload your Word document template to convert it to a web page and make it available for others to download.</p>
+            
+            <form onsubmit="simulateUpload(event)" class="space-y-6">
+                <div class="border-2 border-dashed border-apple-darkgray/30 rounded-lg p-6 text-center">
+                    <label for="contract-file" class="cursor-pointer">
+                        <div class="mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-apple-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                        <p class="text-lg font-medium mb-2">Drag and drop your file here</p>
+                        <p class="text-sm text-apple-darkgray mb-4">or click to browse</p>
+                        <p id="file-name" class="text-sm font-medium">No file selected</p>
+                        <input type="file" id="contract-file" class="hidden" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFileUpload()">
+                    </label>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row items-center gap-4">
+                    <button id="upload-btn" type="submit" class="bg-apple-blue text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors duration-300 opacity-50 cursor-not-allowed" disabled>
+                        Upload Document
+                    </button>
+                    <p id="upload-status" class="hidden">Status message will appear here</p>
+                </div>
+                
+                <div class="bg-apple-gray p-4 rounded-lg text-sm">
+                    <p><strong>Supported formats:</strong> .doc, .docx (Microsoft Word)</p>
+                    <p><strong>Maximum file size:</strong> 10MB</p>
+                </div>
+            </form>
         </section>
 
         <section class="mb-12 bg-white p-6 md:p-8 rounded-xl shadow-md">
@@ -211,15 +308,39 @@
             </div>
         </section>
 
-        <section id="download" class="bg-white p-6 md:p-8 rounded-xl shadow-md text-center">
+        <section id="download" class="bg-white p-6 md:p-8 rounded-xl shadow-md text-center opacity-50 pointer-events-none transition-opacity duration-300" id="download-section">
             <h2 class="text-2xl md:text-3xl font-bold mb-6 text-apple-blue">Download Template</h2>
             <p class="mb-6">Get immediate access to this professionally crafted rental contract template in Microsoft Word format. Easily customizable to meet your specific needs.</p>
             
-            <a href="#" class="inline-block bg-apple-blue hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition-colors duration-300 mb-4">
-                Download Word Template
-            </a>
+            <div class="flex flex-col items-center">
+                <div class="border border-apple-darkgray/20 rounded-lg p-4 mb-6 w-full max-w-md">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-700 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <div class="text-left">
+                            <p class="font-semibold">Rental_Contract_Template.docx</p>
+                            <p class="text-sm text-apple-darkgray">Microsoft Word Document</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="download-btn" onclick="return simulateDownload()" class="bg-apple-blue hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition-colors duration-300 mb-4">
+                    Download Word Template
+                </button>
+                
+                <p class="text-sm text-apple-darkgray mt-4">Format: .docx | Size: 56 KB | Last Updated: March 2025</p>
+            </div>
             
-            <p class="text-sm text-apple-darkgray mt-4">Format: .docx | Size: 56 KB | Last Updated: March 2025</p>
+            <div class="mt-8 p-4 bg-apple-gray rounded-lg text-left">
+                <h3 class="font-bold mb-2">After downloading:</h3>
+                <ol class="list-decimal pl-5 space-y-1">
+                    <li>Open the document in Microsoft Word or compatible software</li>
+                    <li>Replace the placeholder text with your specific information</li>
+                    <li>Review all terms and conditions carefully</li>
+                    <li>Save your customized version for future use</li>
+                </ol>
+            </div>
         </section>
     </main>
 
