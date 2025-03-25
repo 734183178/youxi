@@ -372,6 +372,14 @@
             margin-bottom: 10px;
             color: var(--mid-gray);
         }
+        
+        .info-note {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(0, 113, 227, 0.1);
+            border-left: 4px solid var(--primary-blue);
+            border-radius: 4px;
+        }
 
         .upload-area {
             display: flex;
@@ -1161,6 +1169,9 @@
                         <li>支持批量上传，每次最多上传20个文件</li>
                         <li>单个文件大小不超过10MB</li>
                     </ul>
+                    <div class="info-note">
+                        <strong>注意：</strong> 所有上传的文件将经过服务器处理后自动生成新的合同页面，页面生成后将立即可用。
+                    </div>
                 </div>
             </div>
             <div class="upload-progress-container" style="display: none;" id="progressContainer">
