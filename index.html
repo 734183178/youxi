@@ -1,505 +1,1355 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rental Contract Templates - Professional Legal Documents | ZuoYouXianTan</title>
-    <meta name="description" content="Browse and download professional rental contract templates for various property types. Legally-sound documents for landlords and tenants.">
-    <link rel="canonical" href="https://zuoyouxiantan.xyz/contracts/rental-agreement" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        apple: {
-                            blue: '#0071e3',
-                            lightblue: '#76d0ff',
-                            gray: '#f5f5f7',
-                            darkgray: '#86868b',
-                            black: '#1d1d1f',
-                            silver: '#e8e8ed'
-                        }
-                    }
-                }
+    <title>左右闲谈 - 专业合同模板下载与管理平台</title>
+    <link rel="canonical" href="https://zuoyouxiantan.xyz" />
+    <style>
+        /* 重置与基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+            line-height: 1.6;
+            color: #1d1d1f;
+            background-color: #f5f5f7;
+        }
+
+        /* 苹果色彩系列 */
+        :root {
+            --primary-blue: #0071e3;
+            --secondary-blue: #147ce5;
+            --light-gray: #f5f5f7;
+            --mid-gray: #86868b;
+            --dark-gray: #1d1d1f;
+            --apple-white: #ffffff;
+            --apple-red: #ff3b30;
+            --apple-green: #34c759;
+        }
+
+        /* 容器 */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 头部 */
+        header {
+            background-color: var(--apple-white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-gray);
+            text-decoration: none;
+        }
+
+        /* 导航 */
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary-blue);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* 英雄区 */
+        .hero {
+            background-color: var(--primary-blue);
+            color: var(--apple-white);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 20px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+
+        .cta-button {
+            background-color: var(--apple-white);
+            color: var(--primary-blue);
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cta-secondary {
+            background-color: transparent;
+            color: var(--apple-white);
+            border: 2px solid var(--apple-white);
+        }
+        
+        .cta-secondary:hover {
+            background-color: var(--apple-white);
+            color: var(--primary-blue);
+        }
+
+        /* 搜索区域 */
+        .search-section {
+            background-color: var(--apple-white);
+            padding: 30px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-container {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--mid-gray);
+            border-radius: 30px 0 0 30px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .search-button {
+            background-color: var(--primary-blue);
+            color: var(--apple-white);
+            border: none;
+            padding: 0 25px;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* 推荐模板区 */
+        .featured-templates {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 32px;
+            color: var(--dark-gray);
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .template-card {
+            background-color: var(--apple-white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .template-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .template-image {
+            height: 200px;
+            background-color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .template-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .template-content {
+            padding: 20px;
+        }
+
+        .template-content h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .template-content p {
+            color: var(--mid-gray);
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .template-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--mid-gray);
+            margin-bottom: 15px;
+        }
+
+        .download-count {
+            display: flex;
+            align-items: center;
+        }
+
+        .download-count::before {
+            content: "↓";
+            margin-right: 5px;
+        }
+
+        .template-cta {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .template-cta:after {
+            content: "→";
+            margin-left: 5px;
+        }
+
+        /* 分类区域 */
+        .categories {
+            padding: 60px 0;
+            background-color: var(--apple-white);
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .category-card {
+            background-color: var(--light-gray);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .category-card:hover {
+            background-color: var(--primary-blue);
+            color: var(--apple-white);
+            transform: translateY(-5px);
+        }
+
+        .category-card h3 {
+            margin-top: 15px;
+            font-size: 18px;
+        }
+
+        /* 热门标签 */
+        .tags-section {
+            padding: 60px 0;
+            background-color: var(--light-gray);
+        }
+
+        .tags-container {
+            text-align: center;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: var(--apple-white);
+            color: var(--dark-gray);
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 30px;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+            cursor: pointer;
+        }
+
+        .tag:hover {
+            background-color: var(--primary-blue);
+            color: var(--apple-white);
+        }
+
+        /* 上传合同区域 */
+        .upload-section {
+            padding: 60px 0;
+            background-color: var(--light-gray);
+        }
+
+        .upload-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .upload-box {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .upload-info {
+            flex: 1;
+            min-width: 250px;
+            background-color: var(--apple-white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-info h3 {
+            margin-bottom: 15px;
+            color: var(--dark-gray);
+        }
+
+        .upload-info ul {
+            padding-left: 20px;
+        }
+
+        .upload-info ul li {
+            margin-bottom: 10px;
+            color: var(--mid-gray);
+        }
+
+        .upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--apple-white);
+            border: 2px dashed var(--mid-gray);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-blue);
+            background-color: rgba(0, 113, 227, 0.05);
+        }
+
+        .upload-area.active {
+            border-color: var(--primary-blue);
+            background-color: rgba(0, 113, 227, 0.1);
+        }
+
+        .upload-icon {
+            margin-bottom: 20px;
+        }
+
+        .upload-area h3 {
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+        }
+
+        .upload-area p {
+            margin-bottom: 20px;
+            color: var(--mid-gray);
+            max-width: 400px;
+        }
+
+        .upload-button {
+            background-color: var(--primary-blue);
+            color: var(--apple-white);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .upload-button:hover {
+            background-color: var(--secondary-blue);
+            transform: translateY(-2px);
+        }
+
+        .upload-progress-container {
+            background-color: var(--apple-white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-progress-container h3 {
+            margin-bottom: 20px;
+            color: var(--dark-gray);
+        }
+
+        .file-list {
+            margin-bottom: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .file-name {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .file-progress {
+            width: 200px;
+            height: 10px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-blue);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .file-status {
+            width: 100px;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        .upload-all-button {
+            background-color: var(--primary-blue);
+            color: var(--apple-white);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            display: block;
+            margin: 0 auto;
+            transition: all 0.3s;
+        }
+
+        .upload-all-button:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        /* 合同页面预览 */
+        .contract-preview {
+            padding: 60px 0;
+            background-color: var(--apple-white);
+        }
+
+        .preview-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .preview-sidebar {
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .preview-navigation {
+            background-color: var(--light-gray);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .preview-navigation h3 {
+            margin-bottom: 20px;
+            color: var(--dark-gray);
+        }
+
+        .preview-navigation ul {
+            list-style: none;
+        }
+
+        .preview-navigation ul li {
+            margin-bottom: 15px;
+        }
+
+        .preview-navigation ul li a {
+            color: var(--mid-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .preview-navigation ul li a:hover,
+        .preview-navigation ul li.active a {
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .preview-content {
+            flex: 3;
+            background-color: var(--light-gray);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--dark-gray);
+            color: var(--apple-white);
+            padding: 15px 20px;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .preview-button {
+            background-color: transparent;
+            color: var(--mid-gray);
+            border: 1px solid var(--mid-gray);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .preview-button:hover,
+        .preview-button.active {
+            background-color: var(--primary-blue);
+            color: var(--apple-white);
+            border-color: var(--primary-blue);
+        }
+
+        .preview-frame {
+            padding: 30px;
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        .preview-page {
+            background-color: var(--apple-white);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-title {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .preview-title h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: var(--dark-gray);
+        }
+
+        .preview-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--mid-gray);
+        }
+
+        .preview-summary {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .preview-summary h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--dark-gray);
+        }
+
+        .preview-summary p {
+            color: var(--mid-gray);
+            line-height: 1.8;
+        }
+
+        .preview-full-text {
+            margin-bottom: 30px;
+        }
+
+        .preview-full-text h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--dark-gray);
+        }
+
+        .preview-text-content {
+            padding: 20px;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .preview-text-content p {
+            margin-bottom: 10px;
+        }
+
+        .preview-download {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .download-button {
+            background-color: var(--primary-blue);
+            color: var(--apple-white);
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .download-button:hover {
+            background-color: var(--secondary-blue);
+            transform: translateY(-2px);
+        }
+
+        /* 特点区域 */
+        .features {
+            padding: 60px 0;
+            background-color: var(--light-gray);
+        }
+
+        .features-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .feature {
+            flex: 1 1 250px;
+            padding: 30px;
+            background-color: var(--apple-white);
+            border-radius: 12px;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: var(--dark-gray);
+        }
+
+        .feature p {
+            color: var(--mid-gray);
+        }
+
+        /* 用户评价区 */
+        .testimonials {
+            padding: 60px 0;
+            background-color: var(--light-gray);
+        }
+
+        .testimonials-slider {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .testimonial {
+            text-align: center;
+            padding: 30px;
+            background-color: var(--apple-white);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial p {
+            font-size: 18px;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .testimonial-role {
+            color: var(--mid-gray);
+            font-size: 14px;
+        }
+
+        /* 新闻通讯 */
+        .newsletter {
+            padding: 60px 0;
+            background-color: var(--primary-blue);
+            color: var(--apple-white);
+            text-align: center;
+        }
+
+        .newsletter h2 {
+            margin-bottom: 20px;
+        }
+
+        .newsletter p {
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            font-size: 16px;
+        }
+
+        .newsletter-button {
+            background-color: var(--dark-gray);
+            color: var(--apple-white);
+            border: none;
+            padding: 0 25px;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* 底部区域 */
+        footer {
+            background-color: var(--dark-gray);
+            color: var(--apple-white);
+            padding: 60px 0 30px;
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .footer-col {
+            flex: 1 1 200px;
+        }
+
+        .footer-col h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            color: var(--mid-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--apple-white);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--mid-gray);
+            font-size: 14px;
+        }
+
+        /* 响应式样式 */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 15px;
+            }
+
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--apple-white);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .search-container {
+                max-width: 90%;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .newsletter-input {
+                border-radius: 30px;
+                margin-bottom: 10px;
+            }
+
+            .newsletter-button {
+                border-radius: 30px;
+                padding: 12px 25px;
             }
         }
-    </script>
-    <script>
-        // Admin authentication check
-        function checkAdminAuth() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const isAdmin = urlParams.get('admin') === 'true';
-            
-            if (isAdmin) {
-                document.getElementById('admin-panel').classList.remove('hidden');
-                document.getElementById('admin-login-link').classList.add('hidden');
-                document.getElementById('admin-indicator').classList.remove('hidden');
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .template-image {
+                height: 150px;
             }
         }
-        
-        // Search functionality
-        function searchContracts() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const contractItems = document.querySelectorAll('.contract-item');
-            let resultsCount = 0;
-            
-            contractItems.forEach(item => {
-                const contractTitle = item.querySelector('.contract-title').textContent.toLowerCase();
-                const contractDesc = item.querySelector('.contract-desc').textContent.toLowerCase();
-                
-                if (contractTitle.includes(searchTerm) || contractDesc.includes(searchTerm)) {
-                    item.classList.remove('hidden');
-                    resultsCount++;
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
-            
-            // Update results count
-            document.getElementById('search-results-count').textContent = resultsCount;
-            document.getElementById('search-results-wrapper').classList.remove('hidden');
-        }
-        
-        // Reset search
-        function resetSearch() {
-            document.getElementById('search-input').value = '';
-            document.querySelectorAll('.contract-item').forEach(item => {
-                item.classList.remove('hidden');
-            });
-            document.getElementById('search-results-wrapper').classList.add('hidden');
-        }
-        
-        // Admin file upload handling
-        function handleFileSelect() {
-            const fileInput = document.getElementById('contract-file-input');
-            const fileNameEl = document.getElementById('selected-filename');
-            const submitBtn = document.getElementById('upload-submit-btn');
-            
-            if (fileInput.files.length > 0) {
-                const fileName = fileInput.files[0].name;
-                fileNameEl.textContent = fileName;
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                
-                // Auto-fill the title field with the filename (minus extension)
-                const titleField = document.getElementById('contract-title');
-                if (!titleField.value) {
-                    titleField.value = fileName.replace(/\.[^/.]+$/, "").replace(/_/g, " ");
-                }
-            }
-        }
-        
-        // Simulate contract upload
-        function simulateContractUpload(event) {
-            event.preventDefault();
-            
-            const uploadBtn = document.getElementById('upload-submit-btn');
-            const statusMsg = document.getElementById('upload-status');
-            const title = document.getElementById('contract-title').value;
-            const category = document.getElementById('contract-category').value;
-            
-            // Validate
-            if (!title) {
-                statusMsg.textContent = "Please enter a contract title";
-                statusMsg.classList.add('text-red-500');
-                statusMsg.classList.remove('text-green-600', 'hidden');
-                return;
-            }
-            
-            // Show loading state
-            uploadBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
-            uploadBtn.disabled = true;
-            
-            // Simulate processing delay
-            setTimeout(() => {
-                // Success
-                statusMsg.textContent = "Contract uploaded successfully! A new page has been created.";
-                statusMsg.classList.add('text-green-600');
-                statusMsg.classList.remove('text-red-500', 'hidden');
-                uploadBtn.innerHTML = 'Upload Complete';
-                
-                // Add to contract list (for demo purposes)
-                const contractsGrid = document.getElementById('contracts-grid');
-                const newContract = document.createElement('div');
-                newContract.className = 'contract-item bg-white rounded-xl shadow-md overflow-hidden';
-                newContract.innerHTML = `
-                    <div class="p-5">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="contract-title text-lg font-bold text-apple-blue">${title}</h3>
-                                <p class="contract-desc text-sm text-apple-darkgray mt-1">${category} Template</p>
-                            </div>
-                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">New</span>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <a href="#" class="text-apple-blue hover:underline text-sm">View Details</a>
-                            <button class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
-                        </div>
-                    </div>
-                `;
-                contractsGrid.prepend(newContract);
-                
-                // Reset form
-                document.getElementById('contract-upload-form').reset();
-                document.getElementById('selected-filename').textContent = "No file selected";
-                uploadBtn.disabled = true;
-                uploadBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            }, 2000);
-        }
-        
-        // Download functionality
-        function downloadContract(contractId) {
-            const downloadBtn = document.getElementById(`download-btn-${contractId}`);
-            const originalText = downloadBtn.innerHTML;
-            
-            downloadBtn.innerHTML = '<svg class="animate-spin h-4 w-4 mr-1 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Preparing...';
-            
-            // Simulate download process
-            setTimeout(() => {
-                downloadBtn.innerHTML = originalText;
-                
-                // Create a fake download
-                const link = document.createElement('a');
-                link.href = '#';
-                link.download = `${contractId}.docx`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }, 1000);
-            
-            return false;
-        }
-        
-        // File upload/download functionality for detailed template page
-        function handleFileUpload() {
-            const fileInput = document.getElementById('contract-file');
-            const fileNameDisplay = document.getElementById('file-name');
-            const uploadBtn = document.getElementById('upload-btn');
-            
-            if (fileInput && fileInput.files.length > 0) {
-                fileNameDisplay.textContent = fileInput.files[0].name;
-                uploadBtn.disabled = false;
-                uploadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                uploadBtn.classList.add('hover:bg-blue-700');
-            } else {
-                fileNameDisplay.textContent = "No file selected";
-                uploadBtn.disabled = true;
-                uploadBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                uploadBtn.classList.remove('hover:bg-blue-700');
-            }
-        }
-        
-        function simulateUpload(event) {
-            event.preventDefault();
-            const uploadStatus = document.getElementById('upload-status');
-            const uploadBtn = document.getElementById('upload-btn');
-            
-            uploadBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...';
-            
-            // Simulate upload process
-            setTimeout(() => {
-                uploadStatus.textContent = "File uploaded successfully!";
-                uploadStatus.classList.remove('hidden', 'text-red-500');
-                uploadStatus.classList.add('text-green-600');
-                uploadBtn.innerHTML = 'Upload Complete';
-                
-                // Enable download section
-                document.getElementById('download-section').classList.remove('opacity-50', 'pointer-events-none');
-            }, 1500);
-        }
-        
-        function simulateDownload() {
-            const downloadBtn = document.getElementById('download-btn');
-            downloadBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Preparing...';
-            
-            // Simulate download process
-            setTimeout(() => {
-                downloadBtn.innerHTML = 'Download Word Template';
-                
-                // Create a fake download
-                const link = document.createElement('a');
-                link.href = '#';
-                link.download = 'Rental_Contract_Template.docx';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }, 1500);
-            
-            return false;
-        }
-        
-        // Initialize page
-        window.onload = function() {
-            checkAdminAuth();
-        }
-    </script>
+    </style>
 </head>
-<body class="bg-apple-gray text-apple-black min-h-screen flex flex-col">
-    <header class="bg-apple-blue text-white py-4 shadow-md">
-        <div class="container mx-auto px-4">
-            <nav class="flex justify-between items-center">
-                <a href="https://zuoyouxiantan.xyz" class="text-2xl font-bold">ZuoYouXianTan</a>
-                <div class="hidden md:flex space-x-6">
-                    <a href="#" class="hover:underline">Home</a>
-                    <a href="#" class="hover:underline">Templates</a>
-                    <a href="#" class="hover:underline">About</a>
-                    <a href="#" class="hover:underline">Contact</a>
-                    <a href="?admin=true" id="admin-login-link" class="hover:underline text-white/80">Admin Login</a>
-                    <span id="admin-indicator" class="hidden bg-green-500 text-white text-xs px-2 py-1 rounded-full">Admin Mode</span>
-                </div>
-                <button class="md:hidden text-2xl">☰</button>
+<body>
+    <!-- 头部 -->
+    <header>
+        <div class="header-container container">
+            <a href="/" class="logo">左右闲谈</a>
+            <button class="mobile-menu-btn">☰</button>
+            <nav>
+                <ul id="main-menu">
+                    <li><a href="#home">首页</a></li>
+                    <li><a href="#templates">合同模板</a></li>
+                    <li><a href="#categories">分类浏览</a></li>
+                    <li><a href="#upload">上传合同</a></li>
+                    <li><a href="#vip">会员中心</a></li>
+                    <li><a href="#about">关于我们</a></li>
+                </ul>
             </nav>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8 flex-grow">
-        <!-- Admin Panel (Hidden by default) -->
-        <section id="admin-panel" class="hidden mb-12 bg-white p-6 md:p-8 rounded-xl shadow-md border-l-4 border-apple-blue">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl md:text-3xl font-bold text-apple-blue">Contract Management</h2>
-                <span class="bg-apple-blue text-white text-xs px-3 py-1 rounded-full">Administrator</span>
+    <!-- 英雄区域 -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>专业合同模板，助力商务无忧</h1>
+            <p>海量专业合同模板，支持批量上传合同，自动生成合同页面，提高工作效率</p>
+            <div class="hero-buttons">
+                <a href="#templates" class="cta-button">浏览模板</a>
+                <a href="#upload" class="cta-button cta-secondary">上传合同</a>
             </div>
-            
-            <form id="contract-upload-form" onsubmit="simulateContractUpload(event)" class="space-y-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="contract-title" class="block text-sm font-medium mb-1">Contract Title</label>
-                        <input type="text" id="contract-title" class="w-full px-3 py-2 border border-apple-darkgray/30 rounded-lg" placeholder="Enter contract title">
+        </div>
+    </section>
+
+    <!-- 搜索区域 -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" placeholder="输入关键词搜索合同模板..." class="search-input">
+                <button class="search-button">搜索</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 热门合同模板 -->
+    <section class="featured-templates" id="templates">
+        <div class="container">
+            <h2 class="section-title">热门合同模板</h2>
+            <div class="templates-grid">
+                <!-- 模板1 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <img src="/api/placeholder/300/200" alt="劳动合同模板">
                     </div>
-                    <div>
-                        <label for="contract-category" class="block text-sm font-medium mb-1">Category</label>
-                        <select id="contract-category" class="w-full px-3 py-2 border border-apple-darkgray/30 rounded-lg">
-                            <option value="Residential Rental">Residential Rental</option>
-                            <option value="Commercial Lease">Commercial Lease</option>
-                            <option value="Room Rental">Room Rental</option>
-                            <option value="Vacation Property">Vacation Property</option>
-                            <option value="Sublease">Sublease Agreement</option>
-                        </select>
+                    <div class="template-content">
+                        <h3>标准劳动合同</h3>
+                        <div class="template-meta">
+                            <span>Word格式</span>
+                            <span class="download-count">12580</span>
+                        </div>
+                        <p>全面规范的劳动合同模板，包含工作职责、薪资福利、保密条款等重要内容。</p>
+                        <a href="#" class="template-cta">立即下载</a>
                     </div>
                 </div>
-                
-                <div>
-                    <label for="contract-description" class="block text-sm font-medium mb-1">Brief Description</label>
-                    <textarea id="contract-description" class="w-full px-3 py-2 border border-apple-darkgray/30 rounded-lg" rows="2" placeholder="Enter a brief description of this contract"></textarea>
+
+                <!-- 模板2 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <img src="/api/placeholder/300/200" alt="服务协议模板">
+                    </div>
+                    <div class="template-content">
+                        <h3>服务协议合同</h3>
+                        <div class="template-meta">
+                            <span>Word格式</span>
+                            <span class="download-count">9876</span>
+                        </div>
+                        <p>专业服务协议模板，明确服务范围、交付标准、付款条件等关键条款。</p>
+                        <a href="#" class="template-cta">立即下载</a>
+                    </div>
+                </div>
+
+                <!-- 模板3 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <img src="/api/placeholder/300/200" alt="保密协议模板">
+                    </div>
+                    <div class="template-content">
+                        <h3>保密协议（NDA）</h3>
+                        <div class="template-meta">
+                            <span>Word格式</span>
+                            <span class="download-count">8521</span>
+                        </div>
+                        <p>保护您的商业机密和敏感信息，适用于员工、合作伙伴等多种场景。</p>
+                        <a href="#" class="template-cta">立即下载</a>
+                    </div>
+                </div>
+
+                <!-- 模板4 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <img src="/api/placeholder/300/200" alt="租赁协议模板">
+                    </div>
+                    <div class="template-content">
+                        <h3>房屋租赁合同</h3>
+                        <div class="template-meta">
+                            <span>Word格式</span>
+                            <span class="download-count">7654</span>
+                        </div>
+                        <p>全面的房屋租赁协议，明确规定租期、租金、押金及物业管理等相关条款。</p>
+                        <a href="#" class="template-cta">立即下载</a>
+                    </div>
+                </div>
+
+                <!-- 模板5 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <img src="/api/placeholder/300/200" alt="销售合同模板">
+                    </div>
+                    <div class="template-content">
+                        <h3>产品销售合同</h3>
+                        <div class="template-meta">
+                            <span>Word格式</span>
+                            <span class="download-count">6543</span>
+                        </div>
+                        <p>规范的产品销售协议，包含产品描述、质保条款、退换货政策等关键内容。</p>
+                        <a href="#" class="template-cta">立即下载</a>
+                    </div>
+                </div>
+
+                <!-- 模板6 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <img src="/api/placeholder/300/200" alt="合伙协议模板">
+                    </div>
+                    <div class="template-content">
+                        <h3>合伙经营协议</h3>
+                        <div class="template-meta">
+                            <span>Word格式</span>
+                            <span class="download-count">5432</span>
+                        </div>
+                        <p>详细界定合伙人责任、利润分配、争议解决等重要事项的合伙协议模板。</p>
+                        <a href="#" class="template-cta">立即下载</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 合同分类 -->
+    <section class="categories" id="categories">
+        <div class="container">
+            <h2 class="section-title">合同分类导航</h2>
+            <div class="categories-grid">
+                <!-- 分类1 -->
+                <div class="category-card">
+                    <img src="/api/placeholder/50/50" alt="商业合同图标">
+                    <h3>商业合同</h3>
+                </div>
+
+                <!-- 分类2 -->
+                <div class="category-card">
+                    <img src="/api/placeholder/50/50" alt="劳动合同图标">
+                    <h3>劳动用工</h3>
+                </div>
+
+                <!-- 分类3 -->
+                <div class="category-card">
+                    <img src="/api/placeholder/50/50" alt="房产合同图标">
+                    <h3>房产租售</h3>
+                </div>
+
+                <!-- 分类4 -->
+                <div class="category-card">
+                    <img src="/api/placeholder/50/50" alt="销售合同图标">
+                    <h3>购销贸易</h3>
+                </div>
+
+                <!-- 分类5 -->
+                <div class="category-card">
+                    <img src="/api/placeholder/50/50" alt="知识产权图标">
+                    <h3>知识产权</h3>
+                </div>
+
+                <!-- 分类6 -->
+                <div class="category-card">
+                    <img src="/api/placeholder/50/50" alt="法律文书图标">
+                    <h3>法律文书</h3>
+                </div>
+
+                <!-- 分类7 -->
+                <div class="category-card">
+                    <img src="/api/placeholder/50/50" alt="个人协议图标">
+                    <h3>个人协议</h3>
+                </div>
+
+                <!-- 分类8 -->
+                <div class="category-card">
+                    <img src="/api/placeholder/50/50" alt="更多图标">
+                    <h3>查看全部</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 热门标签 -->
+    <section class="tags-section">
+        <div class="container">
+            <h2 class="section-title">热门标签</h2>
+            <div class="tags-container">
+                <span class="tag">劳动合同</span>
+                <span class="tag">买卖合同</span>
+                <span class="tag">房屋租赁</span>
+                <span class="tag">保密协议</span>
+                <span class="tag">合作协议</span>
+                <span class="tag">借款合同</span>
+                <span class="tag">装修合同</span>
+                <span class="tag">婚前协议</span>
+                <span class="tag">技术服务</span>
+                <span class="tag">股权转让</span>
+                <span class="tag">委托代理</span>
+                <span class="tag">物业管理</span>
+                <span class="tag">运输协议</span>
+                <span class="tag">商业特许</span>
+                <span class="tag">广告合作</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 上传合同区域 -->
+    <section class="upload-section" id="upload">
+        <div class="container">
+            <h2 class="section-title">批量上传Word合同</h2>
+            <div class="upload-container">
+                <div class="upload-box">
+                    <div class="upload-area" id="dropArea">
+                        <img src="/api/placeholder/80/80" alt="上传图标" class="upload-icon">
+                        <h3>拖拽文件至此处或点击上传</h3>
+                        <p>支持上传Word格式(.doc, .docx)的合同文件，可批量上传多个文件</p>
+                        <input type="file" id="fileInput" multiple accept=".doc,.docx" style="display: none;">
+                        <button class="upload-button" id="browseButton">选择文件</button>
+                    </div>
+                </div>
+                <div class="upload-info">
+                    <h3>上传说明</h3>
+                    <ul>
+                        <li>系统将自动提取Word文件内容，生成合同页面</li>
+                        <li>合同标题将采用文件名称</li>
+                        <li>系统会自动分析文件内容，生成合同介绍摘要</li>
+                        <li>文件正文将作为合同全文展示</li>
+                        <li>支持批量上传，每次最多上传20个文件</li>
+                        <li>单个文件大小不超过10MB</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="upload-progress-container" style="display: none;" id="progressContainer">
+                <h3>上传进度</h3>
+                <div class="file-list" id="fileList">
+                    <!-- 上传的文件及进度将在这里动态生成 -->
+                </div>
+                <button class="upload-all-button" id="uploadAllButton">开始上传</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 合同页面预览 -->
+    <section class="contract-preview">
+        <div class="container">
+            <h2 class="section-title">自动生成的合同页面预览</h2>
+            <div class="preview-container">
+                <div class="preview-sidebar">
+                    <div class="preview-navigation">
+                        <h3>目录结构</h3>
+                        <ul>
+                            <li class="active"><a href="#">合同标题 (文件名称)</a></li>
+                            <li><a href="#">合同介绍 (自动生成)</a></li>
+                            <li><a href="#">合同全文 (文件正文)</a></li>
+                            <li><a href="#">相关文件 (可选)</a></li>
+                            <li><a href="#">下载选项</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="preview-content">
+                    <div class="preview-header">
+                        <h3>合同页面演示</h3>
+                        <div class="preview-actions">
+                            <button class="preview-button">手机视图</button>
+                            <button class="preview-button">平板视图</button>
+                            <button class="preview-button active">桌面视图</button>
+                        </div>
+                    </div>
+                    <div class="preview-frame">
+                        <div class="preview-page">
+                            <div class="preview-title">
+                                <h1>劳动合同模板（示例）</h1>
+                                <div class="preview-meta">
+                                    <span>上传时间: 2025-03-25</span>
+                                    <span>浏览: 328次</span>
+                                    <span>下载: 156次</span>
+                                </div>
+                            </div>
+                            <div class="preview-summary">
+                                <h2>合同介绍</h2>
+                                <p>本合同模板适用于企业与员工建立劳动关系的情形，包含了工作内容、薪资待遇、工作时间、社会保险、保密条款等重要内容，符合《中华人民共和国劳动法》及相关法律法规的规定。企业可根据实际需求对模板进行适当调整后使用。</p>
+                            </div>
+                            <div class="preview-full-text">
+                                <h2>合同全文</h2>
+                                <div class="preview-text-content">
+                                    <p><strong>劳动合同</strong></p>
+                                    <p>甲方（用人单位）：_________________</p>
+                                    <p>乙方（劳动者）：_________________</p>
+                                    <p>根据《中华人民共和国劳动法》、《中华人民共和国劳动合同法》等相关法律法规，甲乙双方在平等自愿、协商一致的基础上，签订本合同，共同遵守本合同所列条款。</p>
+                                    <p>...(此处为合同正文内容)</p>
+                                </div>
+                            </div>
+                            <div class="preview-download">
+                                <a href="#" class="download-button">下载原文件</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 网站特点 -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">我们的优势</h2>
+            <div class="features-container">
+                <!-- 特点1 -->
+                <div class="feature">
+                    <h3>专业权威</h3>
+                    <p>所有合同模板均由资深法律专家起草和审核，确保法律效力和专业性。</p>
+                </div>
+
+                <!-- 特点2 -->
+                <div class="feature">
+                    <h3>便捷易用</h3>
+                    <p>提供Word格式文档，简单易懂的格式指引，可根据需求快速修改定制。</p>
+                </div>
+
+                <!-- 特点3 -->
+                <div class="feature">
+                    <h3>持续更新</h3>
+                    <p>根据最新法律法规变化，定期更新合同模板内容，保持与时俱进。</p>
                 </div>
                 
-                <div class="border-2 border-dashed border-apple-darkgray/30 rounded-lg p-4">
-                    <label for="contract-file-input" class="cursor-pointer flex flex-col items-center justify-center py-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-apple-blue mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <span class="text-sm font-medium">Click to upload Word document</span>
-                        <span id="selected-filename" class="text-sm text-apple-darkgray mt-1">No file selected</span>
-                        <input type="file" id="contract-file-input" accept=".doc,.docx" class="hidden" onchange="handleFileSelect()">
-                    </label>
+                <!-- 特点4 -->
+                <div class="feature">
+                    <h3>批量上传</h3>
+                    <p>支持批量上传Word合同文件，系统自动提取信息并生成合同页面，高效便捷。</p>
                 </div>
-                
-                <div class="flex items-center">
-                    <button id="upload-submit-btn" type="submit" class="bg-apple-blue text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors duration-300 opacity-50 cursor-not-allowed" disabled>
-                        Upload Contract
-                    </button>
-                    <p id="upload-status" class="ml-4 hidden"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 用户评价 -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">用户评价</h2>
+            <div class="testimonials-slider">
+                <div class="testimonial">
+                    <p>"左右闲谈的合同模板为我们公司节省了大量法律咨询费用，模板专业规范，使用方便，强烈推荐给所有中小企业。"</p>
+                    <div class="testimonial-author">王经理</div>
+                    <div class="testimonial-role">科技公司创始人</div>
                 </div>
-                
-                <div class="text-sm text-apple-darkgray bg-apple-gray p-3 rounded-lg">
-                    <p>Uploading a contract will automatically:</p>
-                    <ol class="list-decimal ml-5 mt-1 space-y-1">
-                        <li>Extract content from the Word document</li>
-                        <li>Create a new webpage with that content</li>
-                        <li>Make the original document available for download</li>
-                    </ol>
-                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 订阅区域 -->
+    <section class="newsletter">
+        <div class="container">
+            <h2>订阅最新合同模板</h2>
+            <p>订阅我们的邮件列表，获取最新合同模板更新、法律法规变动以及独家优惠信息。</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="请输入您的邮箱地址" class="newsletter-input" required>
+                <button type="submit" class="newsletter-button">订阅</button>
             </form>
-        </section>
+        </div>
+    </section>
 
-        <!-- Search Section -->
-        <section class="mb-8">
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="relative">
-                    <input 
-                        type="text" 
-                        id="search-input" 
-                        placeholder="Search for contract templates..." 
-                        class="w-full px-4 py-3 pr-12 border border-apple-darkgray/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-apple-blue"
-                        onkeyup="if(event.key === 'Enter') searchContracts()"
-                    >
-                    <button 
-                        onclick="searchContracts()" 
-                        class="absolute right-3 top-1/2 -translate-y-1/2"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-apple-darkgray" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
+    <!-- 底部区域 -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <!-- 底部栏目1 -->
+                <div class="footer-col">
+                    <h3>关于我们</h3>
+                    <ul>
+                        <li><a href="#">公司简介</a></li>
+                        <li><a href="#">团队介绍</a></li>
+                        <li><a href="#">加入我们</a></li>
+                        <li><a href="#">联系方式</a></li>
+                    </ul>
                 </div>
-                <div id="search-results-wrapper" class="mt-2 text-sm text-apple-darkgray hidden">
-                    Found <span id="search-results-count">0</span> results
-                    <button onclick="resetSearch()" class="ml-2 text-apple-blue hover:underline">Reset</button>
+
+                <!-- 底部栏目2 -->
+                <div class="footer-col">
+                    <h3>合同模板</h3>
+                    <ul>
+                        <li><a href="#">商业合同</a></li>
+                        <li><a href="#">劳动用工</a></li>
+                        <li><a href="#">房产租售</a></li>
+                        <li><a href="#">更多分类</a></li>
+                    </ul>
+                </div>
+
+                <!-- 底部栏目3 -->
+                <div class="footer-col">
+                    <h3>客户服务</h3>
+                    <ul>
+                        <li><a href="#">帮助中心</a></li>
+                        <li><a href="#">在线客服</a></li>
+                        <li><a href="#">常见问题</a></li>
+                        <li><a href="#">投诉建议</a></li>
+                    </ul>
+                </div>
+
+                <!-- 底部栏目4 -->
+                <div class="footer-col">
+                    <h3>法律声明</h3>
+                    <ul>
+                        <li><a href="#">服务条款</a></li>
+                        <li><a href="#">隐私政策</a></li>
+                        <li><a href="#">版权声明</a></li>
+                        <li><a href="#">免责声明</a></li>
+                    </ul>
                 </div>
             </div>
-        </section>
-
-        <!-- Contracts Listing -->
-        <section class="mb-12">
-            <h1 class="text-3xl md:text-4xl font-bold mb-6 text-apple-blue">Rental Contract Templates</h1>
-            
-            <div id="contracts-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Contract Item 1 -->
-                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
-                    <div class="p-5">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="contract-title text-lg font-bold text-apple-blue">Standard Residential Lease</h3>
-                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Residential Rental Template</p>
-                            </div>
-                            <span class="bg-apple-blue/10 text-apple-blue text-xs px-2 py-1 rounded">Popular</span>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <a href="/contracts/standard-residential-lease" class="text-apple-blue hover:underline text-sm">View Details</a>
-                            <button id="download-btn-standard-lease" onclick="downloadContract('standard-lease')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Contract Item 2 -->
-                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
-                    <div class="p-5">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="contract-title text-lg font-bold text-apple-blue">Commercial Office Lease</h3>
-                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Commercial Lease Template</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <a href="/contracts/commercial-office-lease" class="text-apple-blue hover:underline text-sm">View Details</a>
-                            <button id="download-btn-commercial-lease" onclick="downloadContract('commercial-lease')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Contract Item 3 -->
-                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
-                    <div class="p-5">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="contract-title text-lg font-bold text-apple-blue">Month-to-Month Rental Agreement</h3>
-                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Residential Rental Template</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <a href="/contracts/month-to-month-rental" class="text-apple-blue hover:underline text-sm">View Details</a>
-                            <button id="download-btn-monthly-rental" onclick="downloadContract('monthly-rental')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Contract Item 4 -->
-                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
-                    <div class="p-5">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="contract-title text-lg font-bold text-apple-blue">Studio Apartment Lease</h3>
-                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Residential Rental Template</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <a href="/contracts/studio-apartment-lease" class="text-apple-blue hover:underline text-sm">View Details</a>
-                            <button id="download-btn-studio-lease" onclick="downloadContract('studio-lease')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Contract Item 5 -->
-                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
-                    <div class="p-5">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="contract-title text-lg font-bold text-apple-blue">Vacation Property Rental</h3>
-                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Vacation Property Template</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <a href="/contracts/vacation-property-rental" class="text-apple-blue hover:underline text-sm">View Details</a>
-                            <button id="download-btn-vacation-rental" onclick="downloadContract('vacation-rental')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Contract Item 6 -->
-                <div class="contract-item bg-white rounded-xl shadow-md overflow-hidden">
-                    <div class="p-5">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="contract-title text-lg font-bold text-apple-blue">Room Rental Agreement</h3>
-                                <p class="contract-desc text-sm text-apple-darkgray mt-1">Room Rental Template</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <a href="/contracts/room-rental-agreement" class="text-apple-blue hover:underline text-sm">View Details</a>
-                            <button id="download-btn-room-rental" onclick="downloadContract('room-rental')" class="bg-apple-blue hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">Download</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="copyright">
+                &copy; 2025 左右闲谈 zuoyouxiantan.xyz 版权所有 | ICP备案号：粤ICP备XXXXXXXX号
             </div>
-        </section>
-        
-        <!-- Template Details Section (From second page) -->
-        <section class="mb-12 bg-white p-6 md:p-8 rounded-xl shadow-md">
-            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-apple-blue">Template Overview</h2>
-            <p class="mb-4">This comprehensive rental contract template is designed for residential property leasing arrangements. It covers all essential aspects of a landlord-tenant agreement while providing clarity and legal protection for both parties.</p>
-            <p class="mb-4">The document is professionally drafted and regularly updated to comply with current rental regulations and best practices.</p>
-            
-            <div class="bg-apple-silver p-4 rounded-lg mt-6">
-                <p class="text-sm italic">Last Updated: March 2025</p>
-            </div>
-        </section>
+        </div>
+    </footer>
 
-        <section id="upload" class="mb-12 bg-white p-6 md:p-8 rounded-xl shadow-md">
-            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-apple-blue">Upload Your Contract Template</h2>
-            <p class="mb-6">Upload your Word document template to convert it to a web page and make it available for others to download.</p>
+    <!-- 移动端菜单切换JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const mainMenu = document.getElementById('main-menu');
             
-            <form onsubmit="simulateUpload(event)" class="space-y-6">
-                <div class="border-2 border-dashed border-apple-darkgray/30 rounded-lg p-6 text-center">
-                    <label for="contract-file" class="cursor-pointer">
-                        <div class="mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-apple-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
-                        </div>
-                        <p class="text-lg font-medium mb-2">Drag and drop your file here</p>
-                        <p class="text-sm text-apple-darkgray mb-4">or click to browse</p>
-                        <p id="file-name" class="text-sm font-medium">No file selected</p>
-                        <input type="file" id="contract-file" class="hidden" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFileUpload()">
-                    </label>
-                </div>
-                
-                <div class="flex flex-col sm:flex-row items-center gap-4">
-                    <button id="upload-btn" type="submit" class="bg-apple-blue text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors duration-300 opacity-50 cursor-not-allowed" disabled>
-                        Upload Document
-                    </button>
-                    <p id="upload-status" class="hidden">Status message will appear here</p>
-                </div>
-                
-                <div class="bg-apple-gray p-4 rounded-lg text-sm">
-                    <p><strong>Supported formats:</strong> .doc, .docx (Microsoft Word)</p>
-                    <p><strong>Maximum file size:</strong> 10MB</p>
-                </div>
-            </form>
-        </section>
-
-        <section class="mb-12 bg-white p-6 md:p-8 rounded-xl shadow-md">
-            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-apple-blue">Contract Content</h2>
-            
-            <div class="prose max-w-none">
-                <div class="border-b pb-4 mb-6">
-                    <h3 class="text-xl font-bold mb-3">RESIDENTIAL RENTAL AGREEMENT</h3>
-                    <p class="italic mb-4">This Rental Agreement ("Agreement") is entered into on this date between the following parties:</p>
-                    
-                    <p><strong>LANDLORD:</strong> _________________________ ("Landlord")</p>
-                    <p><strong>TENANT(S):</strong> _________________________ ("Tenant")</p>
-                </div>
-                
-                <div class="mb-6">
-                    <h3 class="text-xl font-bold mb-3">1. PROPERTY</h3>
-                    <p>Landlord hereby rents to Tenant an
+            menuBtn.addEventListener('click', function() {
+                mainMenu.classList.toggle('
