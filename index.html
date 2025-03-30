@@ -3,864 +3,734 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZuoYouXianTan - Online Gaming Platform</title>
-    <link rel="canonical" href="https://zuoyouxiantan.com">
+    <title>GameZone - Play Free Online Games</title>
+    <link rel="canonical" href="https://yourdomain.com/index.html" />
     <style>
+        /* Apple-inspired color palette */
         :root {
-            --apple-blue: #007AFF;
-            --apple-blue-dark: #0062CC;
-            --apple-gray: #8E8E93;
-            --apple-light-gray: #F2F2F7;
-            --apple-green: #34C759;
-            --apple-dark: #1C1C1E;
-            --apple-orange: #FF9500;
-            --apple-red: #FF3B30;
-            --apple-purple: #AF52DE;
-            --apple-pink: #FF2D55;
-            --apple-yellow: #FFCC00;
+            --primary-light: #f5f5f7;
+            --primary-dark: #1d1d1f;
+            --accent-blue: #0071e3;
+            --accent-gray: #86868b;
+            --success-green: #28cd41;
+            --warning-orange: #ff9f0a;
+            --danger-red: #ff3b30;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
-        
+
         body {
-            background-color: var(--apple-light-gray);
-            color: var(--apple-dark);
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
             line-height: 1.6;
-            padding: 0;
-            margin: 0;
         }
-        
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header and Navigation */
         header {
-            background-color: var(--apple-blue);
-            color: white;
-            padding: 0;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .header-inner {
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.8rem 1rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 15px 0;
         }
-        
-        .site-logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: white;
-        }
-        
-        .site-logo h1 {
-            font-size: 1.5rem;
-            margin: 0;
+
+        .logo {
+            font-size: 1.8rem;
             font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
         }
-        
-        nav {
-            display: flex;
-            align-items: center;
+
+        .logo span {
+            color: var(--accent-blue);
         }
-        
-        .main-nav {
+
+        nav ul {
             display: flex;
             list-style: none;
         }
-        
-        .main-nav li {
-            position: relative;
-            margin-left: 1.5rem;
-        }
-        
-        .main-nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 0;
-            display: block;
-            transition: color 0.3s;
-        }
-        
-        .main-nav a:hover {
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .dropdown {
-            position: relative;
-        }
-        
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background: white;
-            min-width: 200px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            padding: 0.5rem 0;
-            z-index: 1;
-            top: 100%;
-            left: 0;
-            margin-top: 0.5rem;
+
+        nav ul li {
+            margin-left: 20px;
         }
 
-        .dropdown:hover .dropdown-content {
-            display: block;
+        nav ul li a {
+            text-decoration: none;
+            color: var(--primary-dark);
+            font-weight: 500;
+            transition: color 0.3s;
         }
-        
-        .dropdown-content a {
-            color: var(--apple-dark);
-            padding: 0.5rem 1rem;
-            display: block;
-            transition: background-color 0.3s;
+
+        nav ul li a:hover {
+            color: var(--accent-blue);
         }
-        
-        .dropdown-content a:hover {
-            background-color: var(--apple-light-gray);
-            color: var(--apple-blue);
-        }
-        
-        .mobile-menu-button {
+
+        .mobile-menu-btn {
             display: none;
-            background: none;
-            border: none;
-            color: white;
             font-size: 1.5rem;
             cursor: pointer;
         }
-        
+
+        /* Search Bar */
+        .search-container {
+            background-color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-bar {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 30px 0 0 30px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, var(--apple-blue), var(--apple-purple));
+            background: linear-gradient(to right, #2c3e50, #4ca1af);
             color: white;
+            padding: 60px 0;
             text-align: center;
-            padding: 4rem 1rem;
+            margin-bottom: 40px;
         }
-        
-        .hero h2 {
+
+        .hero h1 {
             font-size: 2.5rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            color: white;
+            margin-bottom: 20px;
         }
-        
+
         .hero p {
             font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s;
         }
-        
+
+        .cta-button:hover {
+            background-color: #0058b9;
+        }
+
+        /* Game Categories */
+        .categories {
+            margin-bottom: 40px;
+        }
+
         .section-title {
-            color: var(--apple-dark);
-            margin-bottom: 2rem;
-            font-weight: 700;
             font-size: 1.8rem;
+            margin-bottom: 20px;
             text-align: center;
-            position: relative;
         }
-        
-        .section-title:after {
-            content: '';
-            display: block;
-            width: 50px;
-            height: 3px;
-            background-color: var(--apple-blue);
-            margin: 0.5rem auto 0;
-        }
-        
-        .game-grid {
+
+        .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
         }
-        
+
+        .category-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-image {
+            height: 120px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--accent-blue);
+        }
+
+        .category-info {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .category-info h3 {
+            margin-bottom: 5px;
+        }
+
+        .category-info p {
+            color: var(--accent-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Featured Games */
+        .featured-games {
+            margin-bottom: 40px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
         .game-card {
             background-color: white;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
         }
-        
+
         .game-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         }
-        
-        .game-thumbnail {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
+
+        .game-image {
+            height: 150px;
+            background-color: #eee;
+            background-size: cover;
+            background-position: center;
         }
-        
-        .game-content {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .game-title {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--apple-dark);
-        }
-        
-        .game-description {
-            color: var(--apple-gray);
-            margin-bottom: 1.5rem;
-            flex-grow: 1;
-        }
-        
-        .game-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto;
-        }
-        
-        .game-category {
-            display: inline-block;
-            background-color: var(--apple-light-gray);
-            color: var(--apple-gray);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-        }
-        
-        .play-button {
-            background-color: var(--apple-blue);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.2rem;
-            border-radius: 20px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .play-button:hover {
-            background-color: var(--apple-blue-dark);
-        }
-        
-        .categories-section {
-            padding: 3rem 0;
-            background-color: white;
-        }
-        
-        .category-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .category-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            padding: 1.5rem;
-            border-radius: 12px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-align: center;
-        }
-        
-        .category-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-        
-        .category-icon {
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            margin-bottom: 1rem;
-        }
-        
-        .category-name {
-            font-weight: 600;
-            color: var(--apple-dark);
-            margin-bottom: 0.5rem;
-        }
-        
-        .category-count {
-            color: var(--apple-gray);
-            font-size: 0.9rem;
-        }
-        
-        .action-category {
-            background-color: rgba(255, 59, 48, 0.1);
-            color: var(--apple-red);
-        }
-        
-        .puzzle-category {
-            background-color: rgba(175, 82, 222, 0.1);
-            color: var(--apple-purple);
-        }
-        
-        .strategy-category {
-            background-color: rgba(0, 122, 255, 0.1);
-            color: var(--apple-blue);
-        }
-        
-        .adventure-category {
-            background-color: rgba(255, 149, 0, 0.1);
-            color: var(--apple-orange);
-        }
-        
-        .sports-category {
-            background-color: rgba(52, 199, 89, 0.1);
-            color: var(--apple-green);
-        }
-        
-        .shooter-category {
-            background-color: rgba(255, 45, 85, 0.1);
-            color: var(--apple-pink);
-        }
-        
-        .simulation-category {
-            background-color: rgba(255, 204, 0, 0.1);
-            color: var(--apple-yellow);
-        }
-        
-        .arcade-category {
-            background-color: rgba(88, 86, 214, 0.1);
-            color: #5856D6;
-        }
-        
-        .view-all {
-            display: block;
-            text-align: center;
-            margin-top: 2rem;
-            color: var(--apple-blue);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .view-all:hover {
-            text-decoration: underline;
-        }
-        
-        .game-detail-container {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .game-main {
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-        
-        .game-frame {
-            width: 100%;
-            height: 600px;
-            border: none;
-        }
-        
+
         .game-info {
-            padding: 2rem;
+            padding: 15px;
         }
-        
-        .game-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+
+        .game-info h3 {
+            margin-bottom: 5px;
         }
-        
-        .sidebar-section {
-            background-color: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+        .game-info p {
+            color: var(--accent-gray);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
         }
-        
-        .sidebar-title {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-            color: var(--apple-dark);
-        }
-        
-        .similar-games {
-            display: grid;
-            gap: 1rem;
-        }
-        
-        .similar-game {
-            display: flex;
-            text-decoration: none;
-            gap: 1rem;
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-        }
-        
-        .similar-game:hover {
-            background-color: var(--apple-light-gray);
-        }
-        
-        .similar-game img {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            object-fit: cover;
-        }
-        
-        .similar-game-info {
-            flex-grow: 1;
-        }
-        
-        .similar-game-title {
-            font-weight: 500;
-            color: var(--apple-dark);
-            margin-bottom: 0.2rem;
-        }
-        
-        .similar-game-category {
-            font-size: 0.85rem;
-            color: var(--apple-gray);
-        }
-        
+
         .game-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
+            gap: 5px;
+            margin-bottom: 10px;
         }
-        
+
         .game-tag {
-            display: inline-block;
-            background-color: var(--apple-light-gray);
-            color: var(--apple-gray);
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
+            background-color: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
             font-size: 0.8rem;
         }
-        
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .breadcrumb a {
-            color: var(--apple-gray);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .breadcrumb a:hover {
-            color: var(--apple-blue);
-        }
-        
-        .breadcrumb .separator {
-            margin: 0 0.5rem;
-            color: var(--apple-gray);
-        }
-        
-        .breadcrumb .current {
-            color: var(--apple-dark);
-            font-weight: 500;
-        }
-        
-        footer {
-            background-color: var(--apple-dark);
+
+        .play-now-btn {
+            display: inline-block;
+            background-color: var(--accent-blue);
             color: white;
-            padding: 4rem 1rem 2rem;
-            margin-top: 3rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
         }
-        
+
+        .play-now-btn:hover {
+            background-color: #0058b9;
+        }
+
+        /* Latest Games */
+        .latest-games {
+            margin-bottom: 40px;
+        }
+
+        /* Popular Games */
+        .popular-games {
+            margin-bottom: 60px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 40px 0;
+        }
+
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
         }
-        
+
         .footer-column h3 {
             font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
+            margin-bottom: 15px;
         }
-        
-        .footer-links {
+
+        .footer-column ul {
             list-style: none;
         }
-        
-        .footer-links li {
-            margin-bottom: 0.8rem;
+
+        .footer-column ul li {
+            margin-bottom: 10px;
         }
-        
-        .footer-links a {
-            color: #A9A9A9;
+
+        .footer-column ul li a {
+            color: #ddd;
             text-decoration: none;
             transition: color 0.3s;
         }
-        
-        .footer-links a:hover {
+
+        .footer-column ul li a:hover {
             color: white;
         }
-        
-        .footer-bottom {
+
+        .copyright {
             text-align: center;
-            padding-top: 2rem;
-            margin-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-            color: #A9A9A9;
-            font-size: 0.9rem;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
         }
-        
-        @media (max-width: 992px) {
-            .game-detail-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .mobile-menu-button {
-                display: block;
-            }
-            
-            .main-nav {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background-color: var(--apple-blue);
+            .header-content {
                 flex-direction: column;
-                padding: 1rem;
+                align-items: flex-start;
             }
-            
-            .main-nav.active {
-                display: flex;
+
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                right: 20px;
+                top: 20px;
             }
-            
-            .main-nav li {
-                margin: 0;
-                padding: 0.5rem 0;
-            }
-            
-            .dropdown-content {
-                position: static;
-                box-shadow: none;
-                background-color: rgba(0, 0, 0, 0.1);
-                margin-top: 0.5rem;
+
+            nav {
+                width: 100%;
                 display: none;
             }
-            
-            .dropdown.active .dropdown-content {
+
+            nav.active {
                 display: block;
             }
-            
-            .dropdown-content a {
-                color: white;
+
+            nav ul {
+                flex-direction: column;
+                margin-top: 15px;
             }
-            
-            .dropdown-content a:hover {
-                background-color: rgba(255, 255, 255, 0.1);
-                color: white;
+
+            nav ul li {
+                margin: 0;
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
             }
-            
-            .game-grid {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+
+            .category-grid,
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
-            
-            .hero h2 {
+
+            .hero h1 {
                 font-size: 2rem;
             }
-        }
-        
-        @media (max-width: 480px) {
-            .game-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .category-list {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero h2 {
-                font-size: 1.8rem;
-            }
-            
-            .game-frame {
-                height: 300px;
+
+            .hero p {
+                font-size: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Main Homepage Structure -->
+    <!-- Header & Navigation -->
     <header>
-        <div class="header-inner">
-            <a href="index.html" class="site-logo">
-                <h1>ZuoYouXianTan</h1>
-            </a>
-            <nav>
-                <button class="mobile-menu-button">☰</button>
-                <ul class="main-nav">
-                    <li><a href="index.html">Home</a></li>
-                    <li class="dropdown">
-                        <a href="categories.html">Game Categories</a>
-                        <div class="dropdown-content">
-                            <a href="category-action.html">Action Games</a>
-                            <a href="category-puzzle.html">Puzzle Games</a>
-                            <a href="category-strategy.html">Strategy Games</a>
-                            <a href="category-adventure.html">Adventure Games</a>
-                            <a href="category-sports.html">Sports Games</a>
-                            <a href="category-shooter.html">Shooter Games</a>
-                            <a href="category-simulation.html">Simulation Games</a>
-                            <a href="category-arcade.html">Arcade Games</a>
-                        </div>
-                    </li>
-                    <li><a href="new-games.html">New Games</a></li>
-                    <li><a href="popular.html">Popular</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-            </nav>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Game<span>Zone</span></a>
+                <div class="mobile-menu-btn">☰</div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li><a href="#">Popular</a></li>
+                        <li><a href="#">New Games</a></li>
+                        <li><a href="#">About</a></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </header>
 
-    <section class="hero">
-        <h2>Your Ultimate Gaming Destination</h2>
-        <p>Discover and play the best online games, organized by categories and styles to match your preferences.</p>
-        <a href="#featured-games" class="play-button">Start Playing</a>
-    </section>
-
-    <div class="container">
-        <section id="featured-games">
-            <h2 class="section-title">Featured Games</h2>
-            <div class="game-grid">
-                <div class="game-card">
-                    <img src="/api/placeholder/400/320" alt="Monster Survivors" class="game-thumbnail">
-                    <div class="game-content">
-                        <h3 class="game-title">Monster Survivors</h3>
-                        <p class="game-description">Survive the monster apocalypse in this thrilling action-packed adventure.</p>
-                        <div class="game-meta">
-                            <span class="game-category">Action</span>
-                            <a href="game-monster-survivors.html" class="play-button">Play</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="game-card">
-                    <img src="/api/placeholder/400/320" alt="Pixel Dungeon" class="game-thumbnail">
-                    <div class="game-content">
-                        <h3 class="game-title">Pixel Dungeon</h3>
-                        <p class="game-description">Explore mysterious dungeons in this pixel art roguelike adventure.</p>
-                        <div class="game-meta">
-                            <span class="game-category">Adventure</span>
-                            <a href="game-pixel-dungeon.html" class="play-button">Play</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="game-card">
-                    <img src="/api/placeholder/400/320" alt="Mind Puzzles" class="game-thumbnail">
-                    <div class="game-content">
-                        <h3 class="game-title">Mind Puzzles</h3>
-                        <p class="game-description">Challenge your brain with these addictive puzzle games.</p>
-                        <div class="game-meta">
-                            <span class="game-category">Puzzle</span>
-                            <a href="game-mind-puzzles.html" class="play-button">Play</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="game-card">
-                    <img src="/api/placeholder/400/320" alt="Space Shooter" class="game-thumbnail">
-                    <div class="game-content">
-                        <h3 class="game-title">Space Shooter</h3>
-                        <p class="game-description">Defend Earth against alien invaders in this fast-paced shooter.</p>
-                        <div class="game-meta">
-                            <span class="game-category">Shooter</span>
-                            <a href="game-space-shooter.html" class="play-button">Play</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <a href="all-games.html" class="view-all">View All Games</a>
-        </section>
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="container">
+            <form class="search-bar">
+                <input type="text" placeholder="Search for games...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
     </div>
 
-    <section class="categories-section">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Play the Best Online Games for Free</h1>
+            <p>Discover thousands of games across various categories - action, adventure, puzzle, strategy, and more. No downloads required, play instantly in your browser!</p>
+            <a href="#" class="cta-button">Start Playing</a>
+        </div>
+    </section>
+
+    <!-- Game Categories -->
+    <section class="categories">
         <div class="container">
             <h2 class="section-title">Game Categories</h2>
-            <div class="category-list">
-                <a href="category-action.html" class="category-item">
-                    <div class="category-icon action-category">A</div>
-                    <h3 class="category-name">Action</h3>
-                    <span class="category-count">48 Games</span>
-                </a>
-                <a href="category-puzzle.html" class="category-item">
-                    <div class="category-icon puzzle-category">P</div>
-                    <h3 class="category-name">Puzzle</h3>
-                    <span class="category-count">35 Games</span>
-                </a>
-                <a href="category-strategy.html" class="category-item">
-                    <div class="category-icon strategy-category">S</div>
-                    <h3 class="category-name">Strategy</h3>
-                    <span class="category-count">29 Games</span>
-                </a>
-                <a href="category-adventure.html" class="category-item">
-                    <div class="category-icon adventure-category">A</div>
-                    <h3 class="category-name">Adventure</h3>
-                    <span class="category-count">42 Games</span>
-                </a>
-                <a href="category-sports.html" class="category-item">
-                    <div class="category-icon sports-category">S</div>
-                    <h3 class="category-name">Sports</h3>
-                    <span class="category-count">26 Games</span>
-                </a>
-                <a href="category-shooter.html" class="category-item">
-                    <div class="category-icon shooter-category">S</div>
-                    <h3 class="category-name">Shooter</h3>
-                    <span class="category-count">31 Games</span>
-                </a>
-                <a href="category-simulation.html" class="category-item">
-                    <div class="category-icon simulation-category">S</div>
-                    <h3 class="category-name">Simulation</h3>
-                    <span class="category-count">22 Games</span>
-                </a>
-                <a href="category-arcade.html" class="category-item">
-                    <div class="category-icon arcade-category">A</div>
-                    <h3 class="category-name">Arcade</h3>
-                    <span class="category-count">37 Games</span>
-                </a>
+            <div class="category-grid">
+                <!-- Action Games -->
+                <div class="category-card">
+                    <div class="category-image">🎮</div>
+                    <div class="category-info">
+                        <h3>Action</h3>
+                        <p>Fast-paced games requiring quick reflexes</p>
+                    </div>
+                </div>
+                <!-- Adventure Games -->
+                <div class="category-card">
+                    <div class="category-image">🗺️</div>
+                    <div class="category-info">
+                        <h3>Adventure</h3>
+                        <p>Explore worlds and complete quests</p>
+                    </div>
+                </div>
+                <!-- Puzzle Games -->
+                <div class="category-card">
+                    <div class="category-image">🧩</div>
+                    <div class="category-info">
+                        <h3>Puzzle</h3>
+                        <p>Challenge your mind with brain teasers</p>
+                    </div>
+                </div>
+                <!-- Strategy Games -->
+                <div class="category-card">
+                    <div class="category-image">♟️</div>
+                    <div class="category-info">
+                        <h3>Strategy</h3>
+                        <p>Plan, think ahead, and outsmart opponents</p>
+                    </div>
+                </div>
+                <!-- RPG Games -->
+                <div class="category-card">
+                    <div class="category-image">⚔️</div>
+                    <div class="category-info">
+                        <h3>RPG</h3>
+                        <p>Role-playing adventures with character progression</p>
+                    </div>
+                </div>
+                <!-- Sports Games -->
+                <div class="category-card">
+                    <div class="category-image">⚽</div>
+                    <div class="category-info">
+                        <h3>Sports</h3>
+                        <p>Compete in virtual sports competitions</p>
+                    </div>
+                </div>
+                <!-- Pixel Art Games -->
+                <div class="category-card">
+                    <div class="category-image">👾</div>
+                    <div class="category-info">
+                        <h3>Pixel Art</h3>
+                        <p>Games with retro pixel graphics</p>
+                    </div>
+                </div>
+                <!-- Horror Games -->
+                <div class="category-card">
+                    <div class="category-image">👻</div>
+                    <div class="category-info">
+                        <h3>Horror</h3>
+                        <p>Scary and suspenseful experiences</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <div class="container">
-        <section>
-            <h2 class="section-title">New Releases</h2>
-            <div class="game-grid">
+    <!-- Featured Games -->
+    <section class="featured-games">
+        <div class="container">
+            <h2 class="section-title">Featured Games</h2>
+            <div class="games-grid">
+                <!-- Monster Survivors -->
                 <div class="game-card">
-                    <img src="/api/placeholder/400/320" alt="Cyber Blast" class="game-thumbnail">
-                    <div class="game-content">
-                        <h3 class="game-title">Cyber Blast</h3>
-                        <p class="game-description">Navigate through a cyberpunk world filled with challenges.</p>
-                        <div class="game-meta">
-                            <span class="game-category">Action</span>
-                            <a href="game-cyber-blast.html" class="play-button">Play</a>
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Monster+Survivors');"></div>
+                    <div class="game-info">
+                        <h3>Monster Survivors</h3>
+                        <p>Battle endless waves of monsters in this thrilling survival action game!</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Action</span>
+                            <span class="game-tag">Survival</span>
+                            <span class="game-tag">RPG</span>
                         </div>
+                        <a href="games/monster-survivors.html" class="play-now-btn">Play Now</a>
+                    </div>
+                </div>
+                <!-- Placeholder Game Cards -->
+                <div class="game-card">
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Puzzle+Quest');"></div>
+                    <div class="game-info">
+                        <h3>Puzzle Quest</h3>
+                        <p>Match gems and solve challenging puzzles in magical worlds.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Puzzle</span>
+                            <span class="game-tag">Adventure</span>
+                        </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
                     </div>
                 </div>
                 <div class="game-card">
-                    <img src="/api/placeholder/400/320" alt="Farm Life" class="game-thumbnail">
-                    <div class="game-content">
-                        <h3 class="game-title">Farm Life</h3>
-                        <p class="game-description">Build and manage your own virtual farm in this relaxing simulation.</p>
-                        <div class="game-meta">
-                            <span class="game-category">Simulation</span>
-                            <a href="game-farm-life.html" class="play-button">Play</a>
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Space+Shooter');"></div>
+                    <div class="game-info">
+                        <h3>Space Shooter</h3>
+                        <p>Defend Earth from alien invaders in this action-packed space game.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Action</span>
+                            <span class="game-tag">Shooter</span>
                         </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
                     </div>
                 </div>
                 <div class="game-card">
-                    <img src="/api/placeholder/400/320" alt="Word Master" class="game-thumbnail">
-                    <div class="game-content">
-                        <h3 class="game-title">Word Master</h3>
-                        <p class="game-description">Test your vocabulary and spelling skills in this word puzzle game.</p>
-                        <div class="game-meta">
-                            <span class="game-category">Puzzle</span>
-                            <a href="game-word-master.html" class="play-button">Play</a>
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=City+Builder');"></div>
+                    <div class="game-info">
+                        <h3>City Builder</h3>
+                        <p>Create and manage your dream city with strategic planning.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Strategy</span>
+                            <span class="game-tag">Simulation</span>
                         </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
                     </div>
                 </div>
-                <div class="game-card">
-                    <img src="/api/placeholder/400/320" alt="Football Stars" class="game-thumbnail">
-                    <div class="game-content">
-                        <h3 class="game-title">Football Stars</h3>
-                        <p class="game-description">Lead your team to victory in this exciting sports simulation.</p>
-                        <div class="game-meta">
-                            <span class="game-category">Sports</span>
-                            <a href="game-football-stars.html" class="play-button">Play</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <a href="new-games.html" class="view-all">View All New Games</a>
-        </section>
-    </div>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-column">
-                <h3>ZuoYouXianTan</h3>
-                <ul class="footer-links">
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Categories</h3>
-                <ul class="footer-links">
-                    <li><a href="category-action.html">Action Games</a></li>
-                    <li><a href="category-puzzle.html">Puzzle Games</a></li>
-                    <li><a href="category-strategy.html">Strategy Games</a></li>
-                    <li><a href="category-adventure.html">Adventure Games</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>More Categories</h3>
-                <ul class="footer-links">
-                    <li><a href="category-sports.html">Sports Games</a></li>
-                    <li><a href="category-shooter.html">Shooter Games</a></li>
-                    <li><a href="category-simulation.html">Simulation Games</a></li>
-                    <li><a href="category-arcade.html">Arcade Games</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Explore</h3>
-                <ul class="footer-links">
-                    <li><a href="new-games.html">New Games</a></li>
-                    <li><a href="popular.html">Popular Games</a></li>
-                    <li><a href="pixel-art.html">Pixel Art Games</a></li>
-                    <li><a href="anime-style.html">Anime Style Games</a></li>
-                </ul>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 ZuoYouXianTan. All
+    </section>
+
+    <!-- Latest Games -->
+    <section class="latest-games">
+        <div class="container">
+            <h2 class="section-title">Latest Games</h2>
+            <div class="games-grid">
+                <!-- Placeholder Game Cards -->
+                <div class="game-card">
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Racing+Challenge');"></div>
+                    <div class="game-info">
+                        <h3>Racing Challenge</h3>
+                        <p>Race against opponents on challenging tracks around the world.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Racing</span>
+                            <span class="game-tag">Sports</span>
+                        </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Zombie+Apocalypse');"></div>
+                    <div class="game-info">
+                        <h3>Zombie Apocalypse</h3>
+                        <p>Survive in a world overrun by zombies, scavenge for supplies.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Survival</span>
+                            <span class="game-tag">Horror</span>
+                        </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Chess+Master');"></div>
+                    <div class="game-info">
+                        <h3>Chess Master</h3>
+                        <p>Test your strategic skills in this classic board game.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Strategy</span>
+                            <span class="game-tag">Board</span>
+                        </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Word+Wizard');"></div>
+                    <div class="game-info">
+                        <h3>Word Wizard</h3>
+                        <p>Form words and expand your vocabulary in this word game.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Word</span>
+                            <span class="game-tag">Educational</span>
+                        </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Games -->
+    <section class="popular-games">
+        <div class="container">
+            <h2 class="section-title">Popular Games</h2>
+            <div class="games-grid">
+                <!-- Placeholder Game Cards -->
+                <div class="game-card">
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Ninja+Runner');"></div>
+                    <div class="game-info">
+                        <h3>Ninja Runner</h3>
+                        <p>Run, jump, and dodge obstacles in this fast-paced platformer.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Action</span>
+                            <span class="game-tag">Platformer</span>
+                        </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Fantasy+Quest');"></div>
+                    <div class="game-info">
+                        <h3>Fantasy Quest</h3>
+                        <p>Embark on an epic journey in a magical fantasy world.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">RPG</span>
+                            <span class="game-tag">Adventure</span>
+                        </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Bubble+Shooter');"></div>
+                    <div class="game-info">
+                        <h3>Bubble Shooter</h3>
+                        <p>Match and pop colorful bubbles in this addictive puzzle game.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Puzzle</span>
+                            <span class="game-tag">Casual</span>
+                        </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-image" style="background-image: url('https://via.placeholder.com/250x150?text=Farm+Simulator');"></div>
+                    <div class="game-info">
+                        <h3>Farm Simulator</h3>
+                        <p>Build and manage your own virtual farm with crops and animals.</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Simulation</span>
+                            <span class="game-tag">Strategy</span>
+                        </div>
+                        <a href="#" class="play-now-btn">Play Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Game Categories</h3>
+                    <ul>
+                        <li><a href="#">Action Games</a></li>
+                        <li><a href="#">Adventure Games</a></li>
+                        <li><a href="#">Puzzle Games</a></li>
+                        <li><a href="#">Strategy Games</a></li>
+                        <li><a href="#">Sports Games</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Popular Games</a></li>
+                        <li><a href="#">New Games</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Game Styles</h3>
+                    <ul>
+                        <li><a href="#">Pixel Art Games</a></li>
+                        <li><a href="#">3D Games</a></li>
+                        <li><a href="#">Horror Games</a></li>
+                        <li><a href="#">Anime Style</a></li>
+                        <li><a href="#">Retro Games</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 GameZone. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple JavaScript for mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('nav').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
