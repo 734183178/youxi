@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zuoyouxiantan - Play Free Online Games</title>
-    <meta name="description" content="Play Monster Survivors and other exciting online games for free. No downloads required, play directly in your browser!">
+    <title>Zuoyouxiantan - Play Free Online Games | Best Browser Games Collection</title>
+    <meta name="description" content="Discover and play the best free online games at Zuoyouxiantan. Monster Survivors and more exciting games available with no downloads required.">
     <link rel="canonical" href="https://zuoyouxiantan.xyz/">
-    <meta property="og:title" content="Monster Survivors - Free Online Games">
-    <meta property="og:description" content="Play the best online games including Monster Survivors and more. No downloads required!">
+    <meta property="og:title" content="Zuoyouxiantan - Free Online Games Platform">
+    <meta property="og:description" content="Enjoy a curated collection of free browser games including Monster Survivors and other exciting titles. Play instantly online with no downloads.">
     <meta property="og:url" content="https://zuoyouxiantan.xyz/">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://zuoyouxiantan.xyz/images/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Zuoyouxiantan - Free Online Games">
+    <meta name="twitter:description" content="Play the best free online games instantly in your browser. No downloads, no installations - just pure gaming fun!">
+    <meta name="twitter:image" content="https://zuoyouxiantan.xyz/images/twitter-card.jpg">
+    <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -120,7 +126,51 @@
                 grid-template-columns: 1fr;
             }
         }
+        
+        /* Adding accessibility focus styles */
+        a:focus, button:focus {
+            outline: 2px solid #007AFF;
+            outline-offset: 2px;
+        }
+        
+        /* Add smooth transition for prefers-reduced-motion: reduce */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+        
+        /* Optimize text contrast for accessibility */
+        .text-enhance {
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
     </style>
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Zuoyouxiantan",
+        "url": "https://zuoyouxiantan.xyz/",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://zuoyouxiantan.xyz/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "description": "Play free online games directly in your browser including Monster Survivors and many more.",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Zuoyouxiantan Games",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://zuoyouxiantan.xyz/logo.png"
+            }
+        }
+    }
+    </script>
 </head>
 
 <body class="text-dark">
@@ -129,7 +179,7 @@
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <!-- Logo -->
-                <a href="/" class="flex items-center gap-2">
+                <a href="/" class="flex items-center gap-2" aria-label="Zuoyouxiantan Homepage">
                     <div class="bg-primary rounded-lg w-10 h-10 flex items-center justify-center">
                         <span class="text-white font-bold text-xl">ZY</span>
                     </div>
@@ -137,7 +187,7 @@
                 </a>
                 
                 <!-- Desktop Navigation -->
-                <nav class="hidden md:flex gap-8">
+                <nav class="hidden md:flex gap-8" aria-label="Main Navigation">
                     <a href="#featured" class="nav-link font-medium">Featured Games</a>
                     <a href="#popular" class="nav-link font-medium">Popular</a>
                     <a href="#categories" class="nav-link font-medium">Categories</a>
@@ -145,7 +195,7 @@
                 </nav>
                 
                 <!-- Mobile Menu Button -->
-                <button class="md:hidden focus:outline-none" id="menuButton">
+                <button class="md:hidden focus:outline-none" id="menuButton" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
@@ -155,13 +205,13 @@
     </header>
     
     <!-- Mobile Menu (Hidden by Default) -->
-    <div class="fixed inset-0 bg-dark bg-opacity-95 z-50 flex flex-col items-center justify-center transform translate-x-full transition-transform duration-300" id="mobileMenu">
-        <button class="absolute top-5 right-5 text-white focus:outline-none" id="closeMenuButton">
+    <div class="fixed inset-0 bg-dark bg-opacity-95 z-50 flex flex-col items-center justify-center transform translate-x-full transition-transform duration-300" id="mobileMenu" aria-hidden="true">
+        <button class="absolute top-5 right-5 text-white focus:outline-none" id="closeMenuButton" aria-label="Close menu">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
-        <nav class="flex flex-col gap-6 text-white text-xl text-center">
+        <nav class="flex flex-col gap-6 text-white text-xl text-center" aria-label="Mobile Navigation">
             <a href="#featured" class="hover:text-primary transition-colors duration-300">Featured Games</a>
             <a href="#popular" class="hover:text-primary transition-colors duration-300">Popular</a>
             <a href="#categories" class="hover:text-primary transition-colors duration-300">Categories</a>
@@ -169,13 +219,13 @@
         </nav>
     </div>
     
-    <!-- Hero Section -->
+    <!-- Hero Section with H1 -->
     <section class="pt-24 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-dark to-dark-lightest text-white">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 mb-10 md:mb-0">
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">Play <span class="text-primary">Monster Survivors</span> Online</h1>
-                    <p class="text-lg md:text-xl mb-8 text-light-darker">探索无尽冒险世界，体验刺激的动作游戏。在浏览器中免费畅玩！</p>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">Discover Amazing Online Games</h1>
+                    <p class="text-lg md:text-xl mb-8 text-light-darker">Experience thrilling action adventures and exciting gameplay directly in your browser. Free to play, no downloads required!</p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <a href="#monster-survivors" class="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 text-center">Play Now</a>
                         <a href="#popular" class="bg-transparent border-2 border-white hover:border-primary hover:text-primary text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 text-center">Explore Games</a>
@@ -185,17 +235,17 @@
                     <div class="relative">
                         <div class="absolute -top-4 -left-4 w-24 h-24 bg-primary rounded-lg opacity-20 z-0"></div>
                         <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-secondary rounded-lg opacity-20 z-0"></div>
-                        <img src="https://api.placeholder.com/600x400" alt="Monster Survivors Game Screenshot" class="rounded-xl shadow-2xl relative z-10 w-full">
+                        <img src="https://api.placeholder.com/600x400" alt="Online gaming experience with Monster Survivors" class="rounded-xl shadow-2xl relative z-10 w-full">
                     </div>
                 </div>
             </div>
         </div>
     </section>
     
-    <!-- Featured Game Section -->
+    <!-- Featured Game Section with H2 -->
     <section id="monster-survivors" class="py-16 bg-white">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12">Play Monster Survivors</h2>
+            <h2 class="text-3xl font-bold text-center mb-12">Featured Game: Monster Survivors</h2>
             <div class="max-w-5xl mx-auto featured-game bg-light rounded-xl overflow-hidden transition-all duration-300">
                 <div class="bg-dark-lighter p-1">
                     <iframe src="https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html" 
@@ -224,7 +274,7 @@
         </div>
     </section>
     
-    <!-- Popular Games Section -->
+    <!-- Popular Games Section with H2 -->
     <section id="popular" class="py-16 bg-light">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold mb-3">Popular Games</h2>
@@ -234,7 +284,7 @@
                 <!-- Game Card 1 (Monster Survivors) -->
                 <div class="game-card bg-white rounded-xl overflow-hidden shadow-lg">
                     <div class="relative">
-                        <img src="https://api.placeholder.com/400x225" alt="Monster Survivors" class="w-full h-48 object-cover">
+                        <img src="https://api.placeholder.com/400x225" alt="Monster Survivors game thumbnail showing character battling monsters" class="w-full h-48 object-cover">
                         <div class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded">HOT</div>
                     </div>
                     <div class="p-4">
@@ -252,7 +302,7 @@
                 
                 <!-- Game Card 2 -->
                 <div class="game-card bg-white rounded-xl overflow-hidden shadow-lg">
-                    <img src="https://api.placeholder.com/400x225" alt="Game 2" class="w-full h-48 object-cover">
+                    <img src="https://api.placeholder.com/400x225" alt="Zombie Defense game thumbnail showing defensive structures" class="w-full h-48 object-cover">
                     <div class="p-4">
                         <h3 class="font-bold text-lg mb-1">Zombie Defense</h3>
                         <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Build towers and defend your base against hordes of zombies.</p>
@@ -268,7 +318,7 @@
                 
                 <!-- Game Card 3 -->
                 <div class="game-card bg-white rounded-xl overflow-hidden shadow-lg">
-                    <img src="https://api.placeholder.com/400x225" alt="Game 3" class="w-full h-48 object-cover">
+                    <img src="https://api.placeholder.com/400x225" alt="Pixel Racer game thumbnail showing racing track" class="w-full h-48 object-cover">
                     <div class="p-4">
                         <h3 class="font-bold text-lg mb-1">Pixel Racer</h3>
                         <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Race through colorful tracks in this retro-style racing game.</p>
@@ -284,7 +334,7 @@
                 
                 <!-- Game Card 4 -->
                 <div class="game-card bg-white rounded-xl overflow-hidden shadow-lg">
-                    <img src="https://api.placeholder.com/400x225" alt="Game 4" class="w-full h-48 object-cover">
+                    <img src="https://api.placeholder.com/400x225" alt="Space Commander game thumbnail showing space battle" class="w-full h-48 object-cover">
                     <div class="p-4">
                         <h3 class="font-bold text-lg mb-1">Space Commander</h3>
                         <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Command your spaceship fleet in epic galactic battles.</p>
@@ -305,26 +355,26 @@
         </div>
     </section>
     
-    <!-- Categories Section -->
+    <!-- Categories Section with H2 -->
     <section id="categories" class="py-16 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold mb-12 text-center">Game Categories</h2>
             
             <div class="flex flex-wrap justify-center gap-4 mb-12">
-                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium active">All</button>
-                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium">Action</button>
-                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium">Adventure</button>
-                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium">Puzzle</button>
-                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium">Strategy</button>
-                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium">Racing</button>
-                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium">Sports</button>
-                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium">Multiplayer</button>
+                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium active" aria-pressed="true">All</button>
+                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium" aria-pressed="false">Action</button>
+                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium" aria-pressed="false">Adventure</button>
+                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium" aria-pressed="false">Puzzle</button>
+                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium" aria-pressed="false">Strategy</button>
+                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium" aria-pressed="false">Racing</button>
+                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium" aria-pressed="false">Sports</button>
+                <button class="category-button bg-light hover:bg-primary hover:text-white px-6 py-2 rounded-full font-medium" aria-pressed="false">Multiplayer</button>
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 <!-- Category Game 1 -->
                 <div class="game-card bg-white rounded-xl overflow-hidden shadow-md">
-                    <img src="https://api.placeholder.com/300x200" alt="Category Game 1" class="w-full h-36 object-cover">
+                    <img src="https://api.placeholder.com/300x200" alt="Castle Defense game thumbnail" class="w-full h-36 object-cover">
                     <div class="p-3">
                         <h3 class="font-bold mb-1 text-sm">Castle Defense</h3>
                         <div class="flex justify-between items-center">
@@ -336,7 +386,7 @@
                 
                 <!-- Category Game 2 -->
                 <div class="game-card bg-white rounded-xl overflow-hidden shadow-md">
-                    <img src="https://api.placeholder.com/300x200" alt="Category Game 2" class="w-full h-36 object-cover">
+                    <img src="https://api.placeholder.com/300x200" alt="Pixel Jumper game thumbnail" class="w-full h-36 object-cover">
                     <div class="p-3">
                         <h3 class="font-bold mb-1 text-sm">Pixel Jumper</h3>
                         <div class="flex justify-between items-center">
@@ -348,7 +398,7 @@
                 
                 <!-- Category Game 3 -->
                 <div class="game-card bg-white rounded-xl overflow-hidden shadow-md">
-                    <img src="https://api.placeholder.com/300x200" alt="Category Game 3" class="w-full h-36 object-cover">
+                    <img src="https://api.placeholder.com/300x200" alt="Number Puzzle game thumbnail" class="w-full h-36 object-cover">
                     <div class="p-3">
                         <h3 class="font-bold mb-1 text-sm">Number Puzzle</h3>
                         <div class="flex justify-between items-center">
@@ -360,7 +410,7 @@
                 
                 <!-- Category Game 4 -->
                 <div class="game-card bg-white rounded-xl overflow-hidden shadow-md">
-                    <img src="https://api.placeholder.com/300x200" alt="Category Game 4" class="w-full h-36 object-cover">
+                    <img src="https://api.placeholder.com/300x200" alt="City Racer game thumbnail" class="w-full h-36 object-cover">
                     <div class="p-3">
                         <h3 class="font-bold mb-1 text-sm">City Racer</h3>
                         <div class="flex justify-between items-center">
@@ -372,7 +422,7 @@
                 
                 <!-- Category Game 5 -->
                 <div class="game-card bg-white rounded-xl overflow-hidden shadow-md">
-                    <img src="https://api.placeholder.com/300x200" alt="Category Game 5" class="w-full h-36 object-cover">
+                    <img src="https://api.placeholder.com/300x200" alt="Basketball Pro game thumbnail" class="w-full h-36 object-cover">
                     <div class="p-3">
                         <h3 class="font-bold mb-1 text-sm">Basketball Pro</h3>
                         <div class="flex justify-between items-center">
@@ -392,7 +442,7 @@
         </div>
     </section>
     
-    <!-- New Games Section -->
+    <!-- New Games Section with H2 -->
     <section id="new" class="py-16 bg-gradient-to-br from-secondary to-secondary-dark text-white">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold mb-3">New Games</h2>
@@ -402,7 +452,7 @@
                 <!-- New Game 1 -->
                 <div class="game-card bg-white text-dark rounded-xl overflow-hidden shadow-lg">
                     <div class="relative">
-                        <img src="https://api.placeholder.com/400x225" alt="New Game 1" class="w-full h-48 object-cover">
+                        <img src="https://api.placeholder.com/400x225" alt="Dragon Quest game thumbnail" class="w-full h-48 object-cover">
                         <div class="absolute top-2 right-2 bg-secondary text-white text-xs font-bold px-2 py-1 rounded">NEW</div>
                     </div>
                     <div class="p-4">
@@ -418,7 +468,7 @@
                 <!-- New Game 2 -->
                 <div class="game-card bg-white text-dark rounded-xl overflow-hidden shadow-lg">
                     <div class="relative">
-                        <img src="https://api.placeholder.com/400x225" alt="New Game 2" class="w-full h-48 object-cover">
+                        <img src="https://api.placeholder.com/400x225" alt="Farm Village game thumbnail" class="w-full h-48 object-cover">
                         <div class="absolute top-2 right-2 bg-secondary text-white text-xs font-bold px-2 py-1 rounded">NEW</div>
                     </div>
                     <div class="p-4">
@@ -434,7 +484,7 @@
                 <!-- New Game 3 -->
                 <div class="game-card bg-white text-dark rounded-xl overflow-hidden shadow-lg">
                     <div class="relative">
-                        <img src="https://api.placeholder.com/400x225" alt="New Game 3" class="w-full h-48 object-cover">
+                        <img src="https://api.placeholder.com/400x225" alt="Word Master game thumbnail" class="w-full h-48 object-cover">
                         <div class="absolute top-2 right-2 bg-secondary text-white text-xs font-bold px-2 py-1 rounded">NEW</div>
                     </div>
                     <div class="p-4">
@@ -442,33 +492,4 @@
                         <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Test your vocabulary skills in this challenging word puzzle game.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-xs text-dark-lighter bg-light py-1 px-2 rounded">Puzzle</span>
-                            <a href="#" class="bg-secondary hover:bg-secondary-dark text-white text-xs font-bold py-1 px-3 rounded transition-colors duration-300">PLAY</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Features Section -->
-    <section class="py-16 bg-light">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-12 text-center">Why Play on Zuoyouxiantan.xyz?</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Feature 1 -->
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <div class="bg-primary bg-opacity-10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Free to Play</h3>
-                    <p class="text-dark-lighter">All games are completely free to play directly in your browser. No downloads or installations required.</p>
-                </div>
-                
-                <!-- Feature 2 -->
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <div class="bg-primary bg-opacity-10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01
+                            <a href="#" class="bg-secondary hover:bg-secondary-dark text-white text-xs font-bold py-1 px-
