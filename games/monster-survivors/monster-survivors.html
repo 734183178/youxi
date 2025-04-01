@@ -1,392 +1,142 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monster Survivors - Action Roguelike Game | Zuoyouxiantan</title>
-    <meta name="description" content="Play Monster Survivors online for free - an intense roguelike action game where you battle endless waves of monsters with unique characters and powerful abilities.">
-    <link rel="canonical" href="https://zuoyouxiantan.xyz/games/monster-survivors/">
-    <meta property="og:title" content="Monster Survivors - Action Roguelike Game">
-    <meta property="og:description" content="Battle endless waves of monsters in this action-packed roguelike adventure. Choose unique characters, unlock powerful abilities, and survive as long as possible.">
-    <meta property="og:url" content="https://zuoyouxiantan.xyz/games/monster-survivors/">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://zuoyouxiantan.xyz/images/monster-survivors-og.jpg">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            DEFAULT: '#FF3B30',
-                            dark: '#D81E15',
-                            light: '#FF6B64'
-                        },
-                        secondary: {
-                            DEFAULT: '#007AFF',
-                            dark: '#0062CC',
-                            light: '#5AC8FA'
-                        },
-                        dark: {
-                            DEFAULT: '#1C1C1E',
-                            lighter: '#2C2C2E',
-                            lightest: '#3A3A3C'
-                        },
-                        light: {
-                            DEFAULT: '#F5F5F7',
-                            darker: '#E5E5EA',
-                            darkest: '#D1D1D6'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F5F5F7;
-        }
-        
-        .game-container {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        
-        .game-frame {
-            width: 100%;
-            height: 600px;
-            border: none;
-        }
-        
-        @media (max-width: 768px) {
-            .game-frame {
-                height: 400px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .game-frame {
-                height: 300px;
-            }
-        }
-        
-        .feature-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        
-        .nav-link {
-            position: relative;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -4px;
-            left: 0;
-            background-color: #FF3B30;
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::after {
-            width: 100%;
-        }
-    </style>
-    <!-- Structured Data for SEO -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "VideoGame",
-        "name": "Monster Survivors",
-        "description": "An action-packed roguelike survival game where you battle endless waves of monsters with unique characters and abilities.",
-        "genre": ["Action", "Roguelike", "Survival"],
-        "gamePlatform": "Web Browser",
-        "url": "https://zuoyouxiantan.xyz/games/monster-survivors/",
-        "inLanguage": "en",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock"
-        }
-    }
-    </script>
-</head>
-<body class="text-dark">
-    <!-- Header -->
-    <header class="bg-white shadow-md fixed w-full top-0 z-50">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <!-- Logo -->
-                <a href="/" class="flex items-center gap-2" aria-label="Zuoyouxiantan Homepage">
-                    <div class="bg-primary rounded-lg w-10 h-10 flex items-center justify-center">
-                        <span class="text-white font-bold text-xl">ZY</span>
+<!-- Header with updated navigation -->
+<header class="bg-white shadow-md fixed w-full top-0 z-50">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <!-- Logo -->
+            <a href="/" class="flex items-center gap-2" aria-label="Zuoyouxiantan Homepage">
+                <div class="bg-primary rounded-lg w-10 h-10 flex items-center justify-center">
+                    <span class="text-white font-bold text-xl">ZY</span>
+                </div>
+                <span class="text-xl font-bold">Zuoyou<span class="text-primary">Xiantan</span></span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex gap-8" aria-label="Main Navigation">
+                <a href="/" class="nav-link font-medium">Home</a>
+                <a href="/all-games" class="nav-link font-medium">All Games</a>
+                <div class="share-dropdown">
+                    <a href="#" class="nav-link font-medium flex items-center gap-1">
+                        Share
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </a>
+                    <div class="share-dropdown-content">
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://zuoyouxiantan.xyz/games/monster-survivors/" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
+                            </svg>
+                            LinkedIn
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=https://zuoyouxiantan.xyz/games/monster-survivors/" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                            </svg>
+                            Facebook
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text=Check out Monster Survivors - an awesome action roguelike game!&url=https://zuoyouxiantan.xyz/games/monster-survivors/" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                            </svg>
+                            Twitter
+                        </a>
+                        <a href="https://www.instagram.com/" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                            Instagram
+                        </a>
                     </div>
-                    <span class="text-xl font-bold">Zuoyou<span class="text-primary">Xiantan</span></span>
-                </a>
-                
-                <!-- Desktop Navigation -->
-                <nav class="hidden md:flex gap-8" aria-label="Main Navigation">
-                    <a href="/" class="nav-link font-medium">Home</a>
-                    <a href="/#featured" class="nav-link font-medium">Featured Games</a>
-                    <a href="/#categories" class="nav-link font-medium">Categories</a>
-                    <a href="/#new" class="nav-link font-medium">New Games</a>
-                </nav>
-                
-                <!-- Mobile Menu Button -->
-                <button class="md:hidden focus:outline-none" id="menuButton" aria-label="Open menu">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-            </div>
+                </div>
+            </nav>
+            
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden focus:outline-none" id="menuButton" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
         </div>
-    </header>
-    
-    <!-- Mobile Menu (Hidden by Default) -->
-    <div class="fixed inset-0 bg-dark bg-opacity-95 z-50 flex flex-col items-center justify-center transform translate-x-full transition-transform duration-300" id="mobileMenu">
-        <button class="absolute top-5 right-5 text-white focus:outline-none" id="closeMenuButton" aria-label="Close menu">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </button>
-        <nav class="flex flex-col gap-6 text-white text-xl text-center">
-            <a href="/" class="hover:text-primary transition-colors duration-300">Home</a>
-            <a href="/#featured" class="hover:text-primary transition-colors duration-300">Featured Games</a>
-            <a href="/#categories" class="hover:text-primary transition-colors duration-300">Categories</a>
-            <a href="/#new" class="hover:text-primary transition-colors duration-300">New Games</a>
-        </nav>
     </div>
+</header>
+
+<!-- Mobile Menu (Updated) -->
+<div class="fixed inset-0 bg-dark bg-opacity-95 z-50 flex flex-col items-center justify-center transform translate-x-full transition-transform duration-300" id="mobileMenu" aria-hidden="true">
+    <button class="absolute top-5 right-5 text-white focus:outline-none" id="closeMenuButton" aria-label="Close menu">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+    <nav class="flex flex-col gap-6 text-white text-xl text-center" aria-label="Mobile Navigation">
+        <a href="/" class="hover:text-primary transition-colors duration-300">Home</a>
+        <a href="/all-games" class="hover:text-primary transition-colors duration-300">All Games</a>
+        <div class="relative">
+            <a href="#" class="hover:text-primary transition-colors duration-300 mb-2 inline-block">Share</a>
+            <div class="flex justify-center gap-4 mt-2">
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://zuoyouxiantan.xyz/games/monster-survivors/" target="_blank" class="text-white hover:text-primary" aria-label="Share on LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
+                    </svg>
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=https://zuoyouxiantan.xyz/games/monster-survivors/" target="_blank" class="text-white hover:text-primary" aria-label="Share on Facebook">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                    </svg>
+                </a>
+                <a href="https://twitter.com/intent/tweet?text=Check out Monster Survivors - an awesome action roguelike game!&url=https://zuoyouxiantan.xyz/games/monster-survivors/" target="_blank" class="text-white hover:text-primary" aria-label="Share on Twitter">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                    </svg>
+                </a>
+                <a href="https://www.instagram.com/" target="_blank" class="text-white hover:text-primary" aria-label="Share on Instagram">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<!-- Add this style for the share dropdown to the head section -->
+<style>
+    /* Share dropdown styles */
+    .share-dropdown {
+        position: relative;
+        display: inline-block;
+    }
     
-    <!-- Game Title Section with H1 -->
-    <section class="pt-24 pb-12 bg-gradient-to-br from-dark to-dark-lightest text-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Monster Survivors</h1>
-                <p class="text-xl md:text-2xl mb-6 text-light-darker max-w-3xl mx-auto">Battle endless waves of monsters in this intense roguelike survival game</p>
-                <div class="flex flex-wrap gap-3 justify-center mb-6">
-                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Action</span>
-                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Roguelike</span>
-                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Survival</span>
-                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Free to Play</span>
-                </div>
-                <div class="flex flex-wrap gap-4 justify-center">
-                    <a href="#play-now" class="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Play Now</a>
-                    <button class="bg-transparent border-2 border-white hover:border-primary hover:text-primary text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Add to Favorites</button>
-                </div>
-            </div>
-        </div>
-    </section>
+    .share-dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: white;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        border-radius: 8px;
+        padding: 8px 0;
+        right: 0;
+    }
     
-    <!-- Game Section with H2 -->
-    <section id="play-now" class="py-12 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">Play Monster Survivors Online</h2>
-            <div class="max-w-5xl mx-auto game-container bg-dark-lighter">
-                <iframe src="https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html" 
-                        class="game-frame" 
-                        title="Play Monster Survivors online" 
-                        allowfullscreen></iframe>
-            </div>
-            <div class="text-center mt-6">
-                <p class="text-dark-lighter">Having trouble? <a href="https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html" target="_blank" class="text-secondary hover:underline">Open game in a new tab</a></p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Game Features Section with H2 -->
-    <section class="py-12 bg-light">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12">Game Features</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
-                <div class="feature-card bg-white rounded-xl p-6 shadow-md">
-                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Roguelike Progression</h3>
-                    <p class="text-dark-lighter">Unlock powerful abilities and upgrades as you progress through waves of increasingly difficult monsters.</p>
-                </div>
-                
-                <!-- Feature 2 -->
-                <div class="feature-card bg-white rounded-xl p-6 shadow-md">
-                    <div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Multiple Characters</h3>
-                    <p class="text-dark-lighter">Choose from diverse characters, each with unique abilities and playstyles to master.</p>
-                </div>
-                
-                <!-- Feature 3 -->
-                <div class="feature-card bg-white rounded-xl p-6 shadow-md">
-                    <div class="w-12 h-12 bg-primary-light rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Endless Gameplay</h3>
-                    <p class="text-dark-lighter">No two games are the same with procedurally generated enemy waves and power-ups.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- How to Play Section with H2 -->
-    <section class="py-12 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">How to Play</h2>
-            <div class="max-w-3xl mx-auto bg-light rounded-xl p-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <h3 class="text-xl font-semibold mb-3">Controls</h3>
-                        <ul class="space-y-2 text-dark-lighter">
-                            <li class="flex items-start">
-                                <span class="bg-secondary text-white rounded px-2 py-1 text-sm mr-3">WASD</span>
-                                <span>Move your character</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="bg-secondary text-white rounded px-2 py-1 text-sm mr-3">Mouse</span>
-                                <span>Aim your attacks</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="bg-secondary text-white rounded px-2 py-1 text-sm mr-3">Space</span>
-                                <span>Special ability</span>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <div>
-                        <h3 class="text-xl font-semibold mb-3">Gameplay Tips</h3>
-                        <ul class="list-disc pl-5 space-y-2 text-dark-lighter">
-                            <li>Stay on the move constantly</li>
-                            <li>Prioritize picking up XP gems</li>
-                            <li>Look for health pickups</li>
-                            <li>Use area-of-effect weapons for crowds</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Game Description Section with H2 -->
-    <section class="py-12 bg-light">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">About Monster Survivors</h2>
-            <div class="max-w-4xl mx-auto bg-white rounded-xl p-8 shadow-md">
-                <p class="mb-4 text-dark-lighter">Monster Survivors is an intense roguelike survival game inspired by classic arcade action and modern roguelite mechanics. Your objective is simple: survive as long as possible against endless waves of monsters.</p>
-                
-                <p class="mb-4 text-dark-lighter">As you play, you'll face waves of increasingly difficult monsters while collecting experience points to level up and choose new weapons and abilities. Each run is unique, with procedurally generated enemy waves and randomized power-ups making every playthrough a fresh challenge.</p>
-                
-                <p class="text-dark-lighter">Whether you have just a few minutes to spare or want to dive into an extended gaming session, Monster Survivors offers accessible yet deep gameplay that will keep you coming back for "just one more run."</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Similar Games Section with H2 -->
-    <section class="py-12 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">More Games You Might Enjoy</h2>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <!-- Game 1 -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-1">Zombie Defense</h3>
-                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Build towers and defend against zombie hordes.</p>
-                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
-                    </div>
-                </div>
-                
-                <!-- Game 2 -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-1">Space Commander</h3>
-                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Command your fleet in epic space battles.</p>
-                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
-                    </div>
-                </div>
-                
-                <!-- Game 3 -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-1">Dragon Quest</h3>
-                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Embark on an epic journey to save the kingdom.</p>
-                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
-                    </div>
-                </div>
-                
-                <!-- Game 4 -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-1">Pixel Racer</h3>
-                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Race through colorful retro-style tracks.</p>
-                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="py-8 bg-dark text-white">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="flex items-center gap-2 mb-4 md:mb-0">
-                    <div class="bg-primary rounded-lg w-8 h-8 flex items-center justify-center">
-                        <span class="text-white font-bold text-sm">ZY</span>
-                    </div>
-                    <span class="text-lg font-bold">Zuoyou<span class="text-primary">Xiantan</span></span>
-                </div>
-                <div class="flex gap-6">
-                    <a href="/" class="hover:text-primary transition-colors">Home</a>
-                    <a href="/#categories" class="hover:text-primary transition-colors">Games</a>
-                    <a href="#" class="hover:text-primary transition-colors">Privacy</a>
-                    <a href="#" class="hover:text-primary transition-colors">Contact</a>
-                </div>
-            </div>
-            <div class="mt-6 text-center text-light-darker text-sm">
-                <p>&copy; 2025 Zuoyouxiantan.xyz. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Mobile Menu Toggle
-        const menuButton = document.getElementById('menuButton');
-        const closeMenuButton = document.getElementById('closeMenuButton');
-        const mobileMenu = document.getElementById('mobileMenu');
-        
-        if (menuButton && closeMenuButton && mobileMenu) {
-            menuButton.addEventListener('click', () => {
-                mobileMenu.classList.remove('translate-x-full');
-            });
-            
-            closeMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.add('translate-x-full');
-            });
-        }
-    </script>
-</body>
-</html>
+    .share-dropdown-content a {
+        color: #1C1C1E;
+        padding: 8px 16px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .share-dropdown-content a:hover {
+        background-color: #F5F5F7;
+    }
+    
+    .share-dropdown:hover .share-dropdown-content {
+        display: block;
+    }
+    
+    /* Additional style to make sure the dropdown doesn't disappear too quickly */
+    .share-dropdown-content:hover {
+        display: block;
+    }
+</style>
