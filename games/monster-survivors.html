@@ -3,199 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monster Survivors - Action-Packed Survival Game</title>
-    <link rel="canonical" href="https://yourdomain.com/games/monster-survivors.html" />
+    <title>Monster Survivors - Action Roguelike Game | Zuoyouxiantan</title>
+    <meta name="description" content="Play Monster Survivors online for free - an intense roguelike action game where you battle endless waves of monsters with unique characters and powerful abilities.">
+    <link rel="canonical" href="https://zuoyouxiantan.xyz/games/monster-survivors/">
+    <meta property="og:title" content="Monster Survivors - Action Roguelike Game">
+    <meta property="og:description" content="Battle endless waves of monsters in this action-packed roguelike adventure. Choose unique characters, unlock powerful abilities, and survive as long as possible.">
+    <meta property="og:url" content="https://zuoyouxiantan.xyz/games/monster-survivors/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://zuoyouxiantan.xyz/images/monster-survivors-og.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#FF3B30',
+                            dark: '#D81E15',
+                            light: '#FF6B64'
+                        },
+                        secondary: {
+                            DEFAULT: '#007AFF',
+                            dark: '#0062CC',
+                            light: '#5AC8FA'
+                        },
+                        dark: {
+                            DEFAULT: '#1C1C1E',
+                            lighter: '#2C2C2E',
+                            lightest: '#3A3A3C'
+                        },
+                        light: {
+                            DEFAULT: '#F5F5F7',
+                            darker: '#E5E5EA',
+                            darkest: '#D1D1D6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* Apple-inspired color palette */
-        :root {
-            --primary-light: #f5f5f7;
-            --primary-dark: #1d1d1f;
-            --accent-blue: #0071e3;
-            --accent-gray: #86868b;
-            --success-green: #28cd41;
-            --warning-orange: #ff9f0a;
-            --danger-red: #ff3b30;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        html {
+            scroll-behavior: smooth;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
+        
         body {
-            background-color: var(--primary-light);
-            color: var(--primary-dark);
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F7;
         }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--primary-dark);
-        }
-
-        .tagline {
-            font-size: 1.2rem;
-            color: var(--accent-gray);
-            margin-bottom: 30px;
-        }
-
+        
         .game-container {
-            background-color: white;
-            border-radius: 18px;
-            overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        .game-iframe-container {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            height: 0;
+            border-radius: 16px;
             overflow: hidden;
         }
-
-        .game-iframe-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+        
+        .game-frame {
             width: 100%;
-            height: 100%;
+            height: 600px;
             border: none;
         }
-
-        .game-info {
-            padding: 30px;
-        }
-
-        h2 {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: var(--primary-dark);
-        }
-
-        .game-description p {
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .game-controls {
-            background-color: #f2f2f7;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .game-features ul {
-            list-style-position: inside;
-            margin-left: 20px;
-        }
-
-        .game-features li {
-            margin-bottom: 10px;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background-color: var(--accent-blue);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: background-color 0.3s;
-        }
-
-        .cta-button:hover {
-            background-color: #0058b9;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--accent-gray);
-            font-size: 0.9rem;
-        }
-
-        /* Responsive styles */
+        
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
+            .game-frame {
+                height: 400px;
             }
-            
-            .tagline {
-                font-size: 1rem;
+        }
+        
+        @media (max-width: 480px) {
+            .game-frame {
+                height: 300px;
             }
-            
-            h2 {
-                font-size: 1.5rem;
-            }
-            
-            .game-info {
-                padding: 20px;
-            }
+        }
+        
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #FF3B30;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
         }
     </style>
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Monster Survivors",
+        "description": "An action-packed roguelike survival game where you battle endless waves of monsters with unique characters and abilities.",
+        "genre": ["Action", "Roguelike", "Survival"],
+        "gamePlatform": "Web Browser",
+        "url": "https://zuoyouxiantan.xyz/games/monster-survivors/",
+        "inLanguage": "en",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        }
+    }
+    </script>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Monster Survivors</h1>
-            <p class="tagline">Battle endless waves of monsters in this thrilling survival action game!</p>
-        </header>
-
-        <div class="game-container">
-            <div class="game-iframe-container">
-                <iframe src="https://coud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html" allowfullscreen></iframe>
-            </div>
-            
-            <div class="game-info">
-                <div class="game-description">
-                    <h2>Game Overview</h2>
-                    <p>Monster Survivors is an action-packed survival game where you must battle against endless hordes of monsters. Use your skills, collect power-ups, and survive as long as possible in this challenging adventure.</p>
-                    
-                    <p>Fight your way through increasingly difficult waves of enemies, upgrade your character's abilities, and discover new strategies to overcome seemingly impossible odds.</p>
-                </div>
-
-                <div class="game-controls">
-                    <h2>How to Play</h2>
-                    <p>Use WASD keys or arrow keys to move your character. Attacks are automatic, just position yourself strategically to defeat enemies. Collect experience orbs to level up and choose new abilities.</p>
-                </div>
-
-                <div class="game-features">
-                    <h2>Game Features</h2>
-                    <ul>
-                        <li>Procedurally generated levels ensure a unique experience every time</li>
-                        <li>Dozens of different enemy types with unique attack patterns</li>
-                        <li>Unlock and upgrade powerful abilities to strengthen your character</li>
-                        <li>Beautiful pixel art visuals with fluid animations</li>
-                        <li>Challenging gameplay that requires strategy and quick reflexes</li>
-                    </ul>
-                </div>
-
-                <a href="#" class="cta-button">More Games Like This</a>
+<body class="text-dark">
+    <!-- Header -->
+    <header class="bg-white shadow-md fixed w-full top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-2" aria-label="Zuoyouxiantan Homepage">
+                    <div class="bg-primary rounded-lg w-10 h-10 flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">ZY</span>
+                    </div>
+                    <span class="text-xl font-bold">Zuoyou<span class="text-primary">Xiantan</span></span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex gap-8" aria-label="Main Navigation">
+                    <a href="/" class="nav-link font-medium">Home</a>
+                    <a href="/#featured" class="nav-link font-medium">Featured Games</a>
+                    <a href="/#categories" class="nav-link font-medium">Categories</a>
+                    <a href="/#new" class="nav-link font-medium">New Games</a>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden focus:outline-none" id="menuButton" aria-label="Open menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
         </div>
+    </header>
+    
+    <!-- Mobile Menu (Hidden by Default) -->
+    <div class="fixed inset-0 bg-dark bg-opacity-95 z-50 flex flex-col items-center justify-center transform translate-x-full transition-transform duration-300" id="mobileMenu">
+        <button class="absolute top-5 right-5 text-white focus:outline-none" id="closeMenuButton" aria-label="Close menu">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <nav class="flex flex-col gap-6 text-white text-xl text-center">
+            <a href="/" class="hover:text-primary transition-colors duration-300">Home</a>
+            <a href="/#featured" class="hover:text-primary transition-colors duration-300">Featured Games</a>
+            <a href="/#categories" class="hover:text-primary transition-colors duration-300">Categories</a>
+            <a href="/#new" class="hover:text-primary transition-colors duration-300">New Games</a>
+        </nav>
     </div>
+    
+    <!-- Game Title Section with H1 -->
+    <section class="pt-24 pb-12 bg-gradient-to-br from-dark to-dark-lightest text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Monster Survivors</h1>
+                <p class="text-xl md:text-2xl mb-6 text-light-darker max-w-3xl mx-auto">Battle endless waves of monsters in this intense roguelike survival game</p>
+                <div class="flex flex-wrap gap-3 justify-center mb-6">
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Action</span>
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Roguelike</span>
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Survival</span>
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Free to Play</span>
+                </div>
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <a href="#play-now" class="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Play Now</a>
+                    <button class="bg-transparent border-2 border-white hover:border-primary hover:text-primary text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Add to Favorites</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Game Section with H2 -->
+    <section id="play-now" class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Play Monster Survivors Online</h2>
+            <div class="max-w-5xl mx-auto game-container bg-dark-lighter">
+                <iframe src="https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html" 
+                        class="game-frame" 
+                        title="Play Monster Survivors online" 
+                        allowfullscreen></iframe>
+            </div>
+            <div class="text-center mt-6">
+                <p class="text-dark-lighter">Having trouble? <a href="https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html" target="_blank" class="text-secondary hover:underline">Open game in a new tab</a></p>
+            </div>
+        </div>
+    </section>
 
-    <footer>
-        <p>&copy; 2025 Your Gaming Website. All rights reserved.</p>
+    <!-- Game Features Section with H2 -->
+    <section class="py-12 bg-light">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Game Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card bg-white rounded-xl p-6 shadow-md">
+                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Roguelike Progression</h3>
+                    <p class="text-dark-lighter">Unlock powerful abilities and upgrades as you progress through waves of increasingly difficult monsters.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card bg-white rounded-xl p-6 shadow-md">
+                    <div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Multiple Characters</h3>
+                    <p class="text-dark-lighter">Choose from diverse characters, each with unique abilities and playstyles to master.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card bg-white rounded-xl p-6 shadow-md">
+                    <div class="w-12 h-12 bg-primary-light rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Endless Gameplay</h3>
+                    <p class="text-dark-lighter">No two games are the same with procedurally generated enemy waves and power-ups.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Play Section with H2 -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">How to Play</h2>
+            <div class="max-w-3xl mx-auto bg-light rounded-xl p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3">Controls</h3>
+                        <ul class="space-y-2 text-dark-lighter">
+                            <li class="flex items-start">
+                                <span class="bg-secondary text-white rounded px-2 py-1 text-sm mr-3">WASD</span>
+                                <span>Move your character</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-secondary text-white rounded px-2 py-1 text-sm mr-3">Mouse</span>
+                                <span>Aim your attacks</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-secondary text-white rounded px-2 py-1 text-sm mr-3">Space</span>
+                                <span>Special ability</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3">Gameplay Tips</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-dark-lighter">
+                            <li>Stay on the move constantly</li>
+                            <li>Prioritize picking up XP gems</li>
+                            <li>Look for health pickups</li>
+                            <li>Use area-of-effect weapons for crowds</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Description Section with H2 -->
+    <section class="py-12 bg-light">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">About Monster Survivors</h2>
+            <div class="max-w-4xl mx-auto bg-white rounded-xl p-8 shadow-md">
+                <p class="mb-4 text-dark-lighter">Monster Survivors is an intense roguelike survival game inspired by classic arcade action and modern roguelite mechanics. Your objective is simple: survive as long as possible against endless waves of monsters.</p>
+                
+                <p class="mb-4 text-dark-lighter">As you play, you'll face waves of increasingly difficult monsters while collecting experience points to level up and choose new weapons and abilities. Each run is unique, with procedurally generated enemy waves and randomized power-ups making every playthrough a fresh challenge.</p>
+                
+                <p class="text-dark-lighter">Whether you have just a few minutes to spare or want to dive into an extended gaming session, Monster Survivors offers accessible yet deep gameplay that will keep you coming back for "just one more run."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Similar Games Section with H2 -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">More Games You Might Enjoy</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Game 1 -->
+                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Zombie Defense</h3>
+                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Build towers and defend against zombie hordes.</p>
+                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
+                    </div>
+                </div>
+                
+                <!-- Game 2 -->
+                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Space Commander</h3>
+                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Command your fleet in epic space battles.</p>
+                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
+                    </div>
+                </div>
+                
+                <!-- Game 3 -->
+                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Dragon Quest</h3>
+                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Embark on an epic journey to save the kingdom.</p>
+                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
+                    </div>
+                </div>
+                
+                <!-- Game 4 -->
+                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Pixel Racer</h3>
+                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Race through colorful retro-style tracks.</p>
+                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-dark text-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center gap-2 mb-4 md:mb-0">
+                    <div class="bg-primary rounded-lg w-8 h-8 flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">ZY</span>
+                    </div>
+                    <span class="text-lg font-bold">Zuoyou<span class="text-primary">Xiantan</span></span>
+                </div>
+                <div class="flex gap-6">
+                    <a href="/" class="hover:text-primary transition-colors">Home</a>
+                    <a href="/#categories" class="hover:text-primary transition-colors">Games</a>
+                    <a href="#" class="hover:text-primary transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-primary transition-colors">Contact</a>
+                </div>
+            </div>
+            <div class="mt-6 text-center text-light-darker text-sm">
+                <p>&copy; 2025 Zuoyouxiantan.xyz. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuButton = document.getElementById('menuButton');
+        const closeMenuButton = document.getElementById('closeMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (menuButton && closeMenuButton && mobileMenu) {
+            menuButton.addEventListener('click', () => {
+                mobileMenu.classList.remove('translate-x-full');
+            });
+            
+            closeMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+            });
+        }
+    </script>
 </body>
 </html>
