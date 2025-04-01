@@ -645,6 +645,29 @@
                 // For demo purposes, we're just showing the UI state change
             });
         });
+        // 社交分享功能
+function shareToLinkedIn() {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(document.title);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+}
+
+function shareToFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+}
+
+function shareToTwitter() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`Check out this awesome game site: ${document.title}`);
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+}
+
+function shareToInstagram() {
+    // Instagram doesn't support direct sharing via URL like other platforms
+    // Usually redirects to Instagram app or website
+    alert('To share on Instagram, please screenshot the page and share it through the Instagram app.');
+}
     </script>
 </body>
 </html>
