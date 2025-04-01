@@ -1,0 +1,69 @@
+{
+  "GAME_TITLE": "Monster Survivors",
+  "GAME_SLUG": "monster-survivors",
+  "GAME_TYPE": "Action Roguelike Game",
+  "GAME_META_DESCRIPTION": "Play Monster Survivors online for free - an intense roguelike action game where you battle endless waves of monsters with unique characters and powerful abilities.",
+  "GAME_OG_DESCRIPTION": "Battle endless waves of monsters in this action-packed roguelike adventure. Choose unique characters, unlock powerful abilities, and survive as long as possible.",
+  "GAME_SHORT_DESCRIPTION": "Battle endless waves of monsters in this intense roguelike survival game",
+  "GAME_IFRAME_URL": "https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html",
+  "GAME_TAGS": [
+    {"name": "Action"},
+    {"name": "Roguelike"},
+    {"name": "Survival"},
+    {"name": "Free to Play"}
+  ],
+  "GAME_FEATURES": [
+    {
+      "icon": "bolt",
+      "color": "primary",
+      "title": "Roguelike Progression",
+      "description": "Unlock powerful abilities and upgrades as you progress through waves of increasingly difficult monsters."
+    },
+    {
+      "icon": "users",
+      "color": "secondary",
+      "title": "Multiple Characters",
+      "description": "Choose from diverse characters, each with unique abilities and playstyles to master."
+    },
+    {
+      "icon": "clock",
+      "color": "primary-light",
+      "title": "Endless Gameplay",
+      "description": "No two games are the same with procedurally generated enemy waves and power-ups."
+    }
+  ],
+  "GAME_CONTROLS": [
+    {"key": "WASD", "action": "Move your character"},
+    {"key": "Mouse", "action": "Aim your attacks"},
+    {"key": "Space", "action": "Special ability"}
+  ],
+  "GAME_TIPS": [
+    "Stay on the move constantly",
+    "Prioritize picking up XP gems",
+    "Look for health pickups",
+    "Use area-of-effect weapons for crowds"
+  ],
+  "GAME_DESCRIPTION": "<p class=\"mb-4 text-dark-lighter\">Monster Survivors is an intense roguelike survival game inspired by classic arcade action and modern roguelite mechanics. Your objective is simple: survive as long as possible against endless waves of monsters.</p><p class=\"mb-4 text-dark-lighter\">As you play, you'll face waves of increasingly difficult monsters while collecting experience points to level up and choose new weapons and abilities. Each run is unique, with procedurally generated enemy waves and randomized power-ups making every playthrough a fresh challenge.</p><p class=\"text-dark-lighter\">Whether you have just a few minutes to spare or want to dive into an extended gaming session, Monster Survivors offers accessible yet deep gameplay that will keep you coming back for \"just one more run.\"</p>",
+  "SIMILAR_GAMES": [
+    {
+      "title": "Zombie Defense",
+      "description": "Build towers and defend against zombie hordes.",
+      "url": "#"
+    },
+    {
+      "title": "Space Commander",
+      "description": "Command your fleet in epic space battles.",
+      "url": "#"
+    },
+    {
+      "title": "Dragon Quest",
+      "description": "Embark on an epic journey to save the kingdom.",
+      "url": "#"
+    },
+    {
+      "title": "Pixel Racer",
+      "description": "Race through colorful retro-style tracks.",
+      "url": "#"
+    }
+  ]
+}
