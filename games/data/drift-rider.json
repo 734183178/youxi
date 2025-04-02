@@ -1,0 +1,69 @@
+{
+  "GAME_TITLE": "Space Shooter",
+  "GAME_SLUG": "space-shooter",
+  "GAME_TYPE": "Arcade Shooting Game",
+  "GAME_META_DESCRIPTION": "Play Space Shooter online for free - a fast-paced arcade shooting game where you battle waves of alien invaders.",
+  "GAME_OG_DESCRIPTION": "Defend Earth from invading alien forces in this action-packed space adventure.",
+  "GAME_SHORT_DESCRIPTION": "Blast alien ships in this exciting arcade space shooter",
+  "GAME_IFRAME_URL": "https://cloud.onlinegames.io/games/2025/unity/space-shooter/index.html",
+  "GAME_TAGS": [
+    {"name": "Arcade"},
+    {"name": "Shooter"},
+    {"name": "Space"},
+    {"name": "Free to Play"}
+  ],
+  "GAME_FEATURES": [
+    {
+      "icon": "bolt",
+      "color": "primary",
+      "title": "Fast-Paced Action",
+      "description": "Experience intense arcade shooting with rapid-fire weapons and explosive effects."
+    },
+    {
+      "icon": "users",
+      "color": "secondary",
+      "title": "Multiple Spaceships",
+      "description": "Choose from various spacecraft, each with different weapons and capabilities."
+    },
+    {
+      "icon": "clock",
+      "color": "primary-light",
+      "title": "Power-Up System",
+      "description": "Collect power-ups to enhance your weapons and defenses during gameplay."
+    }
+  ],
+  "GAME_CONTROLS": [
+    {"key": "Arrow Keys", "action": "Move your spaceship"},
+    {"key": "Space", "action": "Fire weapons"},
+    {"key": "Z", "action": "Special weapon"}
+  ],
+  "GAME_TIPS": [
+    "Focus on destroying enemies with power-ups first",
+    "Save your special weapon for boss encounters",
+    "Don't stay in one place too long",
+    "Watch for patterns in enemy movements"
+  ],
+  "GAME_DESCRIPTION": "<p class=\"mb-4 text-dark-lighter\">Space Shooter is a classic arcade-style game where you control a powerful spaceship defending Earth from alien invaders. Your mission is to defeat waves of enemy ships while avoiding their attacks.</p><p class=\"mb-4 text-dark-lighter\">As you progress through the game, you'll encounter increasingly difficult enemies and powerful boss ships. Collect power-ups to upgrade your weapons and increase your chances of survival.</p><p class=\"text-dark-lighter\">With simple controls and addictive gameplay, Space Shooter offers the perfect balance of challenge and fun for both casual and hardcore gamers.</p>",
+  "SIMILAR_GAMES": [
+    {
+      "title": "Monster Survivors",
+      "description": "Battle endless waves of monsters in this roguelike game.",
+      "url": "/games/monster-survivors/"
+    },
+    {
+      "title": "Galaxy Defender",
+      "description": "Protect your galaxy from alien invasion.",
+      "url": "#"
+    },
+    {
+      "title": "Star Fighter",
+      "description": "Engage in epic space dogfights.",
+      "url": "#"
+    },
+    {
+      "title": "Asteroid Blaster",
+      "description": "Destroy asteroids and collect resources.",
+      "url": "#"
+    }
+  ]
+}
