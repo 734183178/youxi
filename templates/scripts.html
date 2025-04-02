@@ -1,0 +1,49 @@
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#FF3B30',
+                            dark: '#D81E15',
+                            light: '#FF6B64'
+                        },
+                        secondary: {
+                            DEFAULT: '#007AFF',
+                            dark: '#0062CC',
+                            light: '#5AC8FA'
+                        },
+                        dark: {
+                            DEFAULT: '#1C1C1E',
+                            lighter: '#2C2C2E',
+                            lightest: '#3A3A3C'
+                        },
+                        light: {
+                            DEFAULT: '#F5F5F7',
+                            darker: '#E5E5EA',
+                            darkest: '#D1D1D6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<script>
+        // Mobile Menu Toggle
+        const menuButton = document.getElementById('menuButton');
+        const closeMenuButton = document.getElementById('closeMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (menuButton && closeMenuButton && mobileMenu) {
+            menuButton.addEventListener('click', () => {
+                mobileMenu.classList.remove('translate-x-full');
+            });
+            
+            closeMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+            });
+        }
+    </script>
