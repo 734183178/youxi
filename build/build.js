@@ -5,8 +5,88 @@ const path = require('path');
 const templatePath = path.join(__dirname, 'templates', 'game-template.html');
 const template = fs.readFileSync(templatePath, 'utf8');
 
+// 读取页头和页尾模板
+const headerPath = path.join(__dirname, 'templates', 'header.html');
+const footerPath = path.join(__dirname, 'templates', 'footer.html');
+
+// 检查页头和页尾文件是否存在，不存在则从 monster-survivors.html 中提取
+if (!fs.existsSync(headerPath) || !fs.existsSync(footerPath)) {
+  const monsterSurvivorsPath = path.join(__dirname, 'games', 'monster-survivors', 'monster-survivors.html');
+  if (fs.existsSync(monsterSurvivorsPath)) {
+    const monsterSurvivorsContent = fs.readFileSync(monsterSurvivorsPath, 'utf8');
+    
+    // 提取页头部分（从 <!-- Header --> 到 <!-- Mobile Menu (Hidden by Default) -->）
+    const headerMatch = monsterSurvivorsContent.match(/<!-- Header -->([\s\S]*?)<!-- Mobile Menu \(Hidden by Default\)/);
+    if (headerMatch && headerMatch[1]) {
+      const headerContent = '<!-- Header -->' + headerMatch[1] + '<!-- Mobile Menu (Hidden by Default) -->';
+      
+      // 保存页头模板
+      fs.mkdirSync(path.dirname(headerPath), { recursive: true });
+      fs.writeFileSync(headerPath, headerContent);
+      console.log(`Created header template: ${headerPath}`);
+    }
+    
+    // 提取页尾部分（从 <!-- Footer --> 到 script 标签前）
+    const footerMatch = monsterSurvivorsContent.match(/<!-- Footer -->([\s\S]*?)<script>/);
+    if (footerMatch && footerMatch[1]) {
+      const footerContent = '<!-- Footer -->' + footerMatch[1];
+      
+      // 保存页尾模板
+      fs.mkdirSync(path.dirname(footerPath), { recursive: true });
+      fs.writeFileSync(footerPath, footerContent);
+      console.log(`Created footer template: ${footerPath}`);
+    }
+    
+    // 提取 Mobile Menu 部分
+    const mobileMenuMatch = monsterSurvivorsContent.match(/<!-- Mobile Menu \(Hidden by Default\) -->([\s\S]*?)<!-- Game Title Section/);
+    if (mobileMenuMatch && mobileMenuMatch[1]) {
+      const mobileMenuContent = '<!-- Mobile Menu (Hidden by Default) -->' + mobileMenuMatch[1];
+      
+      // 保存 Mobile Menu 模板
+      const mobileMenuPath = path.join(__dirname, 'templates', 'mobile-menu.html');
+      fs.writeFileSync(mobileMenuPath, mobileMenuContent);
+      console.log(`Created mobile menu template: ${mobileMenuPath}`);
+    }
+    
+    // 提取 JavaScript 部分
+    const scriptMatch = monsterSurvivorsContent.match(/<script>([\s\S]*?)<\/script>/g);
+    if (scriptMatch && scriptMatch.length > 0) {
+      const scriptContent = scriptMatch.join('\n');
+      
+      // 保存 JavaScript 模板
+      const scriptPath = path.join(__dirname, 'templates', 'scripts.html');
+      fs.writeFileSync(scriptPath, scriptContent);
+      console.log(`Created scripts template: ${scriptPath}`);
+    }
+  }
+}
+
+// 读取页头和页尾内容
+let headerContent = '';
+let footerContent = '';
+let mobileMenuContent = '';
+let scriptsContent = '';
+
+if (fs.existsSync(headerPath)) {
+  headerContent = fs.readFileSync(headerPath, 'utf8');
+}
+
+if (fs.existsSync(footerPath)) {
+  footerContent = fs.readFileSync(footerPath, 'utf8');
+}
+
+const mobileMenuPath = path.join(__dirname, 'templates', 'mobile-menu.html');
+if (fs.existsSync(mobileMenuPath)) {
+  mobileMenuContent = fs.readFileSync(mobileMenuPath, 'utf8');
+}
+
+const scriptsPath = path.join(__dirname, 'templates', 'scripts.html');
+if (fs.existsSync(scriptsPath)) {
+  scriptsContent = fs.readFileSync(scriptsPath, 'utf8');
+}
+
 // 读取游戏数据目录
-const gamesDir = path.join(__dirname, 'games');
+const gamesDir = path.join(__dirname, 'games', 'data');
 const outputDir = path.join(__dirname, 'dist');
 
 // 确保输出目录存在
@@ -30,6 +110,12 @@ fs.readdirSync(gamesDir).forEach(file => {
   
   // 处理HTML模板
   let gameHTML = template;
+  
+  // 替换页头和页尾
+  gameHTML = gameHTML.replace('<!-- 头部导航保持不变 -->\n    <header class="bg-white shadow-md fixed w-full top-0 z-50">\n        <!-- 头部内容不变 -->\n    </header>', headerContent);
+  gameHTML = gameHTML.replace('<!-- Mobile Menu (Hidden by Default) -->', mobileMenuContent);
+  gameHTML = gameHTML.replace('<!-- 页脚保持不变 -->\n    <footer class="py-8 bg-dark text-white">\n        <!-- 页脚内容不变 -->\n    </footer>', footerContent);
+  gameHTML = gameHTML.replace('<!-- JavaScript脚本保持不变 -->\n    <script>\n        // 保持原有脚本\n    </script>', scriptsContent);
   
   // 替换基本变量
   Object.keys(gameData).forEach(key => {
@@ -80,6 +166,16 @@ fs.readdirSync(gamesDir).forEach(file => {
                             <li>${tip}</li>
     `).join('\n');
     gameHTML = gameHTML.replace('{{GAME_TIPS}}', tipsHTML);
+  }
+  
+  // 处理游戏描述
+  if (typeof gameData.GAME_DESCRIPTION === 'string') {
+    gameHTML = gameHTML.replace('{{GAME_DESCRIPTION}}', gameData.GAME_DESCRIPTION);
+  } else if (Array.isArray(gameData.GAME_DESCRIPTION)) {
+    const descriptionHTML = gameData.GAME_DESCRIPTION.map(paragraph => `
+                <p class="mb-4 text-dark-lighter">${paragraph}</p>
+    `).join('\n');
+    gameHTML = gameHTML.replace('{{GAME_DESCRIPTION}}', descriptionHTML);
   }
   
   // 处理相似游戏
