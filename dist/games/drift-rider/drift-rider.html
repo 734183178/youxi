@@ -11,12 +11,128 @@
     <meta property="og:url" content="https://zuoyouxiantan.xyz/games/space-shooter/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://zuoyouxiantan.xyz/images/space-shooter-og.jpg">
-    <!-- CSS 和 Script 引用保持不变 -->
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 其他CSS和配置保持不变 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#FF3B30',
+                            dark: '#D81E15',
+                            light: '#FF6B64'
+                        },
+                        secondary: {
+                            DEFAULT: '#007AFF',
+                            dark: '#0062CC',
+                            light: '#5AC8FA'
+                        },
+                        dark: {
+                            DEFAULT: '#1C1C1E',
+                            lighter: '#2C2C2E',
+                            lightest: '#3A3A3C'
+                        },
+                        light: {
+                            DEFAULT: '#F5F5F7',
+                            darker: '#E5E5EA',
+                            darkest: '#D1D1D6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F7;
+        }
+        
+        .game-container {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .game-frame {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        
+        @media (max-width: 768px) {
+            .game-frame {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-frame {
+                height: 300px;
+            }
+        }
+        
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #FF3B30;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Space Shooter",
+        "description": "Play Space Shooter online for free - a fast-paced arcade shooting game where you battle waves of alien invaders.",
+        "genre": ["Arcade Shooting Game"],
+        "gamePlatform": "Web Browser",
+        "url": "https://zuoyouxiantan.xyz/games/space-shooter/",
+        "inLanguage": "en",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        }
+    }
+    </script>
 </head>
 <body class="text-dark">
-    <!-- 头部导航保持不变 -->
+    <!-- Header -->
     <!-- Header -->
     <header class="bg-white shadow-md fixed w-full top-0 z-50">
         <div class="container mx-auto px-4">
@@ -63,6 +179,19 @@
     </div>
     
     
+    
+    <!-- Game Title Section -->
+    <section class="pt-24 pb-12 bg-gradient-to-br from-dark to-dark-lightest text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Space Shooter</h1>
+                <p class="text-xl md:text-2xl mb-6 text-light-darker max-w-3xl mx-auto">Blast alien ships in this exciting arcade space shooter</p>
+                <div class="flex flex-wrap gap-3 justify-center mb-6">
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Arcade</span>
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Shooter</span>
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Space</span>
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Free to Play</span>
+                </div>
                 <div class="flex flex-wrap gap-4 justify-center">
                     <a href="#play-now" class="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Play Now</a>
                     <button class="bg-transparent border-2 border-white hover:border-primary hover:text-primary text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Add to Favorites</button>
@@ -71,7 +200,7 @@
         </div>
     </section>
     
-    <!-- 游戏部分 -->
+    <!-- Game Section -->
     <section id="play-now" class="py-12 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-8">Play Space Shooter Online</h2>
@@ -87,7 +216,7 @@
         </div>
     </section>
 
-    <!-- 游戏特点部分 -->
+    <!-- Game Features Section -->
     <section class="py-12 bg-light">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-12">Game Features</h2>
@@ -132,7 +261,7 @@
         </div>
     </section>
 
-    <!-- 操作说明部分 -->
+    <!-- How to Play Section -->
     <section class="py-12 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-8">How to Play</h2>
@@ -184,7 +313,7 @@
         </div>
     </section>
 
-    <!-- 游戏介绍部分 -->
+    <!-- Game Description Section -->
     <section class="py-12 bg-light">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-8">About Space Shooter</h2>
@@ -194,7 +323,7 @@
         </div>
     </section>
 
-    <!-- 相似游戏部分 -->
+    <!-- Similar Games Section -->
     <section class="py-12 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-8">More Games You Might Enjoy</h2>
@@ -244,7 +373,7 @@
         </div>
     </section>
 
-    <!-- 页脚保持不变 -->
+    <!-- Footer -->
     <!-- Footer -->
     <footer class="py-8 bg-dark text-white">
         <div class="container mx-auto px-4">
@@ -270,9 +399,21 @@
 
     
 
-    <!-- JavaScript脚本保持不变 -->
     <script>
-        // 保持原有脚本
+        // Mobile Menu Toggle
+        const menuButton = document.getElementById('menuButton');
+        const closeMenuButton = document.getElementById('closeMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (menuButton && closeMenuButton && mobileMenu) {
+            menuButton.addEventListener('click', () => {
+                mobileMenu.classList.remove('translate-x-full');
+            });
+            
+            closeMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+            });
+        }
     </script>
 </body>
 </html>
