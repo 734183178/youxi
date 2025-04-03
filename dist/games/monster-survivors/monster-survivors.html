@@ -11,12 +11,125 @@
     <meta property="og:url" content="https://zuoyouxiantan.xyz/games/monster-survivors/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://zuoyouxiantan.xyz/images/monster-survivors-og.jpg">
-    <!-- CSS 和 Script 引用保持不变 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 其他CSS和配置保持不变 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#FF3B30',
+                            dark: '#D81E15',
+                            light: '#FF6B64'
+                        },
+                        secondary: {
+                            DEFAULT: '#007AFF',
+                            dark: '#0062CC',
+                            light: '#5AC8FA'
+                        },
+                        dark: {
+                            DEFAULT: '#1C1C1E',
+                            lighter: '#2C2C2E',
+                            lightest: '#3A3A3C'
+                        },
+                        light: {
+                            DEFAULT: '#F5F5F7',
+                            darker: '#E5E5EA',
+                            darkest: '#D1D1D6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F7;
+        }
+        
+        .game-container {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .game-frame {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        
+        @media (max-width: 768px) {
+            .game-frame {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-frame {
+                height: 300px;
+            }
+        }
+        
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #FF3B30;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Monster Survivors",
+        "description": "An action-packed roguelike survival game where you battle endless waves of monsters with unique characters and abilities.",
+        "genre": ["Action", "Roguelike", "Survival"],
+        "gamePlatform": "Web Browser",
+        "url": "https://zuoyouxiantan.xyz/games/monster-survivors/",
+        "inLanguage": "en",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        }
+    }
+    </script>
 </head>
 <body class="text-dark">
-    <!-- 头部导航保持不变 -->
     <!-- Header -->
     <header class="bg-white shadow-md fixed w-full top-0 z-50">
         <div class="container mx-auto px-4">
@@ -62,191 +175,199 @@
         </nav>
     </div>
     
-    
-                <div class="flex flex-wrap gap-4 justify-center">
-                    <a href="#play-now" class="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Play Now</a>
-                    <button class="bg-transparent border-2 border-white hover:border-primary hover:text-primary text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Add to Favorites</button>
+    <!-- Game Title Section with H1 -->
+    <section class="pt-24 pb-8 bg-gradient-to-br from-dark to-dark-lightest text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3">Monster Survivors</h1>
+                <p class="text-xl md:text-2xl mb-4 text-light-darker max-w-3xl mx-auto">Battle endless waves of monsters in this intense roguelike survival game</p>
+                <div class="flex flex-wrap gap-2 justify-center mb-4">
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Action</span>
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Roguelike</span>
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Survival</span>
+                    <span class="bg-primary bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">Free to Play</span>
+                </div>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <a href="#play-now" class="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300">Play Now</a>
+                    <button class="bg-transparent border-2 border-white hover:border-primary hover:text-primary text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300">Add to Favorites</button>
                 </div>
             </div>
         </div>
     </section>
     
-    <!-- 游戏部分 -->
-    <section id="play-now" class="py-12 bg-white">
+    <!-- Game Section with H2 -->
+    <section id="play-now" class="py-8 bg-white">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">Play Monster Survivors Online</h2>
+            <h2 class="text-2xl font-bold text-center mb-6">Play Monster Survivors Online</h2>
             <div class="max-w-5xl mx-auto game-container bg-dark-lighter">
                 <iframe src="https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html" 
                         class="game-frame" 
                         title="Play Monster Survivors online" 
                         allowfullscreen></iframe>
             </div>
-            <div class="text-center mt-6">
-                <p class="text-dark-lighter">Having trouble? <a href="https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html" target="_blank" class="text-secondary hover:underline">Open game in a new tab</a></p>
+            <div class="text-center mt-3">
+                <p class="text-dark-lighter text-sm">Having trouble? <a href="https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html" target="_blank" class="text-secondary hover:underline">Open game in a new tab</a></p>
             </div>
         </div>
     </section>
 
-    <!-- 游戏特点部分 -->
-    <section class="py-12 bg-light">
+    <!-- Combined Game Info Section -->
+    <section class="py-6 bg-light">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12">Game Features</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <!-- Nav Tabs -->
+                <div class="flex border-b">
+                    <button id="tab-about" class="tab-btn py-3 px-4 font-medium border-b-2 border-primary text-primary">About</button>
+                    <button id="tab-howto" class="tab-btn py-3 px-4 font-medium border-b-2 border-transparent">How to Play</button>
+                    <button id="tab-features" class="tab-btn py-3 px-4 font-medium border-b-2 border-transparent">Features</button>
+                </div>
                 
-                <!-- Feature -->
-                <div class="feature-card bg-white rounded-xl p-6 shadow-md">
-                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Roguelike Progression</h3>
-                    <p class="text-dark-lighter">Unlock powerful abilities and upgrades as you progress through waves of increasingly difficult monsters.</p>
-                </div>
-      
-
-                <!-- Feature -->
-                <div class="feature-card bg-white rounded-xl p-6 shadow-md">
-                    <div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Multiple Characters</h3>
-                    <p class="text-dark-lighter">Choose from diverse characters, each with unique abilities and playstyles to master.</p>
-                </div>
-      
-
-                <!-- Feature -->
-                <div class="feature-card bg-white rounded-xl p-6 shadow-md">
-                    <div class="w-12 h-12 bg-primary-light rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Endless Gameplay</h3>
-                    <p class="text-dark-lighter">No two games are the same with procedurally generated enemy waves and power-ups.</p>
-                </div>
-      
-            </div>
-        </div>
-    </section>
-
-    <!-- 操作说明部分 -->
-    <section class="py-12 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">How to Play</h2>
-            <div class="max-w-3xl mx-auto bg-light rounded-xl p-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <h3 class="text-xl font-semibold mb-3">Controls</h3>
-                        <ul class="space-y-2 text-dark-lighter">
-                            
-                            <li class="flex items-start">
-                                <span class="bg-secondary text-white rounded px-2 py-1 text-sm mr-3">WASD</span>
-                                <span>Move your character</span>
-                            </li>
-      
-
-                            <li class="flex items-start">
-                                <span class="bg-secondary text-white rounded px-2 py-1 text-sm mr-3">Mouse</span>
-                                <span>Aim your attacks</span>
-                            </li>
-      
-
-                            <li class="flex items-start">
-                                <span class="bg-secondary text-white rounded px-2 py-1 text-sm mr-3">Space</span>
-                                <span>Special ability</span>
-                            </li>
-      
-                        </ul>
+                <!-- Tab Content -->
+                <div class="p-6">
+                    <!-- About Tab (visible by default) -->
+                    <div id="content-about" class="tab-content">
+                        <h2 class="text-2xl font-bold mb-3">About Monster Survivors</h2>
+                        <p class="mb-3 text-dark-lighter">Monster Survivors is an intense roguelike survival game inspired by classic arcade action and modern roguelite mechanics. Your objective is simple: survive as long as possible against endless waves of monsters.</p>
+                        
+                        <p class="mb-3 text-dark-lighter">As you play, you'll face waves of increasingly difficult monsters while collecting experience points to level up and choose new weapons and abilities. Each run is unique, with procedurally generated enemy waves and randomized power-ups making every playthrough a fresh challenge.</p>
+                        
+                        <p class="text-dark-lighter">Whether you have just a few minutes to spare or want to dive into an extended gaming session, Monster Survivors offers accessible yet deep gameplay that will keep you coming back for "just one more run."</p>
                     </div>
                     
-                    <div>
-                        <h3 class="text-xl font-semibold mb-3">Gameplay Tips</h3>
-                        <ul class="list-disc pl-5 space-y-2 text-dark-lighter">
+                    <!-- How to Play Tab (hidden by default) -->
+                    <div id="content-howto" class="tab-content hidden">
+                        <h2 class="text-2xl font-bold mb-3">How to Play</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-light p-4 rounded-lg">
+                                <h3 class="text-lg font-semibold mb-2">Controls</h3>
+                                <ul class="space-y-1">
+                                    <li class="flex items-center">
+                                        <span class="bg-secondary text-white rounded px-2 py-0.5 text-sm mr-2 inline-block w-16 text-center">WASD</span>
+                                        <span>Move your character</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <span class="bg-secondary text-white rounded px-2 py-0.5 text-sm mr-2 inline-block w-16 text-center">Mouse</span>
+                                        <span>Aim your attacks</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <span class="bg-secondary text-white rounded px-2 py-0.5 text-sm mr-2 inline-block w-16 text-center">Space</span>
+                                        <span>Special ability</span>
+                                    </li>
+                                </ul>
+                            </div>
                             
-                            <li>Stay on the move constantly</li>
-      
-
-                            <li>Prioritize picking up XP gems</li>
-      
-
-                            <li>Look for health pickups</li>
-      
-
-                            <li>Use area-of-effect weapons for crowds</li>
-      
-                        </ul>
+                            <div class="bg-light p-4 rounded-lg">
+                                <h3 class="text-lg font-semibold mb-2">Gameplay Tips</h3>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>Stay on the move constantly</li>
+                                    <li>Prioritize picking up XP gems</li>
+                                    <li>Look for health pickups</li>
+                                    <li>Use area-of-effect weapons for crowds</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Features Tab (hidden by default) -->
+                    <div id="content-features" class="tab-content hidden">
+                        <h2 class="text-2xl font-bold mb-3">Game Features</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Feature 1 -->
+                            <div class="bg-light rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-lg font-semibold">Roguelike Progression</h3>
+                                </div>
+                                <p class="text-dark-lighter text-sm">Unlock powerful abilities and upgrades as you progress through waves of increasingly difficult monsters.</p>
+                            </div>
+                            
+                            <!-- Feature 2 -->
+                            <div class="bg-light rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center mr-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-lg font-semibold">Multiple Characters</h3>
+                                </div>
+                                <p class="text-dark-lighter text-sm">Choose from diverse characters, each with unique abilities and playstyles to master.</p>
+                            </div>
+                            
+                            <!-- Feature 3 -->
+                            <div class="bg-light rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <div class="w-8 h-8 bg-primary-light rounded-full flex items-center justify-center mr-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-lg font-semibold">Endless Gameplay</h3>
+                                </div>
+                                <p class="text-dark-lighter text-sm">No two games are the same with procedurally generated enemy waves and power-ups.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 游戏介绍部分 -->
-    <section class="py-12 bg-light">
+    <!-- Similar Games Section -->
+    <section class="py-6 bg-white">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">About Monster Survivors</h2>
-            <div class="max-w-4xl mx-auto bg-white rounded-xl p-8 shadow-md">
-                <p class="mb-4 text-dark-lighter">Monster Survivors is an intense roguelike survival game inspired by classic arcade action and modern roguelite mechanics. Your objective is simple: survive as long as possible against endless waves of monsters.</p><p class="mb-4 text-dark-lighter">As you play, you'll face waves of increasingly difficult monsters while collecting experience points to level up and choose new weapons and abilities. Each run is unique, with procedurally generated enemy waves and randomized power-ups making every playthrough a fresh challenge.</p><p class="text-dark-lighter">Whether you have just a few minutes to spare or want to dive into an extended gaming session, Monster Survivors offers accessible yet deep gameplay that will keep you coming back for "just one more run."</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 相似游戏部分 -->
-    <section class="py-12 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">More Games You Might Enjoy</h2>
+            <h2 class="text-2xl font-bold mb-4">More Games You Might Enjoy</h2>
             
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <!-- Game 1 -->
+                <a href="#" class="block bg-light rounded-lg overflow-hidden shadow-sm transition-all hover:shadow-md hover:-translate-y-1 duration-300">
+                    <img src="/api/placeholder/300/150" alt="Zombie Defense" class="w-full h-32 object-cover">
+                    <div class="p-3">
+                        <h3 class="font-bold text-base">Zombie Defense</h3>
+                        <p class="text-dark-lighter text-xs mb-2 line-clamp-1">Build towers and defend against zombie hordes.</p>
+                        <div class="bg-secondary text-white text-center py-1 px-3 rounded text-sm font-medium">Play Now</div>
+                    </div>
+                </a>
                 
-                <!-- Game -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-1">Zombie Defense</h3>
-                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Build towers and defend against zombie hordes.</p>
-                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
+                <!-- Game 2 -->
+                <a href="#" class="block bg-light rounded-lg overflow-hidden shadow-sm transition-all hover:shadow-md hover:-translate-y-1 duration-300">
+                    <img src="/api/placeholder/300/150" alt="Space Commander" class="w-full h-32 object-cover">
+                    <div class="p-3">
+                        <h3 class="font-bold text-base">Space Commander</h3>
+                        <p class="text-dark-lighter text-xs mb-2 line-clamp-1">Command your fleet in epic space battles.</p>
+                        <div class="bg-secondary text-white text-center py-1 px-3 rounded text-sm font-medium">Play Now</div>
                     </div>
-                </div>
-      
-
-                <!-- Game -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-1">Space Commander</h3>
-                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Command your fleet in epic space battles.</p>
-                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
+                </a>
+                
+                <!-- Game 3 -->
+                <a href="#" class="block bg-light rounded-lg overflow-hidden shadow-sm transition-all hover:shadow-md hover:-translate-y-1 duration-300">
+                    <img src="/api/placeholder/300/150" alt="Dragon Quest" class="w-full h-32 object-cover">
+                    <div class="p-3">
+                        <h3 class="font-bold text-base">Dragon Quest</h3>
+                        <p class="text-dark-lighter text-xs mb-2 line-clamp-1">Embark on an epic journey to save the kingdom.</p>
+                        <div class="bg-secondary text-white text-center py-1 px-3 rounded text-sm font-medium">Play Now</div>
                     </div>
-                </div>
-      
-
-                <!-- Game -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-1">Dragon Quest</h3>
-                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Embark on an epic journey to save the kingdom.</p>
-                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
+                </a>
+                
+                <!-- Game 4 -->
+                <a href="#" class="block bg-light rounded-lg overflow-hidden shadow-sm transition-all hover:shadow-md hover:-translate-y-1 duration-300">
+                    <img src="/api/placeholder/300/150" alt="Pixel Racer" class="w-full h-32 object-cover">
+                    <div class="p-3">
+                        <h3 class="font-bold text-base">Pixel Racer</h3>
+                        <p class="text-dark-lighter text-xs mb-2 line-clamp-1">Race through colorful retro-style tracks.</p>
+                        <div class="bg-secondary text-white text-center py-1 px-3 rounded text-sm font-medium">Play Now</div>
                     </div>
-                </div>
-      
-
-                <!-- Game -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md transition-transform hover:-translate-y-2 duration-300">
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-1">Pixel Racer</h3>
-                        <p class="text-dark-lighter text-sm mb-3 line-clamp-2">Race through colorful retro-style tracks.</p>
-                        <a href="#" class="inline-block bg-secondary hover:bg-secondary-dark text-white text-center py-2 px-4 rounded-lg transition-colors duration-300 w-full">Play Now</a>
-                    </div>
-                </div>
-      
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- 页脚保持不变 -->
     <!-- Footer -->
-    <footer class="py-8 bg-dark text-white">
+    <footer class="py-6 bg-dark text-white">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="flex items-center gap-2 mb-4 md:mb-0">
@@ -262,17 +383,54 @@
                     <a href="#" class="hover:text-primary transition-colors">Contact</a>
                 </div>
             </div>
-            <div class="mt-6 text-center text-light-darker text-sm">
+            <div class="mt-4 text-center text-light-darker text-sm">
                 <p>&copy; 2025 Zuoyouxiantan.xyz. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    
-
-    <!-- JavaScript脚本保持不变 -->
     <script>
-        // 保持原有脚本
+        // Mobile Menu Toggle
+        const menuButton = document.getElementById('menuButton');
+        const closeMenuButton = document.getElementById('closeMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (menuButton && closeMenuButton && mobileMenu) {
+            menuButton.addEventListener('click', () => {
+                mobileMenu.classList.remove('translate-x-full');
+            });
+            
+            closeMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+            });
+        }
+        
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active state from all buttons
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('border-primary', 'text-primary');
+                    btn.classList.add('border-transparent');
+                });
+                
+                // Add active state to clicked button
+                button.classList.add('border-primary', 'text-primary');
+                button.classList.remove('border-transparent');
+                
+                // Hide all tab contents
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Show corresponding content
+                const contentId = 'content-' + button.id.split('-')[1];
+                document.getElementById(contentId).classList.remove('hidden');
+            });
+        });
     </script>
 </body>
 </html>
