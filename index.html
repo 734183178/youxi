@@ -3,423 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小红书商品监控系统 - 实时版</title>
+    <title>小红书数据统计</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             overflow: hidden;
         }
-        
+
         .header {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px;
             text-align: center;
-            position: relative;
         }
-        
+
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .status-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
+            font-size: 28px;
             font-weight: 600;
-        }
-        
-        .status-online {
-            background: rgba(46, 204, 113, 0.2);
-            color: #27ae60;
-            border: 2px solid rgba(46, 204, 113, 0.3);
-        }
-        
-        .status-offline {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            border: 2px solid rgba(231, 76, 60, 0.3);
-        }
-        
-        .warning {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
-            padding: 20px 30px;
-            margin-bottom: 0;
-            border-left: 5px solid #d35400;
-        }
-        
-        .warning h4 {
             margin-bottom: 10px;
-            font-size: 18px;
         }
-        
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
         .add-section {
             padding: 30px;
             border-bottom: 1px solid #eee;
-            background: #f8f9fa;
         }
-        
-        .add-form {
+
+        .input-group {
             display: flex;
             gap: 15px;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 20px;
         }
-        
-        .add-form input {
+
+        .input-field {
             flex: 1;
             min-width: 300px;
             padding: 12px 16px;
             border: 2px solid #e1e5e9;
             border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s;
+            font-size: 14px;
+            transition: border-color 0.3s;
         }
-        
-        .add-form input:focus {
+
+        .input-field:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        
+
         .btn {
             padding: 12px 24px;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-        
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #56ab2f, #a8e6cf);
-            color: white;
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-        }
-        
-        .btn-download {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            color: white;
-            padding: 8px 16px;
-            font-size: 14px;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 8px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .crawler-settings {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 1px solid #e1e5e9;
-        }
-        
-        .crawler-settings h4 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .setting-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .setting-item label {
             font-size: 14px;
             font-weight: 500;
-            color: #555;
+            transition: all 0.3s;
         }
-        
-        .setting-item select,
-        .setting-item input[type="number"] {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
-        
-        .progress-container {
-            background: white;
-            margin: 20px 30px;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e1e5e9;
-            display: none;
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
-        
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #f0f0f0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 10px 0;
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dee2e6;
         }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0%;
-            transition: width 0.3s ease;
+
+        .btn-secondary:hover {
+            background: #e9ecef;
         }
-        
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            color: #666;
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
         }
-        
+
         .controls {
             padding: 20px 30px;
-            background: #f8f9fa;
+            background: #f8f9fb;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
         }
-        
+
         .sort-controls {
             display: flex;
             gap: 10px;
             align-items: center;
         }
-        
-        .sort-controls select {
+
+        .select-field {
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
-            font-size: 14px;
+            background: white;
         }
-        
-        .stats {
+
+        .status-info {
             display: flex;
             gap: 20px;
             font-size: 14px;
             color: #666;
         }
-        
-        .table-container {
-            overflow-x: auto;
-            padding: 30px;
-        }
-        
+
         .data-table {
+            overflow-x: auto;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
             background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-        
-        .data-table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+
+        th, td {
             padding: 16px 12px;
             text-align: left;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.3s;
-        }
-        
-        .data-table th:hover {
-            background: linear-gradient(135deg, #5a6fd8, #6a42a0);
-        }
-        
-        .data-table td {
-            padding: 16px 12px;
             border-bottom: 1px solid #eee;
-            font-size: 14px;
-            vertical-align: middle;
         }
-        
-        .data-table tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .product-name {
+
+        th {
+            background: #f8f9fb;
             font-weight: 600;
             color: #333;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        th:hover {
+            background: #f1f3f5;
+        }
+
+        th.sortable::after {
+            content: '↕';
+            position: absolute;
+            right: 8px;
+            opacity: 0.5;
+        }
+
+        th.asc::after {
+            content: '↑';
+            opacity: 1;
+            color: #667eea;
+        }
+
+        th.desc::after {
+            content: '↓';
+            opacity: 1;
+            color: #667eea;
+        }
+
+        tr:hover {
+            background: #f8f9fb;
+        }
+
+        .product-name {
             max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        
+
+        .store-name {
+            color: #666;
+            font-size: 13px;
+        }
+
         .price {
             color: #e74c3c;
-            font-weight: 700;
-            font-size: 16px;
+            font-weight: 600;
         }
-        
+
         .sales {
             color: #27ae60;
             font-weight: 600;
         }
-        
-        .shop-name {
-            color: #3498db;
-            font-weight: 500;
+
+        .gmv {
+            color: #f39c12;
+            font-weight: 600;
         }
-        
-        .status-cell {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-        
-        .status-success {
-            background: #27ae60;
-        }
-        
-        .status-error {
-            background: #e74c3c;
-        }
-        
-        .status-pending {
-            background: #f39c12;
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .empty-state {
+
+        .loading {
             text-align: center;
-            padding: 60px 20px;
+            padding: 40px;
+            font-size: 14px;
             color: #666;
         }
-        
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+
+        .no-data {
+            text-align: center;
+            padding: 60px;
             color: #999;
         }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transform: translateX(400px);
-            transition: transform 0.3s;
-            z-index: 1000;
-            max-width: 300px;
+
+        .no-data img {
+            width: 80px;
+            opacity: 0.5;
+            margin-bottom: 15px;
         }
-        
-        .notification.show {
-            transform: translateX(0);
+
+        .last-update {
+            font-size: 12px;
+            color: #999;
         }
-        
-        .notification.success {
-            background: #27ae60;
-            color: white;
-        }
-        
-        .notification.error {
-            background: #e74c3c;
-            color: white;
-        }
-        
-        .notification.warning {
-            background: #f39c12;
-            color: white;
-        }
-        
+
         @media (max-width: 768px) {
-            .add-form {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .add-section {
+                padding: 20px;
+            }
+            
+            .input-group {
                 flex-direction: column;
             }
             
-            .add-form input {
+            .input-field {
                 min-width: 100%;
             }
             
@@ -428,16 +267,12 @@
                 align-items: stretch;
             }
             
-            .sort-controls {
-                justify-content: center;
+            .data-table {
+                font-size: 12px;
             }
             
-            .stats {
-                justify-content: center;
-            }
-            
-            .settings-grid {
-                grid-template-columns: 1fr;
+            th, td {
+                padding: 8px 6px;
             }
         }
     </style>
@@ -445,598 +280,384 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>小红书商品监控系统</h1>
-            <p>集成无头浏览器实时监控竞争对手商品销量变化</p>
-            <div class="status-indicator" id="systemStatus">
-                <span class="status-offline">系统离线</span>
-            </div>
+            <h1>小红书数据统计</h1>
+            <p>请输入小红书商品链接，每行一个，支持批量添加</p>
         </div>
-        
-        <div class="warning">
-            <h4>⚠️ 技术实现说明</h4>
-            <p>本系统演示了无头浏览器爬虫技术。实际部署需要Node.js服务器环境，请确保遵守目标网站的robots.txt和服务条款。建议优先使用官方API或合规的第三方数据服务。</p>
-        </div>
-        
+
         <div class="add-section">
-            <div class="add-form">
-                <input type="url" id="productUrl" placeholder="输入小红书商品链接..." />
-                <button class="btn btn-primary" id="addBtn" onclick="addProduct()">
-                    <span class="btn-text">添加商品</span>
-                </button>
-                <button class="btn btn-success" id="refreshBtn" onclick="refreshAllData()">
-                    <span class="btn-text">批量刷新</span>
-                </button>
-                <button class="btn btn-danger" onclick="clearAllData()">清空数据</button>
-            </div>
-            
-            <div class="crawler-settings">
-                <h4>🔧 爬虫配置</h4>
-                <div class="settings-grid">
-                    <div class="setting-item">
-                        <label>运行模式</label>
-                        <select id="headlessMode">
-                            <option value="true">无头模式（快速）</option>
-                            <option value="false">可视模式（调试）</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label>请求延迟 (秒)</label>
-                        <input type="number" id="requestDelay" value="3" min="1" max="10">
-                    </div>
-                    <div class="setting-item">
-                        <label>重试次数</label>
-                        <input type="number" id="retryTimes" value="3" min="1" max="5">
-                    </div>
-                    <div class="setting-item">
-                        <label>User-Agent类型</label>
-                        <select id="userAgentType">
-                            <option value="random">随机切换</option>
-                            <option value="chrome">Chrome</option>
-                            <option value="firefox">Firefox</option>
-                            <option value="safari">Safari</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="input-group">
+                <input type="text" 
+                       class="input-field" 
+                       id="productUrl" 
+                       placeholder="输入小红书商品链接，例如：https://www.xiaohongshu.com/goods-detail/..."
+                >
+                <button class="btn btn-primary" onclick="addProduct()">批量新增</button>
             </div>
         </div>
-        
-        <div class="progress-container" id="progressContainer">
-            <h4>爬取进度</h4>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="progress-text">
-                <span id="progressText">准备开始...</span>
-                <span id="progressPercent">0%</span>
-            </div>
-        </div>
-        
+
         <div class="controls">
             <div class="sort-controls">
                 <label>排序方式：</label>
-                <select id="sortBy" onchange="sortData()">
+                <select class="select-field" id="sortField" onchange="sortTable()">
+                    <option value="">请选择排序字段</option>
+                    <option value="price">商品价格</option>
                     <option value="dailySales">商品日销量</option>
                     <option value="dailyGMV">商品日GMV</option>
-                    <option value="price">商品价格</option>
-                    <option value="totalSales">商品总销量</option>
-                    <option value="shopSales">店铺销量</option>
-                    <option value="shopDailySales">店铺日销量</option>
+                    <option value="storeTotal">店铺销量</option>
+                    <option value="storeDailySales">店铺日销量</option>
                 </select>
-                <select id="sortOrder" onchange="sortData()">
+                <select class="select-field" id="sortOrder" onchange="sortTable()">
                     <option value="desc">降序</option>
                     <option value="asc">升序</option>
                 </select>
             </div>
-            <div class="stats">
-                <span>商品总数: <strong id="totalProducts">0</strong></span>
-                <span>今日总GMV: <strong id="totalGMV">¥0</strong></span>
-                <span>成功率: <strong id="successRate">--</strong></span>
-                <span>最后更新: <strong id="lastUpdate">--</strong></span>
+            <div class="status-info">
+                <span>共 <span id="totalCount">0</span> 条数据</span>
+                <span class="last-update">最后更新：<span id="lastUpdate">暂无数据</span></span>
             </div>
         </div>
-        
-        <div class="table-container">
-            <table class="data-table" id="dataTable">
+
+        <div class="data-table">
+            <table id="dataTable">
                 <thead>
                     <tr>
-                        <th onclick="sortBy('status')">状态</th>
-                        <th onclick="sortBy('productName')">商品名称</th>
-                        <th onclick="sortBy('price')">商品价格</th>
-                        <th onclick="sortBy('dailySales')">商品日销量</th>
-                        <th onclick="sortBy('dailyGMV')">商品日GMV</th>
-                        <th onclick="sortBy('shopName')">店铺名称</th>
-                        <th onclick="sortBy('shopSales')">店铺销量</th>
-                        <th onclick="sortBy('shopDailySales')">店铺日销量</th>
+                        <th class="sortable" data-field="name">商品名称</th>
+                        <th class="sortable" data-field="price">价格(元)</th>
+                        <th class="sortable" data-field="totalSales">商品总销量</th>
+                        <th class="sortable" data-field="dailySales">商品日销量</th>
+                        <th class="sortable" data-field="dailyGMV">商品日GMV</th>
+                        <th class="sortable" data-field="storeName">店铺名称</th>
+                        <th class="sortable" data-field="storeTotal">店铺销量</th>
+                        <th class="sortable" data-field="storeDailySales">店铺日销量</th>
+                        <th>最后更新</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody id="dataTableBody">
+                    <tr>
+                        <td colspan="10" class="no-data">
+                            <div>暂无数据，请添加商品链接开始监控</div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
-            <div class="empty-state" id="emptyState">
-                <h3>暂无数据</h3>
-                <p>请添加商品链接开始监控</p>
-            </div>
         </div>
     </div>
-    
-    <div class="notification" id="notification"></div>
-    
+
     <script>
-        // 全局变量
+        // 模拟数据存储
         let productsData = [];
-        let currentSort = { field: 'dailySales', order: 'desc' };
-        let crawlStats = { total: 0, success: 0, failed: 0 };
-        let isSystemOnline = false;
-        
-        // 模拟爬虫API调用
-        class CrawlerAPI {
-            static async crawlProduct(url, options = {}) {
-                // 模拟网络请求延迟
-                const delay = (options.requestDelay || 3) * 1000;
-                await new Promise(resolve => setTimeout(resolve, delay));
-                
-                // 模拟成功/失败概率（演示用）
-                const successRate = 0.8;
-                const isSuccess = Math.random() < successRate;
-                
-                if (!isSuccess) {
-                    throw new Error('网络连接失败或被目标网站阻止');
-                }
-                
-                // 模拟返回的爬取数据
-                const mockData = {
-                    url: url,
-                    productName: this.generateMockProductName(),
-                    price: Math.floor(Math.random() * 500) + 100,
-                    totalSales: Math.floor(Math.random() * 5000) + 500,
-                    dailySales: Math.floor(Math.random() * 50) + 1,
-                    shopName: this.generateMockShopName(),
-                    shopSales: Math.floor(Math.random() * 10000) + 1000,
-                    shopDailySales: Math.floor(Math.random() * 100) + 10,
-                    crawlTime: new Date().toISOString(),
-                    userAgent: options.userAgentType || 'random',
-                    status: 'success'
-                };
-                
-                mockData.dailyGMV = mockData.dailySales * mockData.price;
-                
-                return mockData;
+        let sortField = '';
+        let sortOrder = 'desc';
+
+        // 模拟的示例数据
+        const sampleData = [
+            {
+                id: 1,
+                name: "蕉下雨伞折叠女晴雨两用超轻便小巧",
+                price: 179,
+                totalSales: 12500,
+                dailySales: 43,
+                dailyGMV: 7697,
+                storeName: "蕉下官方旗舰店",
+                storeTotal: 15600,
+                storeDailySales: 89,
+                lastUpdate: "2025-05-22 08:14",
+                url: "https://www.xiaohongshu.com/goods-detail/sample1"
+            },
+            {
+                id: 2,
+                name: "一人无限公司·搞钱社区｜1年会员",
+                price: 179,
+                totalSales: 2014,
+                dailySales: 15,
+                dailyGMV: 2685,
+                storeName: "Pitch.拓点学习室的店",
+                storeTotal: 2708,
+                storeDailySales: 25,
+                lastUpdate: "2025-05-22 08:14",
+                url: "https://www.xiaohongshu.com/goods-detail/sample2"
+            },
+            {
+                id: 3,
+                name: "薯笔海贼王法律书包双肩包",
+                price: 39,
+                totalSales: 1400,
+                dailySales: 12,
+                dailyGMV: 468,
+                storeName: "薯笔小书店的店",
+                storeTotal: 1984,
+                storeDailySales: 18,
+                lastUpdate: "2025-05-22 08:16",
+                url: "https://www.xiaohongshu.com/goods-detail/sample3"
             }
-            
-            static generateMockProductName() {
-                const prefixes = ['超值', '热销', '爆款', '限时', '新品'];
-                const products = ['营销课程', '创业指南', '运营秘籍', '品牌打造', '流量密码'];
-                const suffixes = ['实战班', '训练营', '专业版', '精华版', '完整版'];
-                
-                return `${prefixes[Math.floor(Math.random() * prefixes.length)]}${products[Math.floor(Math.random() * products.length)]}${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
-            }
-            
-            static generateMockShopName() {
-                const names = ['营销大师工作室', 'IP变现学院', '创业加速器', '品牌实验室', '流量工厂'];
-                return names[Math.floor(Math.random() * names.length)];
-            }
-        }
-        
-        // 初始化系统
-        function initSystem() {
-            // 模拟系统上线
-            setTimeout(() => {
-                isSystemOnline = true;
-                updateSystemStatus();
-                loadDemoData();
-            }, 1000);
-            
-            // 绑定事件
-            document.getElementById('productUrl').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    addProduct();
-                }
-            });
-        }
-        
-        // 更新系统状态
-        function updateSystemStatus() {
-            const statusEl = document.getElementById('systemStatus');
-            if (isSystemOnline) {
-                statusEl.innerHTML = '<span class="status-online">系统在线</span>';
-            } else {
-                statusEl.innerHTML = '<span class="status-offline">系统离线</span>';
-            }
-        }
-        
-        // 加载演示数据
-        function loadDemoData() {
-            const demoUrls = [
-                'https://www.xiaohongshu.com/goods-detail/demo1',
-                'https://www.xiaohongshu.com/goods-detail/demo2'
-            ];
-            
-            demoUrls.forEach(url => {
-                const mockProduct = {
-                    id: Date.now() + Math.random(),
-                    url: url,
-                    productName: CrawlerAPI.generateMockProductName(),
-                    price: Math.floor(Math.random() * 500) + 100,
-                    totalSales: Math.floor(Math.random() * 5000) + 500,
-                    dailySales: Math.floor(Math.random() * 50) + 1,
-                    shopName: CrawlerAPI.generateMockShopName(),
-                    shopSales: Math.floor(Math.random() * 10000) + 1000,
-                    shopDailySales: Math.floor(Math.random() * 100) + 10,
-                    status: 'success',
-                    crawlTime: new Date().toISOString()
-                };
-                mockProduct.dailyGMV = mockProduct.dailySales * mockProduct.price;
-                productsData.push(mockProduct);
-            });
-            
+        ];
+
+        // 初始化页面
+        function initPage() {
+            // 加载示例数据
+            productsData = [...sampleData];
             renderTable();
             updateStats();
         }
-        
-        // 显示通知
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // 更新按钮状态
-        function updateButtonState(buttonId, loading, text) {
-            const button = document.getElementById(buttonId);
-            const btnText = button.querySelector('.btn-text');
-            
-            if (loading) {
-                button.disabled = true;
-                btnText.innerHTML = `<span class="loading"></span>${text}`;
-            } else {
-                button.disabled = false;
-                btnText.textContent = text;
-            }
-        }
-        
-        // 显示进度
-        function showProgress(show = true) {
-            const container = document.getElementById('progressContainer');
-            container.style.display = show ? 'block' : 'none';
-        }
-        
-        // 更新进度
-        function updateProgress(current, total, message) {
-            const percent = total > 0 ? Math.round((current / total) * 100) : 0;
-            document.getElementById('progressFill').style.width = percent + '%';
-            document.getElementById('progressText').textContent = message;
-            document.getElementById('progressPercent').textContent = percent + '%';
-        }
-        
-        // 添加商品
-        async function addProduct() {
+
+        // 模拟添加商品
+        function addProduct() {
             const urlInput = document.getElementById('productUrl');
             const url = urlInput.value.trim();
             
             if (!url) {
-                showNotification('请输入商品链接', 'error');
+                alert('请输入商品链接');
                 return;
             }
-            
+
             if (!url.includes('xiaohongshu.com')) {
-                showNotification('请输入有效的小红书商品链接', 'error');
+                alert('请输入有效的小红书商品链接');
                 return;
             }
-            
-            // 检查是否已存在
-            if (productsData.some(p => p.url === url)) {
-                showNotification('该商品已存在', 'warning');
-                return;
-            }
-            
-            updateButtonState('addBtn', true, '爬取中');
-            
-            try {
-                // 获取爬虫配置
-                const options = getCrawlerOptions();
-                
-                // 调用爬虫API
-                const productData = await CrawlerAPI.crawlProduct(url, options);
-                productData.id = Date.now();
-                
-                // 添加到数据中
-                productsData.push(productData);
-                renderTable();
-                updateStats();
-                
-                urlInput.value = '';
-                showNotification('商品添加成功！');
-                
-                // 更新统计
-                crawlStats.total++;
-                crawlStats.success++;
-                
-            } catch (error) {
-                console.error('添加商品失败:', error);
-                showNotification(error.message, 'error');
-                
-                // 添加失败的记录
-                productsData.push({
+
+            // 模拟爬取数据
+            simulateCrawling(url);
+            urlInput.value = '';
+        }
+
+        // 模拟爬取过程
+        function simulateCrawling(url) {
+            // 显示加载状态
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '<tr><td colspan="10" class="loading">正在爬取商品数据...</td></tr>';
+
+            // 模拟异步爬取
+            setTimeout(() => {
+                const newProduct = {
                     id: Date.now(),
-                    url: url,
-                    status: 'error',
-                    error: error.message,
-                    crawlTime: new Date().toISOString()
-                });
-                renderTable();
+                    name: "新添加的商品 - " + Math.random().toString(36).substr(2, 6),
+                    price: Math.floor(Math.random() * 500) + 50,
+                    totalSales: Math.floor(Math.random() * 10000) + 100,
+                    dailySales: Math.floor(Math.random() * 50) + 1,
+                    dailyGMV: 0,
+                    storeName: "新店铺名称",
+                    storeTotal: Math.floor(Math.random() * 50000) + 1000,
+                    storeDailySales: Math.floor(Math.random() * 100) + 10,
+                    lastUpdate: new Date().toLocaleString('zh-CN'),
+                    url: url
+                };
                 
-                crawlStats.total++;
-                crawlStats.failed++;
-            } finally {
-                updateButtonState('addBtn', false, '添加商品');
-            }
-        }
-        
-        // 获取爬虫配置
-        function getCrawlerOptions() {
-            return {
-                headless: document.getElementById('headlessMode').value === 'true',
-                requestDelay: parseInt(document.getElementById('requestDelay').value),
-                retryTimes: parseInt(document.getElementById('retryTimes').value),
-                userAgentType: document.getElementById('userAgentType').value
-            };
-        }
-        
-        // 批量刷新数据
-        async function refreshAllData() {
-            if (productsData.length === 0) {
-                showNotification('没有商品需要刷新', 'warning');
-                return;
-            }
-            
-            updateButtonState('refreshBtn', true, '刷新中');
-            showProgress(true);
-            
-            const options = getCrawlerOptions();
-            let completed = 0;
-            const total = productsData.length;
-            
-            try {
-                for (let i = 0; i < productsData.length; i++) {
-                    const product = productsData[i];
-                    updateProgress(completed, total, `正在刷新: ${product.productName || '商品' + (i + 1)}`);
-                    
-                    try {
-                        const newData = await CrawlerAPI.crawlProduct(product.url, options);
-                        Object.assign(product, newData);
-                        product.status = 'success';
-                        crawlStats.success++;
-                    } catch (error) {
-                        product.status = 'error';
-                        product.error = error.message;
-                        crawlStats.failed++;
-                    }
-                    
-                    completed++;
-                    crawlStats.total++;
-                    
-                    // 实时更新表格
-                    renderTable();
-                    updateStats();
-                }
+                // 计算日GMV
+                newProduct.dailyGMV = newProduct.dailySales * newProduct.price;
                 
-                showNotification(`批量刷新完成！成功: ${completed - productsData.filter(p => p.status === 'error').length}, 失败: ${productsData.filter(p => p.status === 'error').length}`);
-                
-            } finally {
-                updateButtonState('refreshBtn', false, '批量刷新');
-                showProgress(false);
-            }
-        }
-        
-        // 刷新单个商品
-        async function refreshSingleProduct(productId) {
-            const product = productsData.find(p => p.id === productId);
-            if (!product) return;
-            
-            const originalStatus = product.status;
-            product.status = 'pending';
-            renderTable();
-            
-            try {
-                const options = getCrawlerOptions();
-                const newData = await CrawlerAPI.crawlProduct(product.url, options);
-                Object.assign(product, newData);
-                product.status = 'success';
-                showNotification('商品数据刷新成功！');
-            } catch (error) {
-                product.status = 'error';
-                product.error = error.message;
-                showNotification('刷新失败: ' + error.message, 'error');
-            }
-            
-            renderTable();
-            updateStats();
-        }
-        
-        // 删除商品
-        function deleteProduct(productId) {
-            if (confirm('确定要删除这个商品吗？')) {
-                productsData = productsData.filter(p => p.id !== productId);
+                productsData.push(newProduct);
                 renderTable();
                 updateStats();
-                showNotification('商品已删除');
-            }
+                
+                alert('商品添加成功！');
+            }, 2000);
         }
-        
-        // 清空所有数据
-        function clearAllData() {
-            if (confirm('确定要清空所有数据吗？此操作不可恢复！')) {
-                productsData = [];
-                crawlStats = { total: 0, success: 0, failed: 0 };
-                renderTable();
-                updateStats();
-                showNotification('所有数据已清空');
-            }
-        }
-        
+
         // 渲染表格
         function renderTable() {
             const tbody = document.getElementById('dataTableBody');
-            const emptyState = document.getElementById('emptyState');
             
             if (productsData.length === 0) {
-                tbody.innerHTML = '';
-                emptyState.style.display = 'block';
+                tbody.innerHTML = '<tr><td colspan="10" class="no-data">暂无数据，请添加商品链接开始监控</td></tr>';
                 return;
             }
+
+            let html = '';
+            productsData.forEach(product => {
+                html += `
+                    <tr>
+                        <td class="product-name" title="${product.name}">${product.name}</td>
+                        <td class="price">¥${product.price}</td>
+                        <td class="sales">${formatNumber(product.totalSales)}</td>
+                        <td class="sales">${product.dailySales}</td>
+                        <td class="gmv">¥${formatNumber(product.dailyGMV)}</td>
+                        <td class="store-name">${product.storeName}</td>
+                        <td class="sales">${formatNumber(product.storeTotal)}</td>
+                        <td class="sales">${product.storeDailySales}</td>
+                        <td class="last-update">${product.lastUpdate}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-small" onclick="downloadData(${product.id})">
+                                下载数据
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
             
-            emptyState.style.display = 'none';
+            tbody.innerHTML = html;
+        }
+
+        // 格式化数字显示
+        function formatNumber(num) {
+            if (num >= 10000) {
+                return (num / 10000).toFixed(1) + '万';
+            }
+            return num.toString();
+        }
+
+        // 解析万为数字
+        function parseNumber(str) {
+            if (typeof str === 'string' && str.includes('万')) {
+                return parseFloat(str.replace('万', '')) * 10000;
+            }
+            return parseInt(str) || 0;
+        }
+
+        // 排序功能
+        function sortTable() {
+            const sortFieldSelect = document.getElementById('sortField');
+            const sortOrderSelect = document.getElementById('sortOrder');
             
-            // 排序数据
-            const sortedData = [...productsData].sort((a, b) => {
-                let aVal = a[currentSort.field] || 0;
-                let bVal = b[currentSort.field] || 0;
+            sortField = sortFieldSelect.value;
+            sortOrder = sortOrderSelect.value;
+            
+            if (!sortField) return;
+
+            productsData.sort((a, b) => {
+                let valueA, valueB;
                 
-                if (typeof aVal === 'string') {
-                    aVal = aVal.toLowerCase();
-                    bVal = bVal.toLowerCase();
+                switch(sortField) {
+                    case 'price':
+                        valueA = a.price;
+                        valueB = b.price;
+                        break;
+                    case 'dailySales':
+                        valueA = a.dailySales;
+                        valueB = b.dailySales;
+                        break;
+                    case 'dailyGMV':
+                        valueA = a.dailyGMV;
+                        valueB = b.dailyGMV;
+                        break;
+                    case 'storeTotal':
+                        valueA = a.storeTotal;
+                        valueB = b.storeTotal;
+                        break;
+                    case 'storeDailySales':
+                        valueA = a.storeDailySales;
+                        valueB = b.storeDailySales;
+                        break;
+                    default:
+                        return 0;
                 }
                 
-                if (currentSort.order === 'asc') {
-                    return aVal > bVal ? 1 : -1;
+                if (sortOrder === 'asc') {
+                    return valueA - valueB;
                 } else {
-                    return aVal < bVal ? 1 : -1;
+                    return valueB - valueA;
                 }
             });
             
-            tbody.innerHTML = sortedData.map(product => `
-                <tr>
-                    <td class="status-cell">
-                        <div class="status-dot status-${product.status || 'pending'}"></div>
-                        ${getStatusText(product.status)}
-                    </td>
-                    <td class="product-name" title="${product.productName || '获取失败'}">${product.productName || '获取失败'}</td>
-                    <td class="price">¥${product.price || 0}</td>
-                    <td class="sales">${product.dailySales || 0}</td>
-                    <td class="price">¥${(product.dailyGMV || 0).toLocaleString()}</td>
-                    <td class="shop-name">${product.shopName || '未知'}</td>
-                    <td class="sales">${(product.shopSales || 0).toLocaleString()}</td>
-                    <td class="sales">${product.shopDailySales || 0}</td>
-                    <td>
-                        <button class="btn btn-download" onclick="downloadData(${product.id})" style="margin-right: 5px;">
-                            下载
-                        </button>
-                        <button class="btn btn-success" onclick="refreshSingleProduct(${product.id})" style="margin-right: 5px; padding: 6px 12px; font-size: 12px;">
-                            刷新
-                        </button>
-                        <button class="btn btn-danger" onclick="deleteProduct(${product.id})" style="padding: 6px 12px; font-size: 12px;">
-                            删除
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+            renderTable();
         }
-        
-        // 获取状态文本
-        function getStatusText(status) {
-            switch(status) {
-                case 'success': return '成功';
-                case 'error': return '失败';
-                case 'pending': return '爬取中';
-                default: return '未知';
-            }
-        }
-        
+
         // 更新统计信息
         function updateStats() {
-            const totalProducts = productsData.length;
-            const totalGMV = productsData
-                .filter(p => p.status === 'success')
-                .reduce((sum, product) => sum + (product.dailyGMV || 0), 0);
-            const successRate = crawlStats.total > 0 ? 
-                Math.round((crawlStats.success / crawlStats.total) * 100) : 100;
-            const lastUpdate = new Date().toLocaleString('zh-CN');
-            
-            document.getElementById('totalProducts').textContent = totalProducts;
-            document.getElementById('totalGMV').textContent = '¥' + totalGMV.toLocaleString();
-            document.getElementById('successRate').textContent = successRate + '%';
-            document.getElementById('lastUpdate').textContent = lastUpdate;
-        }
-        
-        // 排序功能
-        function sortData() {
-            const sortBy = document.getElementById('sortBy').value;
-            const sortOrder = document.getElementById('sortOrder').value;
-            
-            currentSort = { field: sortBy, order: sortOrder };
-            renderTable();
-        }
-        
-        function sortBy(field) {
-            if (currentSort.field === field) {
-                currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
-            } else {
-                currentSort.field = field;
-                currentSort.order = 'desc';
+            document.getElementById('totalCount').textContent = productsData.length;
+            if (productsData.length > 0) {
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleString('zh-CN');
             }
-            
-            document.getElementById('sortBy').value = field;
-            document.getElementById('sortOrder').value = currentSort.order;
-            
-            renderTable();
         }
-        
-        // 下载数据
+
+        // 下载数据功能
         function downloadData(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return;
+
+            // 模拟历史数据
+            const historicalData = generateHistoricalData(product);
             
-            // 生成模拟历史数据
-            const historyData = [];
-            const days = 30; // 生成30天的数据
-            
-            for (let i = days; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                const dateStr = date.toISOString().split('T')[0];
-                
-                const baseSales = product.totalSales || 1000;
-                const dailyChange = Math.floor(Math.random() * 20) - 10;
-                const sales = Math.max(0, baseSales + dailyChange);
-                
-                historyData.push({
-                    date: dateStr,
-                    sales: sales,
-                    price: product.price || 0,
-                    gmv: sales * (product.price || 0)
-                });
-            }
-            
-            // 创建CSV内容
-            const csvContent = [
-                ['日期', '销量', '价格', 'GMV'],
-                ...historyData.map(item => [item.date, item.sales, item.price, item.gmv])
-            ].map(row => row.join(',')).join('\n');
+            // 创建Excel内容
+            let csvContent = "日期,商品销量,商品价格,日销量,日GMV\n";
+            historicalData.forEach(row => {
+                csvContent += `${row.date},${row.totalSales},${row.price},${row.dailySales},${row.dailyGMV}\n`;
+            });
             
             // 下载文件
-            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `${(product.productName || '商品数据').substring(0, 20)}_历史数据.csv`);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `${product.name.substring(0, 20)}_数据统计.csv`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
-            showNotification('数据下载成功！');
         }
-        
-        // 初始化系统
+
+        // 生成模拟历史数据
+        function generateHistoricalData(product) {
+            const data = [];
+            const days = 30; // 最近30天的数据
+            let currentSales = product.totalSales;
+            
+            for (let i = days - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                const dailySales = i === 0 ? product.dailySales : Math.floor(Math.random() * 50) + 1;
+                currentSales = i === 0 ? product.totalSales : currentSales - dailySales;
+                
+                data.push({
+                    date: dateStr,
+                    totalSales: currentSales,
+                    price: product.price,
+                    dailySales: dailySales,
+                    dailyGMV: dailySales * product.price
+                });
+            }
+            
+            return data;
+        }
+
+        // 表头点击排序
         document.addEventListener('DOMContentLoaded', function() {
-            initSystem();
+            const headers = document.querySelectorAll('th.sortable');
+            headers.forEach(header => {
+                header.addEventListener('click', function() {
+                    const field = this.dataset.field;
+                    if (sortField === field) {
+                        sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        sortField = field;
+                        sortOrder = 'desc';
+                    }
+                    
+                    // 更新选择框
+                    document.getElementById('sortField').value = field;
+                    document.getElementById('sortOrder').value = sortOrder;
+                    
+                    // 更新表头样式
+                    headers.forEach(h => h.className = 'sortable');
+                    this.className = `sortable ${sortOrder}`;
+                    
+                    sortTable();
+                });
+            });
+            
+            // 初始化页面
+            initPage();
         });
+
+        // 模拟定时任务 - 每分钟更新一次数据（演示用）
+        setInterval(() => {
+            if (productsData.length > 0) {
+                // 随机更新一些数据
+                productsData.forEach(product => {
+                    const change = Math.floor(Math.random() * 10) - 5; // -5到+5的随机变化
+                    if (change > 0) {
+                        product.totalSales += change;
+                        product.dailySales += change;
+                        product.dailyGMV = product.dailySales * product.price;
+                        product.lastUpdate = new Date().toLocaleString('zh-CN');
+                    }
+                });
+                renderTable();
+                updateStats();
+            }
+        }, 60000); // 60秒更新一次
     </script>
 </body>
 </html>
