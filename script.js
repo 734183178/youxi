@@ -1949,3 +1949,80 @@ function stopComposition() {
     finishComposition();
     showToast('合成已停止');
 }
+    // 在文件最后添加这些函数
+
+// 导入背景图
+function importBackground() {
+    document.getElementById('backgroundInput').click();
+}
+
+// 添加图片
+function addImage() {
+    document.getElementById('imageInput').click();
+}
+
+// 添加文字
+function addText() {
+    showModal('textModal');
+}
+
+// 导入前景图
+function importForegrounds() {
+    document.getElementById('foregroundInput').click();
+}
+
+// 开始合成
+function startComposition() {
+    if (foregroundImages.length === 0) {
+        showToast('请先导入前景图', 'warning');
+        return;
+    }
+    
+    if (elements.length === 0) {
+        showToast('画布上没有元素', 'warning');
+        return;
+    }
+    
+    isComposing = true;
+    compositionIndex = 0;
+    compositionResults = [];
+    
+    document.getElementById('composeBtn').disabled = true;
+    document.getElementById('stopBtn').disabled = false;
+    document.getElementById('progressContainer').style.display = 'block';
+    
+    processNextComposition();
+}
+
+// 停止合成
+function stopComposition() {
+    isComposing = false;
+    finishComposition();
+    showToast('合成已停止');
+}
+
+// 下载结果
+function downloadResult(id) {
+    const result = compositionResults.find(r => r.id == id);
+    if (!result) return;
+    
+    const a = document.createElement('a');
+    a.href = result.src;
+    a.download = result.name;
+    a.click();
+    
+    showToast(`正在下载 ${result.name}`);
+}
+
+// 批量下载
+function downloadAllResults() {
+    if (compositionResults.length === 0) return;
+    
+    compositionResults.forEach((result, index) => {
+        setTimeout(() => {
+            downloadResult(result.id);
+        }, index * 500);
+    });
+    
+    showToast(`正在批量下载 ${compositionResults.length} 张图片`);
+}
