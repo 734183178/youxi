@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>专业图像合成工具</title>
+    <title>高级图像合成工具</title>
     <style>
         /* Element Plus CSS Variables */
         :root {
@@ -95,6 +95,93 @@
             line-height: 1.5;
         }
 
+        /* Input Styles */
+        .el-input {
+            width: 100%;
+            height: var(--el-component-size);
+            padding: 0 12px;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-base);
+            font-size: var(--el-font-size-base);
+            color: var(--el-text-color-primary);
+            background-color: var(--el-fill-color-blank);
+            transition: border-color var(--el-transition-duration);
+        }
+
+        .el-input:focus {
+            border-color: var(--el-color-primary);
+            outline: none;
+        }
+
+        .el-input--small {
+            height: var(--el-component-size-small);
+            padding: 0 8px;
+            font-size: var(--el-font-size-small);
+        }
+
+        .el-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-base);
+            font-size: var(--el-font-size-base);
+            color: var(--el-text-color-primary);
+            background-color: var(--el-fill-color-blank);
+            resize: vertical;
+            transition: border-color var(--el-transition-duration);
+        }
+
+        .el-textarea:focus {
+            border-color: var(--el-color-primary);
+            outline: none;
+        }
+
+        .el-select {
+            width: 100%;
+            height: var(--el-component-size);
+            padding: 0 12px;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-base);
+            font-size: var(--el-font-size-base);
+            color: var(--el-text-color-primary);
+            background-color: var(--el-fill-color-blank);
+            cursor: pointer;
+        }
+
+        .el-select:focus {
+            border-color: var(--el-color-primary);
+            outline: none;
+        }
+
+        .el-slider {
+            width: 100%;
+            height: 6px;
+            background-color: var(--el-border-color-lighter);
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .el-slider__runway {
+            width: 100%;
+            height: 100%;
+            background-color: var(--el-color-primary);
+            border-radius: 3px;
+        }
+
+        .el-slider__button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background-color: var(--el-color-primary);
+            border: 2px solid var(--el-color-white);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--el-box-shadow-light);
+        }
+
         /* Button Styles */
         .el-button {
             display: inline-flex;
@@ -118,6 +205,7 @@
             padding: 8px 15px;
             font-size: var(--el-font-size-base);
             font-weight: 500;
+            margin: 0 4px 8px 0;
         }
 
         .el-button:hover {
@@ -162,6 +250,12 @@
             border-color: var(--el-color-warning);
         }
 
+        .el-button--danger {
+            color: var(--el-color-white);
+            background-color: var(--el-color-danger);
+            border-color: var(--el-color-danger);
+        }
+
         .el-button--large {
             height: var(--el-component-size-large);
             padding: 12px 19px;
@@ -180,6 +274,12 @@
             background-image: none;
             background-color: var(--el-fill-color-blank);
             border-color: var(--el-border-color-light);
+        }
+
+        .el-button.is-active {
+            background-color: var(--el-color-primary);
+            color: var(--el-color-white);
+            border-color: var(--el-color-primary);
         }
 
         /* Card Styles */
@@ -207,7 +307,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -238,16 +338,26 @@
         }
 
         .left-panel {
-            width: 250px;
-            padding: 20px;
-            background-color: var(--el-fill-color-light);
-            border-radius: 8px;
-        }
-
-        .operation-area {
+            width: 300px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
+        }
+
+        .panel-section {
+            background-color: var(--el-fill-color-blank);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--el-box-shadow-lighter);
+        }
+
+        .panel-section h3 {
+            color: var(--el-text-color-primary);
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--el-border-color-lighter);
+            padding-bottom: 10px;
         }
 
         .operation-buttons {
@@ -257,40 +367,134 @@
         }
 
         .operation-buttons .el-button {
-            margin-left: 0;
+            margin: 0;
             width: 100%;
         }
 
-        .image-info {
-            margin-top: 20px;
-            border-top: 1px solid var(--el-border-color);
-            padding-top: 15px;
+        .layers-panel {
+            max-height: 400px;
+            overflow-y: auto;
         }
 
-        .image-info h3 {
-            color: var(--el-text-color-primary);
-            margin-bottom: 15px;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .info-item {
-            margin-bottom: 10px;
-            font-size: var(--el-font-size-small);
+        .layer-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border: 1px solid var(--el-border-color-lighter);
+            border-radius: var(--el-border-radius-base);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all var(--el-transition-duration);
         }
 
-        .label {
+        .layer-item:hover {
+            background-color: var(--el-fill-color-light);
+            border-color: var(--el-color-primary-light-7);
+        }
+
+        .layer-item.active {
+            background-color: var(--el-color-primary-light-9);
+            border-color: var(--el-color-primary);
+        }
+
+        .layer-preview {
+            width: 40px;
+            height: 30px;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-small);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .layer-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .layer-text-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
             color: var(--el-text-color-secondary);
-            margin-bottom: 5px;
+            background-color: var(--el-fill-color-light);
         }
 
-        .value {
-            font-weight: 700;
+        .layer-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .layer-name {
+            font-size: var(--el-font-size-small);
             color: var(--el-text-color-primary);
-            word-break: break-all;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .layer-type {
+            font-size: 11px;
+            color: var(--el-text-color-secondary);
+        }
+
+        .layer-controls {
+            display: flex;
+            gap: 4px;
+        }
+
+        .layer-control-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--el-text-color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border-radius: var(--el-border-radius-small);
+            transition: all var(--el-transition-duration);
+        }
+
+        .layer-control-btn:hover {
+            background-color: var(--el-fill-color-light);
+            color: var(--el-text-color-primary);
+        }
+
+        .properties-panel {
+            display: none;
+        }
+
+        .properties-panel.active {
+            display: block;
+        }
+
+        .property-group {
+            margin-bottom: 16px;
+        }
+
+        .property-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: var(--el-font-size-small);
+            color: var(--el-text-color-secondary);
+            font-weight: 500;
+        }
+
+        .property-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .property-input {
+            flex: 1;
         }
 
         .right-panel {
@@ -298,7 +502,6 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            width: 880px;
         }
 
         .preview-area {
@@ -307,7 +510,7 @@
             align-items: center;
             padding: 20px;
             box-shadow: var(--el-box-shadow-lighter);
-            min-height: 460px;
+            min-height: 500px;
             color: var(--el-text-color-placeholder);
             font-size: 16px;
             background-color: var(--el-fill-color-lighter);
@@ -317,16 +520,64 @@
             overflow: hidden;
         }
 
-        .preview-area.has-image {
+        .preview-area.has-content {
             border: 1px solid var(--el-border-color-light);
             background-color: var(--el-fill-color-blank);
         }
 
-        .preview-image {
+        .canvas-container {
+            position: relative;
+            border: 1px solid var(--el-border-color-light);
+            border-radius: var(--el-border-radius-base);
+            box-shadow: var(--el-box-shadow-light);
+            background-color: var(--el-color-white);
+        }
+
+        .element-wrapper {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+        }
+
+        .element-wrapper.selected {
+            outline: 2px solid var(--el-color-primary);
+            outline-offset: 2px;
+        }
+
+        .element-wrapper.foreground {
+            border: 2px dashed var(--el-color-warning);
+            background-color: rgba(230, 162, 60, 0.1);
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: var(--el-color-primary);
+            border: 1px solid var(--el-color-white);
+            border-radius: 50%;
+            cursor: nw-resize;
+        }
+
+        .resize-handle.nw { top: -4px; left: -4px; cursor: nw-resize; }
+        .resize-handle.ne { top: -4px; right: -4px; cursor: ne-resize; }
+        .resize-handle.sw { bottom: -4px; left: -4px; cursor: sw-resize; }
+        .resize-handle.se { bottom: -4px; right: -4px; cursor: se-resize; }
+        .resize-handle.n { top: -4px; left: 50%; transform: translateX(-50%); cursor: n-resize; }
+        .resize-handle.s { bottom: -4px; left: 50%; transform: translateX(-50%); cursor: s-resize; }
+        .resize-handle.w { top: 50%; left: -4px; transform: translateY(-50%); cursor: w-resize; }
+        .resize-handle.e { top: 50%; right: -4px; transform: translateY(-50%); cursor: e-resize; }
+
+        .text-element {
+            font-family: inherit;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .image-element {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: var(--el-border-radius-base);
         }
 
         .result-area {
@@ -334,14 +585,6 @@
             border-radius: 8px;
             padding: 20px;
             box-shadow: var(--el-box-shadow-lighter);
-        }
-
-        h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 18px;
-            color: var(--el-text-color-primary);
-            font-weight: 600;
         }
 
         .result-images {
@@ -367,17 +610,7 @@
             transform: translateY(-2px);
         }
 
-        .image-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            background-color: var(--el-fill-color-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .image-container img {
+        .result-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -392,97 +625,10 @@
             z-index: 1;
         }
 
-        .image-container:hover .image-overlay {
+        .result-image:hover .image-overlay {
             opacity: 1;
         }
 
-        .image-error {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            background-color: var(--el-fill-color-light);
-            color: var(--el-text-color-placeholder);
-        }
-
-        /* Three.js Container Styles */
-        .three-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            cursor: move;
-        }
-
-        /* Perspective Editor Styles */
-        .perspective-editor-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--el-fill-color-light);
-            border-radius: 8px;
-            overflow: hidden;
-            padding: 20px;
-        }
-
-        .canvas-container {
-            width: 800px;
-            position: relative;
-            box-shadow: var(--el-box-shadow);
-            border-radius: var(--el-border-radius-base);
-            overflow: hidden;
-        }
-
-        /* Control Points Styles */
-        .control-points {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .foreground-drag-area {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            cursor: move;
-            pointer-events: auto;
-            z-index: 1;
-        }
-
-        .control-point {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background-color: rgba(33, 150, 243, 0.8);
-            border: 2px solid white;
-            border-radius: 50%;
-            cursor: move;
-            pointer-events: auto;
-            box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-            will-change: transform, left, top;
-            z-index: 2;
-            transition: all var(--el-transition-duration-fast);
-        }
-
-        .control-point.active {
-            background-color: rgba(255, 87, 34, 0.8);
-            transform: scale(1.2);
-        }
-
-        .control-point:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
-        }
-
-        /* Loading and Empty States */
         .loading-state {
             display: flex;
             flex-direction: column;
@@ -512,21 +658,20 @@
             font-size: var(--el-font-size-base);
         }
 
-        /* File Upload Styles */
         .file-upload {
             display: none;
         }
 
-        .upload-trigger {
+        .color-picker {
+            width: 40px;
+            height: 32px;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-base);
             cursor: pointer;
-            transition: all var(--el-transition-duration);
+            padding: 0;
+            background: none;
         }
 
-        .upload-trigger:hover {
-            color: var(--el-color-primary);
-        }
-
-        /* Icon Styles */
         .icon {
             display: inline-flex;
             align-items: center;
@@ -605,53 +750,85 @@
             font-size: var(--el-font-size-small);
             border-top: 1px solid var(--el-border-color-lighter);
         }
+
+        /* Message Styles */
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 1; transform: translateX(-50%) translateY(0); }
+            to { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <header>
-            <h1>专业图像合成工具</h1>
+            <h1>高级图像合成工具</h1>
         </header>
 
         <main>
             <div class="image-composer">
-                <!-- 左侧操作面板 -->
+                <!-- 左侧控制面板 -->
                 <div class="left-panel">
-                    <div class="operation-area">
+                    <!-- 操作区 -->
+                    <div class="panel-section">
                         <h3>操作区</h3>
-                        
                         <div class="operation-buttons">
                             <button class="el-button el-button--primary" onclick="importBackground()">
-                                <span class="icon">📷</span>
+                                <span class="icon">🏞️</span>
                                 导入背景图
                             </button>
                             
-                            <button class="el-button el-button--success" onclick="importForegrounds()">
+                            <button class="el-button el-button--success" onclick="importImages()">
                                 <span class="icon">🖼️</span>
-                                批量导入前景图
+                                添加图片
                             </button>
                             
+                            <button class="el-button el-button--warning" onclick="addText()">
+                                <span class="icon">📝</span>
+                                添加文字
+                            </button>
+                            
+                            <button class="el-button" onclick="importForegrounds()">
+                                <span class="icon">🎭</span>
+                                导入前景图
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 图层管理 -->
+                    <div class="panel-section">
+                        <h3>图层管理</h3>
+                        <div class="layers-panel" id="layersPanel">
+                            <!-- 图层列表将在这里动态生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 属性面板 -->
+                    <div class="panel-section">
+                        <h3>属性设置</h3>
+                        <div id="propertiesPanel">
+                            <div class="empty-state">
+                                请选择一个图层进行编辑
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 合成设置 -->
+                    <div class="panel-section">
+                        <h3>合成设置</h3>
+                        <div class="operation-buttons">
                             <button class="el-button el-button--warning" onclick="composeImages()">
                                 <span class="icon">✨</span>
-                                合成
+                                开始合成
                             </button>
                             
                             <button class="el-button" onclick="downloadResults()">
                                 <span class="icon">💾</span>
-                                下载
+                                下载结果
                             </button>
-                        </div>
-
-                        <div class="image-info">
-                            <h3>背景图</h3>
-                            <div class="info-item">
-                                <span class="label">当前图:</span>
-                                <span class="value" id="current-bg">未导入</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="label">前景图:</span>
-                                <span class="value" id="fg-count">0张</span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -663,586 +840,5 @@
                         <div class="el-card__body">
                             <div class="preview-area" id="previewArea">
                                 <div class="empty-state">
-                                    <div>拖拽图片到此处或点击导入按钮上传图片</div>
-                                    <div style="margin-top: 8px; font-size: 12px; color: var(--el-text-color-placeholder);">
-                                        支持 JPG、PNG、GIF 格式
-                                    </div>
-                                </div>
-                                
-                                <!-- 控制点容器 -->
-                                <div class="control-points" id="controlPoints"></div>
-                                
-                                <!-- 前景拖拽区域 -->
-                                <div class="foreground-drag-area" id="foregroundDragArea"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 合成结果区域 -->
-                    <div class="result-area">
-                        <h2>合成结果</h2>
-                        <div class="result-images" id="resultImages">
-                            <!-- 示例结果卡片 -->
-                            <div class="result-image">
-                                <div class="image-container">
-                                    <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: var(--el-text-color-placeholder);">
-                                        示例结果 1
-                                    </div>
-                                    <div class="image-overlay">
-                                        <button class="el-button el-button--small el-button--primary" onclick="downloadImage(this)">
-                                            <span class="icon">⬇️</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="result-image">
-                                <div class="image-container">
-                                    <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #e8f4f8, #d1ecf1); display: flex; align-items: center; justify-content: center; color: var(--el-text-color-placeholder);">
-                                        示例结果 2
-                                    </div>
-                                    <div class="image-overlay">
-                                        <button class="el-button el-button--small el-button--primary" onclick="downloadImage(this)">
-                                            <span class="icon">⬇️</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="result-image">
-                                <div class="image-container">
-                                    <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #fff3cd, #ffeaa7); display: flex; align-items: center; justify-content: center; color: var(--el-text-color-placeholder);">
-                                        示例结果 3
-                                    </div>
-                                    <div class="image-overlay">
-                                        <button class="el-button el-button--small el-button--primary" onclick="downloadImage(this)">
-                                            <span class="icon">⬇️</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="result-image">
-                                <div class="image-container">
-                                    <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #f8d7da, #f5c6cb); display: flex; align-items: center; justify-content: center; color: var(--el-text-color-placeholder);">
-                                        示例结果 4
-                                    </div>
-                                    <div class="image-overlay">
-                                        <button class="el-button el-button--small el-button--primary" onclick="downloadImage(this)">
-                                            <span class="icon">⬇️</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <footer>
-            <p>&copy; 2024 专业图像合成工具. 使用最新的图像处理技术，为您提供专业级的合成体验。</p>
-        </footer>
-    </div>
-
-    <!-- 隐藏的文件输入 -->
-    <input type="file" id="backgroundInput" class="file-upload" accept="image/*" onchange="handleBackgroundUpload(event)">
-    <input type="file" id="foregroundInput" class="file-upload" accept="image/*" multiple onchange="handleForegroundUpload(event)">
-
-    <script>
-        // 全局变量
-        let backgroundImage = null;
-        let foregroundImages = [];
-        let currentEditingForeground = null;
-        let controlPoints = [];
-        let composedResults = [];
-        let isDragging = false;
-        let dragOffset = { x: 0, y: 0 };
-
-        // 初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDragAndDrop();
-            console.log('专业图像合成工具已加载');
-        });
-
-        // 初始化拖拽功能
-        function initializeDragAndDrop() {
-            const previewArea = document.getElementById('previewArea');
-            
-            previewArea.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                previewArea.style.borderColor = 'var(--el-color-primary)';
-                previewArea.style.backgroundColor = 'var(--el-color-primary-light-9)';
-            });
-
-            previewArea.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                previewArea.style.borderColor = 'var(--el-border-color)';
-                previewArea.style.backgroundColor = 'var(--el-fill-color-lighter)';
-            });
-
-            previewArea.addEventListener('drop', function(e) {
-                e.preventDefault();
-                previewArea.style.borderColor = 'var(--el-border-color)';
-                previewArea.style.backgroundColor = 'var(--el-fill-color-lighter)';
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    if (files.length === 1) {
-                        handleFileUpload(files[0], 'background');
-                    } else {
-                        for (let file of files) {
-                            handleFileUpload(file, 'foreground');
-                        }
-                    }
-                }
-            });
-        }
-
-        // 导入背景图
-        function importBackground() {
-            document.getElementById('backgroundInput').click();
-        }
-
-        // 导入前景图
-        function importForegrounds() {
-            document.getElementById('foregroundInput').click();
-        }
-
-        // 处理背景图上传
-        function handleBackgroundUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                handleFileUpload(file, 'background');
-            }
-        }
-
-        // 处理前景图上传
-        function handleForegroundUpload(event) {
-            const files = Array.from(event.target.files);
-            files.forEach(file => {
-                handleFileUpload(file, 'foreground');
-            });
-        }
-
-        // 处理文件上传
-        function handleFileUpload(file, type) {
-            if (!file.type.startsWith('image/')) {
-                showMessage('请选择有效的图片文件', 'error');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    if (type === 'background') {
-                        backgroundImage = {
-                            src: e.target.result,
-                            name: file.name,
-                            element: img,
-                            width: img.naturalWidth,
-                            height: img.naturalHeight
-                        };
-                        document.getElementById('current-bg').textContent = file.name;
-                        displayBackgroundImage();
-                    } else {
-                        const foregroundData = {
-                            src: e.target.result,
-                            name: file.name,
-                            element: img,
-                            width: img.naturalWidth,
-                            height: img.naturalHeight,
-                            position: { x: 50, y: 50 },
-                            scale: 0.3,
-                            rotation: 0
-                        };
-                        foregroundImages.push(foregroundData);
-                        updateForegroundCount();
-                        if (backgroundImage) {
-                            displayComposition();
-                        }
-                    }
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // 显示背景图
-        function displayBackgroundImage() {
-            const previewArea = document.getElementById('previewArea');
-            previewArea.innerHTML = '';
-            previewArea.classList.add('has-image');
-            
-            const img = document.createElement('img');
-            img.src = backgroundImage.src;
-            img.className = 'preview-image';
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
-            img.style.objectFit = 'contain';
-            
-            previewArea.appendChild(img);
-            
-            // 重新添加控制点容器
-            const controlPointsContainer = document.createElement('div');
-            controlPointsContainer.className = 'control-points';
-            controlPointsContainer.id = 'controlPoints';
-            previewArea.appendChild(controlPointsContainer);
-            
-            // 重新添加拖拽区域
-            const dragArea = document.createElement('div');
-            dragArea.className = 'foreground-drag-area';
-            dragArea.id = 'foregroundDragArea';
-            previewArea.appendChild(dragArea);
-            
-            if (foregroundImages.length > 0) {
-                displayComposition();
-            }
-        }
-
-        // 显示合成效果
-        function displayComposition() {
-            if (!backgroundImage) return;
-            
-            const previewArea = document.getElementById('previewArea');
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            // 设置画布尺寸
-            const maxWidth = 800;
-            const maxHeight = 600;
-            const bgRatio = backgroundImage.width / backgroundImage.height;
-            
-            if (bgRatio > maxWidth / maxHeight) {
-                canvas.width = maxWidth;
-                canvas.height = maxWidth / bgRatio;
-            } else {
-                canvas.width = maxHeight * bgRatio;
-                canvas.height = maxHeight;
-            }
-            
-            // 清除预览区域
-            previewArea.innerHTML = '';
-            previewArea.classList.add('has-image');
-            
-            // 绘制背景图
-            ctx.drawImage(backgroundImage.element, 0, 0, canvas.width, canvas.height);
-            
-            // 绘制前景图
-            foregroundImages.forEach((fg, index) => {
-                ctx.save();
-                
-                const x = (fg.position.x / 100) * canvas.width;
-                const y = (fg.position.y / 100) * canvas.height;
-                const width = fg.width * fg.scale * (canvas.width / backgroundImage.width);
-                const height = fg.height * fg.scale * (canvas.height / backgroundImage.height);
-                
-                ctx.translate(x, y);
-                ctx.rotate(fg.rotation * Math.PI / 180);
-                ctx.globalAlpha = 0.9;
-                ctx.drawImage(fg.element, -width/2, -height/2, width, height);
-                
-                ctx.restore();
-            });
-            
-            previewArea.appendChild(canvas);
-            createControlPoints();
-        }
-
-        // 创建控制点
-        function createControlPoints() {
-            const controlPointsContainer = document.getElementById('controlPoints');
-            if (!controlPointsContainer) return;
-            
-            controlPointsContainer.innerHTML = '';
-            
-            foregroundImages.forEach((fg, index) => {
-                const point = document.createElement('div');
-                point.className = 'control-point';
-                point.dataset.index = index;
-                
-                // 设置控制点位置
-                point.style.left = fg.position.x + '%';
-                point.style.top = fg.position.y + '%';
-                point.style.transform = 'translate(-50%, -50%)';
-                
-                // 添加拖拽事件
-                point.addEventListener('mousedown', startDragControlPoint);
-                
-                controlPointsContainer.appendChild(point);
-            });
-        }
-
-        // 开始拖拽控制点
-        function startDragControlPoint(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const point = e.target;
-            const index = parseInt(point.dataset.index);
-            
-            point.classList.add('active');
-            isDragging = true;
-            currentEditingForeground = index;
-            
-            const rect = point.parentElement.getBoundingClientRect();
-            dragOffset.x = e.clientX - rect.left - (rect.width * foregroundImages[index].position.x / 100);
-            dragOffset.y = e.clientY - rect.top - (rect.height * foregroundImages[index].position.y / 100);
-            
-            document.addEventListener('mousemove', dragControlPoint);
-            document.addEventListener('mouseup', stopDragControlPoint);
-        }
-
-        // 拖拽控制点
-        function dragControlPoint(e) {
-            if (!isDragging || currentEditingForeground === null) return;
-            
-            const previewArea = document.getElementById('previewArea');
-            const rect = previewArea.getBoundingClientRect();
-            
-            const x = ((e.clientX - rect.left - dragOffset.x) / rect.width) * 100;
-            const y = ((e.clientY - rect.top - dragOffset.y) / rect.height) * 100;
-            
-            // 限制在画布内
-            const clampedX = Math.max(5, Math.min(95, x));
-            const clampedY = Math.max(5, Math.min(95, y));
-            
-            foregroundImages[currentEditingForeground].position.x = clampedX;
-            foregroundImages[currentEditingForeground].position.y = clampedY;
-            
-            // 更新控制点位置
-            const point = document.querySelector(`.control-point[data-index="${currentEditingForeground}"]`);
-            if (point) {
-                point.style.left = clampedX + '%';
-                point.style.top = clampedY + '%';
-            }
-            
-            // 重新绘制
-            displayComposition();
-        }
-
-        // 停止拖拽控制点
-        function stopDragControlPoint(e) {
-            if (!isDragging) return;
-            
-            isDragging = false;
-            currentEditingForeground = null;
-            
-            // 移除active状态
-            document.querySelectorAll('.control-point.active').forEach(point => {
-                point.classList.remove('active');
-            });
-            
-            document.removeEventListener('mousemove', dragControlPoint);
-            document.removeEventListener('mouseup', stopDragControlPoint);
-        }
-
-        // 更新前景图数量
-        function updateForegroundCount() {
-            document.getElementById('fg-count').textContent = `${foregroundImages.length}张`;
-        }
-
-        // 执行图像合成
-        function composeImages() {
-            if (!backgroundImage || foregroundImages.length === 0) {
-                showMessage('请先导入背景图和前景图', 'warning');
-                return;
-            }
-
-            showLoadingState();
-            
-            // 模拟合成过程
-            setTimeout(() => {
-                generateCompositeResults();
-                hideLoadingState();
-                showMessage('图像合成完成！', 'success');
-            }, 2000);
-        }
-
-        // 生成合成结果
-        function generateCompositeResults() {
-            const resultContainer = document.getElementById('resultImages');
-            resultContainer.innerHTML = '';
-            composedResults = [];
-
-            foregroundImages.forEach((fg, index) => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                // 设置输出尺寸
-                canvas.width = 400;
-                canvas.height = 300;
-                
-                // 绘制背景
-                ctx.drawImage(backgroundImage.element, 0, 0, canvas.width, canvas.height);
-                
-                // 绘制前景
-                ctx.save();
-                const x = (fg.position.x / 100) * canvas.width;
-                const y = (fg.position.y / 100) * canvas.height;
-                const width = fg.width * fg.scale * (canvas.width / backgroundImage.width);
-                const height = fg.height * fg.scale * (canvas.height / backgroundImage.height);
-                
-                ctx.translate(x, y);
-                ctx.rotate(fg.rotation * Math.PI / 180);
-                ctx.globalAlpha = 0.9;
-                ctx.drawImage(fg.element, -width/2, -height/2, width, height);
-                ctx.restore();
-                
-                // 创建结果卡片
-                const resultItem = document.createElement('div');
-                resultItem.className = 'result-image';
-                
-                const imageContainer = document.createElement('div');
-                imageContainer.className = 'image-container';
-                
-                const resultImg = document.createElement('img');
-                resultImg.src = canvas.toDataURL('image/png');
-                resultImg.alt = `合成结果 ${index + 1}`;
-                resultImg.onclick = () => previewComposedImage(resultImg.src);
-                
-                const overlay = document.createElement('div');
-                overlay.className = 'image-overlay';
-                overlay.innerHTML = `
-                    <button class="el-button el-button--small el-button--primary" onclick="downloadComposedImage('${canvas.toDataURL('image/png')}', '合成结果_${index + 1}.png')">
-                        <span class="icon">⬇️</span>
-                    </button>
-                `;
-                
-                imageContainer.appendChild(resultImg);
-                imageContainer.appendChild(overlay);
-                resultItem.appendChild(imageContainer);
-                resultContainer.appendChild(resultItem);
-                
-                // 保存结果
-                composedResults.push({
-                    canvas: canvas,
-                    dataUrl: canvas.toDataURL('image/png'),
-                    name: `合成结果_${backgroundImage.name}_${fg.name}.png`
-                });
-            });
-        }
-
-        // 预览合成图像
-        function previewComposedImage(src) {
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(0, 0, 0, 0.8); display: flex;
-                align-items: center; justify-content: center; z-index: 9999;
-                cursor: pointer;
-            `;
-            
-            const img = document.createElement('img');
-            img.src = src;
-            img.style.cssText = `
-                max-width: 90%; max-height: 90%; 
-                border-radius: var(--el-border-radius-base);
-                box-shadow: var(--el-box-shadow-dark);
-            `;
-            
-            modal.appendChild(img);
-            modal.onclick = () => document.body.removeChild(modal);
-            document.body.appendChild(modal);
-        }
-
-        // 下载合成图像
-        function downloadComposedImage(dataUrl, filename) {
-            const link = document.createElement('a');
-            link.download = filename;
-            link.href = dataUrl;
-            link.click();
-        }
-
-        // 下载所有结果
-        function downloadResults() {
-            if (composedResults.length === 0) {
-                showMessage('没有可下载的合成结果', 'warning');
-                return;
-            }
-
-            composedResults.forEach((result, index) => {
-                setTimeout(() => {
-                    downloadComposedImage(result.dataUrl, result.name);
-                }, index * 500);
-            });
-            
-            showMessage(`开始下载 ${composedResults.length} 个文件`, 'success');
-        }
-
-        // 显示加载状态
-        function showLoadingState() {
-            const previewArea = document.getElementById('previewArea');
-            const loadingDiv = document.createElement('div');
-            loadingDiv.id = 'loadingState';
-            loadingDiv.className = 'loading-state';
-            loadingDiv.innerHTML = `
-                <div class="loading-spinner"></div>
-                <div>正在合成图像...</div>
-            `;
-            previewArea.appendChild(loadingDiv);
-        }
-
-        // 隐藏加载状态
-        function hideLoadingState() {
-            const loadingState = document.getElementById('loadingState');
-            if (loadingState) {
-                loadingState.remove();
-            }
-        }
-
-        // 显示消息提示
-        function showMessage(message, type = 'info') {
-            const messageEl = document.createElement('div');
-            messageEl.style.cssText = `
-                position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-                padding: 12px 20px; border-radius: var(--el-border-radius-base);
-                color: white; font-size: var(--el-font-size-base);
-                z-index: 9999; animation: slideDown 0.3s ease;
-                max-width: 400px; text-align: center;
-            `;
-            
-            switch (type) {
-                case 'success':
-                    messageEl.style.backgroundColor = 'var(--el-color-success)';
-                    break;
-                case 'warning':
-                    messageEl.style.backgroundColor = 'var(--el-color-warning)';
-                    break;
-                case 'error':
-                    messageEl.style.backgroundColor = 'var(--el-color-danger)';
-                    break;
-                default:
-                    messageEl.style.backgroundColor = 'var(--el-color-info)';
-            }
-            
-            messageEl.textContent = message;
-            document.body.appendChild(messageEl);
-            
-            setTimeout(() => {
-                messageEl.style.animation = 'slideUp 0.3s ease forwards';
-                setTimeout(() => {
-                    if (messageEl.parentNode) {
-                        messageEl.parentNode.removeChild(messageEl);
-                    }
-                }, 300);
-            }, 3000);
-        }
-
-        // 添加CSS动画
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideDown {
-                from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-                to { opacity: 1; transform: translateX(-50%) translateY(0); }
-            }
-            @keyframes slideUp {
-                from { opacity: 1; transform: translateX(-50%) translateY(0); }
-                to { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
-</body>
-</html>
+                                    <div>拖拽文件到此处或使用左侧按钮添加内容</div>
+                                    <div style="margin-
