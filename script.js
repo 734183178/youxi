@@ -1907,3 +1907,46 @@ function createElement(type, options = {}) {
     saveTempState();
     
     return element
+    function importBackground() {
+    document.getElementById('backgroundInput').click();
+}
+
+function addImage() {
+    document.getElementById('imageInput').click();
+}
+
+function addText() {
+    showModal('textModal');
+}
+
+function importForegrounds() {
+    document.getElementById('foregroundInput').click();
+}
+
+function startComposition() {
+    if (foregroundImages.length === 0) {
+        showToast('请先导入前景图', 'warning');
+        return;
+    }
+    
+    if (elements.length === 0) {
+        showToast('画布上没有元素', 'warning');
+        return;
+    }
+    
+    isComposing = true;
+    compositionIndex = 0;
+    compositionResults = [];
+    
+    document.getElementById('composeBtn').disabled = true;
+    document.getElementById('stopBtn').disabled = false;
+    document.getElementById('progressContainer').style.display = 'block';
+    
+    processNextComposition();
+}
+
+function stopComposition() {
+    isComposing = false;
+    finishComposition();
+    showToast('合成已停止');
+}
