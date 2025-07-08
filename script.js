@@ -1650,7 +1650,6 @@ function loadTempState() {
 };
         }
     }
-    return null;
 }
 
 // 检查点是否在元素内
