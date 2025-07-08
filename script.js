@@ -2026,3 +2026,368 @@ function downloadAllResults() {
     
     showToast(`正在批量下载 ${compositionResults.length} 张图片`);
 }
+// ========== 在script.js文件最末尾添加这些函数 ==========
+
+// 画布尺寸设置
+function setCanvasSize(width, height) {
+    canvasWidth = width;
+    canvasHeight = height;
+    applyCanvasSize();
+}
+
+function applyCustomSize() {
+    const width = parseInt(document.getElementById('canvasWidth').value);
+    const height = parseInt(document.getElementById('canvasHeight').value);
+    
+    if (width > 0 && height > 0) {
+        setCanvasSize(width, height);
+    } else {
+        showToast('请输入有效的画布尺寸', 'warning');
+    }
+}
+
+function applyCanvasSize() {
+    const canvas = document.getElementById('canvas');
+    canvas.style.width = canvasWidth + 'px';
+    canvas.style.height = canvasHeight + 'px';
+    
+    updateUI();
+    saveTempState();
+}
+
+function updateCanvasBackground() {
+    const color = document.getElementById('canvasBgColor').value;
+    const canvas = document.getElementById('canvas');
+    canvas.style.backgroundColor = color;
+    saveTempState();
+}
+
+// 导入背景图
+function importBackground() {
+    document.getElementById('backgroundInput').click();
+}
+
+function handleBackgroundUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (!isValidImageFile(file)) {
+        showToast('不支持的文件格式，请选择 JPG、PNG 或 GIF 文件', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        // 删除现有背景
+        const existingBg = elements.find(el => el.type === ElementType.BACKGROUND);
+        if (existingBg) {
+            deleteElement(existingBg);
+        }
+        
+        const img = new Image();
+        img.onload = function() {
+            const element = createElement(ElementType.BACKGROUND, {
+                src: e.target.result,
+                x: 0,
+                y: 0,
+                width: img.width,
+                height: img.height,
+                zIndex: -1
+            });
+            
+            selectElement(element);
+            showToast('背景图导入成功');
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// 添加图片
+function addImage() {
+    document.getElementById('imageInput').click();
+}
+
+function handleImageUpload(event) {
+    const files = Array.from(event.target.files);
+    
+    files.forEach(file => {
+        if (!isValidImageFile(file)) {
+            showToast(`文件 ${file.name} 格式不支持`, 'error');
+            return;
+        }
+        
+        createImageElement(file);
+    });
+}
+
+function createImageElement(file, x, y) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const element = createElement(ElementType.IMAGE, {
+                src: e.target.result,
+                x: x || canvasWidth / 2 - img.width / 2,
+                y: y || canvasHeight / 2 - img.height / 2,
+                width: img.width,
+                height: img.height,
+                originalWidth: img.width,
+                originalHeight: img.height,
+                filename: file.name
+            });
+            
+            selectElement(element);
+            showToast('图片添加成功');
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// 添加文字
+function addText() {
+    showModal('textModal');
+}
+
+function confirmAddText() {
+    const text = document.getElementById('textInput').value.trim();
+    if (!text) {
+        showToast('请输入文字内容', 'warning');
+        return;
+    }
+    
+    const element = createElement(ElementType.TEXT, {
+        text: text,
+        fontSize: 24,
+        color: '#000000',
+        fontFamily: 'Microsoft YaHei',
+        width: 200,
+        height: 60
+    });
+    
+    selectElement(element);
+    closeModal('textModal');
+    document.getElementById('textInput').value = '';
+    showToast('文字添加成功');
+}
+
+function closeTextModal() {
+    closeModal('textModal');
+    document.getElementById('textInput').value = '';
+}
+
+// 导入前景图
+function importForegrounds() {
+    document.getElementById('foregroundInput').click();
+}
+
+function handleForegroundUpload(event) {
+    const files = Array.from(event.target.files);
+    
+    files.forEach(file => {
+        if (!isValidImageFile(file)) {
+            showToast(`文件 ${file.name} 格式不支持`, 'error');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                foregroundImages.push({
+                    id: Date.now() + Math.random(),
+                    name: file.name,
+                    src: e.target.result,
+                    width: img.width,
+                    height: img.height
+                });
+                
+                updateForegroundList();
+                showToast(`前景图 ${file.name} 添加成功`);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// 合成功能
+function startComposition() {
+    if (foregroundImages.length === 0) {
+        showToast('请先导入前景图', 'warning');
+        return;
+    }
+    
+    if (elements.length === 0) {
+        showToast('画布上没有元素', 'warning');
+        return;
+    }
+    
+    isComposing = true;
+    compositionIndex = 0;
+    compositionResults = [];
+    
+    document.getElementById('composeBtn').disabled = true;
+    document.getElementById('stopBtn').disabled = false;
+    document.getElementById('progressContainer').style.display = 'block';
+    
+    processNextComposition();
+}
+
+function stopComposition() {
+    isComposing = false;
+    finishComposition();
+    showToast('合成已停止');
+}
+
+function processNextComposition() {
+    if (!isComposing || compositionIndex >= foregroundImages.length) {
+        finishComposition();
+        return;
+    }
+    
+    const foregroundImg = foregroundImages[compositionIndex];
+    const progress = ((compositionIndex + 1) / foregroundImages.length) * 100;
+    
+    document.getElementById('progressText').textContent = 
+        `正在处理 ${compositionIndex + 1}/${foregroundImages.length}: ${foregroundImg.name}`;
+    document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
+    document.getElementById('progressFill').style.width = progress + '%';
+    
+    // 模拟异步处理
+    setTimeout(() => {
+        createCompositionResult(foregroundImg, compositionIndex + 1);
+        compositionIndex++;
+        
+        if (isComposing) {
+            processNextComposition();
+        }
+    }, 100);
+}
+
+function finishComposition() {
+    isComposing = false;
+    
+    document.getElementById('composeBtn').disabled = false;
+    document.getElementById('stopBtn').disabled = true;
+    document.getElementById('progressContainer').style.display = 'none';
+    document.getElementById('downloadAllBtn').disabled = compositionResults.length === 0;
+    
+    if (compositionResults.length > 0) {
+        showToast(`合成完成！生成了 ${compositionResults.length} 张图片`);
+    }
+}
+
+function createCompositionResult(foregroundImg, index) {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    const ctx = canvas.getContext('2d');
+    
+    // 设置背景色
+    ctx.fillStyle = document.getElementById('canvasBgColor').value;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    
+    // 按zIndex排序绘制元素
+    const sortedElements = [...elements].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+    
+    Promise.all(sortedElements.map(element => drawElementToCanvas(ctx, element, foregroundImg)))
+        .then(() => {
+            const dataURL = canvas.toDataURL('image/png');
+            const result = {
+                id: Date.now() + index,
+                name: `合成结果_${String(index).padStart(3, '0')}.png`,
+                src: dataURL,
+                foregroundName: foregroundImg.name
+            };
+            
+            compositionResults.push(result);
+            updateResultsList();
+        });
+}
+
+function drawElementToCanvas(ctx, element, foregroundImg) {
+    return new Promise((resolve) => {
+        if (element.type === ElementType.BACKGROUND || element.type === ElementType.IMAGE) {
+            let srcToUse = element.src;
+            if (element.type === ElementType.IMAGE && element.filename) {
+                srcToUse = foregroundImg.src;
+            }
+            
+            const img = new Image();
+            img.onload = function() {
+                ctx.save();
+                ctx.globalAlpha = element.opacity || 1;
+                
+                if (element.rotation) {
+                    ctx.translate(element.x + element.width / 2, element.y + element.height / 2);
+                    ctx.rotate((element.rotation * Math.PI) / 180);
+                    ctx.drawImage(img, -element.width / 2, -element.height / 2, element.width, element.height);
+                } else {
+                    ctx.drawImage(img, element.x, element.y, element.width, element.height);
+                }
+                
+                ctx.restore();
+                resolve();
+            };
+            img.src = srcToUse;
+        } else if (element.type === ElementType.TEXT) {
+            ctx.save();
+            ctx.globalAlpha = element.opacity || 1;
+            
+            if (element.rotation) {
+                ctx.translate(element.x + element.width / 2, element.y + element.height / 2);
+                ctx.rotate((element.rotation * Math.PI) / 180);
+            }
+            
+            ctx.font = `${element.fontWeight || 'normal'} ${element.fontStyle || 'normal'} ${element.fontSize || 16}px ${element.fontFamily || 'Microsoft YaHei'}`;
+            ctx.fillStyle = element.color || '#000000';
+            ctx.textAlign = element.textAlign || 'center';
+            ctx.textBaseline = 'middle';
+            
+            const x = element.rotation ? 0 : element.x + element.width / 2;
+            const y = element.rotation ? 0 : element.y + element.height / 2;
+            
+            if (element.textStroke) {
+                ctx.strokeStyle = element.textStrokeColor || '#000000';
+                ctx.lineWidth = element.textStrokeWidth || 1;
+                ctx.strokeText(element.text || '', x, y);
+            }
+            
+            ctx.fillText(element.text || '', x, y);
+            
+            ctx.restore();
+            resolve();
+        } else {
+            resolve();
+        }
+    });
+}
+
+// 辅助函数
+function isValidImageFile(file) {
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    return validTypes.includes(file.type);
+}
+
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.add('show');
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('show');
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = `toast ${type}`;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
