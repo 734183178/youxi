@@ -990,6 +990,7 @@
                 };
                 
                 layers.push(textLayer);
+                showCanvas(); // 显示画布
                 updateCanvas();
                 updateLayersPanel();
                 selectLayer(textLayer.id);
@@ -1069,6 +1070,7 @@
                         };
                         
                         layers.push(imageLayer);
+                        showCanvas(); // 显示画布
                         updateCanvas();
                         updateLayersPanel();
                         selectLayer(imageLayer.id);
@@ -1112,15 +1114,44 @@
             updateCanvas();
         }
 
+        // 当没有背景图时也要显示画布
+        function showCanvas() {
+            if (layers.length > 0) {
+                const previewArea = document.getElementById('previewArea');
+                const emptyState = previewArea.querySelector('.empty-state');
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                
+                // 设置默认画布尺寸
+                if (!backgroundImage) {
+                    canvas.width = 800;
+                    canvas.height = 600;
+                    canvasContainer.style.width = canvas.width + 'px';
+                    canvasContainer.style.height = canvas.height + 'px';
+                }
+                
+                canvasContainer.style.display = 'block';
+                previewArea.classList.add('has-content');
+                updateCanvas();
+            }
+        }
+
         // 更新画布
         function updateCanvas() {
-            if (!canvas || !ctx || !backgroundImage) return;
+            if (!canvas || !ctx) return;
             
             // 清空画布
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // 绘制背景图
-            ctx.drawImage(backgroundImage.element, 0, 0, canvas.width, canvas.height);
+            // 绘制背景图（如果有）
+            if (backgroundImage) {
+                ctx.drawImage(backgroundImage.element, 0, 0, canvas.width, canvas.height);
+            } else {
+                // 如果没有背景图，绘制白色背景
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
             
             // 按z-index排序绘制图层
             const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
@@ -1136,6 +1167,13 @@
                 
                 ctx.restore();
             });
+            
+            // 显示画布
+            canvas.style.display = 'block';
+            canvas.style.position = 'absolute';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.zIndex = '1';
             
             updateLayerElements();
         }
