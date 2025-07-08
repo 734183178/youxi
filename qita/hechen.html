@@ -1218,6 +1218,38 @@
             wrapper.style.width = layer.width + 'px';
             wrapper.style.height = layer.height + 'px';
             wrapper.style.zIndex = layer.zIndex + 100;
+            wrapper.style.pointerEvents = 'auto';
+            
+            // 添加可视化内容
+            if (layer.type === 'text') {
+                const textEl = document.createElement('div');
+                textEl.className = 'text-element';
+                textEl.style.cssText = `
+                    font-size: ${layer.fontSize}px;
+                    font-family: ${layer.fontFamily};
+                    font-weight: ${layer.fontWeight};
+                    color: ${layer.color};
+                    text-align: ${layer.textAlign};
+                    white-space: pre-wrap;
+                    width: 100%;
+                    height: 100%;
+                    overflow: hidden;
+                    pointer-events: none;
+                `;
+                textEl.textContent = layer.content;
+                wrapper.appendChild(textEl);
+            } else if (layer.type === 'image') {
+                const imgEl = document.createElement('img');
+                imgEl.className = 'image-element';
+                imgEl.src = layer.src;
+                imgEl.style.cssText = `
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                    pointer-events: none;
+                `;
+                wrapper.appendChild(imgEl);
+            }
             
             if (selectedLayerId === layer.id) {
                 wrapper.classList.add('selected');
