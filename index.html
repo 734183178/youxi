@@ -3,661 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小红书数据统计</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 16px;
-        }
-
-        .add-section {
-            padding: 30px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .input-field {
-            flex: 1;
-            min-width: 300px;
-            padding: 12px 16px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: #f8f9fa;
-            color: #495057;
-            border: 1px solid #dee2e6;
-        }
-
-        .btn-secondary:hover {
-            background: #e9ecef;
-        }
-
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-
-        .controls {
-            padding: 20px 30px;
-            background: #f8f9fb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .sort-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .select-field {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: white;
-        }
-
-        .status-info {
-            display: flex;
-            gap: 20px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .data-table {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        th, td {
-            padding: 16px 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        th {
-            background: #f8f9fb;
-            font-weight: 600;
-            color: #333;
-            cursor: pointer;
-            user-select: none;
-            position: relative;
-        }
-
-        th:hover {
-            background: #f1f3f5;
-        }
-
-        th.sortable::after {
-            content: '↕';
-            position: absolute;
-            right: 8px;
-            opacity: 0.5;
-        }
-
-        th.asc::after {
-            content: '↑';
-            opacity: 1;
-            color: #667eea;
-        }
-
-        th.desc::after {
-            content: '↓';
-            opacity: 1;
-            color: #667eea;
-        }
-
-        tr:hover {
-            background: #f8f9fb;
-        }
-
-        .product-name {
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .store-name {
-            color: #666;
-            font-size: 13px;
-        }
-
-        .price {
-            color: #e74c3c;
-            font-weight: 600;
-        }
-
-        .sales {
-            color: #27ae60;
-            font-weight: 600;
-        }
-
-        .gmv {
-            color: #f39c12;
-            font-weight: 600;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 60px;
-            color: #999;
-        }
-
-        .no-data img {
-            width: 80px;
-            opacity: 0.5;
-            margin-bottom: 15px;
-        }
-
-        .last-update {
-            font-size: 12px;
-            color: #999;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 8px;
-            }
-            
-            .header {
-                padding: 20px;
-            }
-            
-            .add-section {
-                padding: 20px;
-            }
-            
-            .input-group {
-                flex-direction: column;
-            }
-            
-            .input-field {
-                min-width: 100%;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .data-table {
-                font-size: 12px;
-            }
-            
-            th, td {
-                padding: 8px 6px;
-            }
-        }
-    </style>
+    <title>高级图像合成工具</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>小红书数据统计</h1>
-            <p>请输入小红书商品链接，每行一个，支持批量添加</p>
-        </div>
+        <!-- 左侧边栏 -->
+        <div class="sidebar">
+            <h1 class="title">高级图像合成工具</h1>
+            
+            <!-- 操作区 -->
+            <div class="section">
+                <h3 class="section-title">📁 操作区</h3>
+                <button class="btn btn-primary" onclick="importBackground()">
+                    🖼️ 导入背景图
+                </button>
+                <button class="btn btn-success" onclick="addImage()">
+                    🎨 添加图片
+                </button>
+                <button class="btn btn-warning" onclick="addText()">
+                    📝 添加文字
+                </button>
+                <button class="btn btn-secondary" onclick="importForegrounds()">
+                    🎭 导入前景图
+                </button>
+            </div>
 
-        <div class="add-section">
-            <div class="input-group">
-                <input type="text" 
-                       class="input-field" 
-                       id="productUrl" 
-                       placeholder="输入小红书商品链接，例如：https://www.xiaohongshu.com/goods-detail/..."
-                >
-                <button class="btn btn-primary" onclick="addProduct()">批量新增</button>
+            <!-- 画布设置 -->
+            <div class="section">
+                <h3 class="section-title">📐 画布设置</h3>
+                <div class="canvas-size-presets">
+                    <button class="preset-btn" onclick="setCanvasSize(1920, 1080)">1920×1080</button>
+                    <button class="preset-btn" onclick="setCanvasSize(1080, 1080)">1080×1080</button>
+                    <button class="preset-btn" onclick="setCanvasSize(1242, 1660)">1242×1660</button>
+                </div>
+                <div class="custom-size">
+                    <div class="size-input-group">
+                        <input type="number" id="canvasWidth" placeholder="宽度" value="1920">
+                        <span>×</span>
+                        <input type="number" id="canvasHeight" placeholder="高度" value="1080">
+                        <button onclick="applyCustomSize()">应用</button>
+                    </div>
+                </div>
+                <div class="canvas-bg-color">
+                    <label>背景色：</label>
+                    <input type="color" id="canvasBgColor" value="#ffffff" onchange="updateCanvasBackground()">
+                </div>
+            </div>
+
+            <!-- 图层管理 -->
+            <div class="section">
+                <h3 class="section-title">📊 图层管理</h3>
+                <div class="layer-controls">
+                    <button class="layer-btn" onclick="moveLayerUp()" title="上移图层">↑</button>
+                    <button class="layer-btn" onclick="moveLayerDown()" title="下移图层">↓</button>
+                    <button class="layer-btn" onclick="deleteSelectedElements()" title="删除选中">🗑️</button>
+                    <button class="layer-btn" onclick="copySelectedElements()" title="复制">📋</button>
+                    <button class="layer-btn" onclick="pasteElements()" title="粘贴">📄</button>
+                </div>
+                <div class="layers-list" id="layersList">
+                    <div class="no-layers">暂无图层</div>
+                </div>
+            </div>
+
+            <!-- 属性设置 -->
+            <div class="section">
+                <h3 class="section-title">🎛️ 属性设置</h3>
+                <div class="properties-panel" id="propertiesPanel">
+                    <div class="no-selection">请选择一个图层进行编辑</div>
+                </div>
             </div>
         </div>
 
-        <div class="controls">
-            <div class="sort-controls">
-                <label>排序方式：</label>
-                <select class="select-field" id="sortField" onchange="sortTable()">
-                    <option value="">请选择排序字段</option>
-                    <option value="price">商品价格</option>
-                    <option value="dailySales">商品日销量</option>
-                    <option value="dailyGMV">商品日GMV</option>
-                    <option value="storeTotal">店铺销量</option>
-                    <option value="storeDailySales">店铺日销量</option>
-                </select>
-                <select class="select-field" id="sortOrder" onchange="sortTable()">
-                    <option value="desc">降序</option>
-                    <option value="asc">升序</option>
-                </select>
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 工具栏 -->
+            <div class="toolbar">
+                <button class="toolbar-btn" onclick="selectTool()" title="选择工具" id="selectBtn">🖱️</button>
+                <button class="toolbar-btn" onclick="toggleGrid()" title="网格" id="gridBtn">⊞</button>
+                <button class="toolbar-btn" onclick="toggleRuler()" title="标尺" id="rulerBtn">📏</button>
+                <button class="toolbar-btn" onclick="toggleSnap()" title="磁性对齐" id="snapBtn">🧲</button>
+                <div class="toolbar-separator"></div>
+                <button class="toolbar-btn" onclick="saveProject()" title="保存项目">💾</button>
+                <button class="toolbar-btn" onclick="loadProject()" title="载入项目">📂</button>
+                <button class="toolbar-btn" onclick="clearCanvas()" title="清空画布">🗑️</button>
+                <div class="toolbar-spacer"></div>
+                <span class="zoom-info">缩放: <span id="zoomLevel">100%</span></span>
+                <button class="toolbar-btn" onclick="zoomOut()">-</button>
+                <button class="toolbar-btn" onclick="resetZoom()">100%</button>
+                <button class="toolbar-btn" onclick="zoomIn()">+</button>
             </div>
-            <div class="status-info">
-                <span>共 <span id="totalCount">0</span> 条数据</span>
-                <span class="last-update">最后更新：<span id="lastUpdate">暂无数据</span></span>
+
+            <!-- 工作区 -->
+            <div class="workspace">
+                <div class="canvas-container" id="canvasContainer">
+                    <!-- 标尺 -->
+                    <div class="ruler ruler-horizontal" id="rulerHorizontal"></div>
+                    <div class="ruler ruler-vertical" id="rulerVertical"></div>
+                    
+                    <!-- 画布包装器 -->
+                    <div class="canvas-wrapper" id="canvasWrapper">
+                        <div class="canvas" id="canvas">
+                            <div class="grid" id="grid"></div>
+                            <div class="selection-box" id="selectionBox"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="data-table">
-            <table id="dataTable">
-                <thead>
-                    <tr>
-                        <th class="sortable" data-field="name">商品名称</th>
-                        <th class="sortable" data-field="price">价格(元)</th>
-                        <th class="sortable" data-field="totalSales">商品总销量</th>
-                        <th class="sortable" data-field="dailySales">商品日销量</th>
-                        <th class="sortable" data-field="dailyGMV">商品日GMV</th>
-                        <th class="sortable" data-field="storeName">店铺名称</th>
-                        <th class="sortable" data-field="storeTotal">店铺销量</th>
-                        <th class="sortable" data-field="storeDailySales">店铺日销量</th>
-                        <th>最后更新</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody id="dataTableBody">
-                    <tr>
-                        <td colspan="10" class="no-data">
-                            <div>暂无数据，请添加商品链接开始监控</div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- 右侧结果面板 -->
+        <div class="results-panel">
+            <h3 class="section-title">🎯 合成结果</h3>
+            
+            <!-- 前景图预览 -->
+            <div class="foreground-preview">
+                <h4>前景图列表 (<span id="foregroundCount">0</span>张)</h4>
+                <div class="foreground-list" id="foregroundList">
+                    <div class="no-foregrounds">暂无前景图</div>
+                </div>
+            </div>
+
+            <!-- 合成控制 -->
+            <div class="composition-controls">
+                <button class="btn btn-warning" onclick="startComposition()" id="composeBtn">
+                    🚀 开始合成
+                </button>
+                <button class="btn btn-danger" onclick="stopComposition()" id="stopBtn" disabled>
+                    ⏹️ 停止合成
+                </button>
+            </div>
+
+            <!-- 进度显示 -->
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-info">
+                    <span id="progressText">准备中...</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <!-- 合成结果 -->
+            <div class="results-container">
+                <h4>合成结果 (<span id="resultCount">0</span>张)</h4>
+                <div class="results-list" id="resultsList">
+                    <div class="no-results">点击"开始合成"生成结果</div>
+                </div>
+                <div class="batch-download">
+                    <button class="btn btn-success" onclick="downloadAllResults()" id="downloadAllBtn" disabled>
+                        📥 批量下载
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        // 模拟数据存储
-        let productsData = [];
-        let sortField = '';
-        let sortOrder = 'desc';
+    <!-- 隐藏的文件输入 -->
+    <input type="file" id="backgroundInput" accept="image/jpeg,image/jpg,image/png,image/gif" onchange="handleBackgroundUpload(event)">
+    <input type="file" id="imageInput" accept="image/jpeg,image/jpg,image/png,image/gif" onchange="handleImageUpload(event)">
+    <input type="file" id="foregroundInput" accept="image/jpeg,image/jpg,image/png,image/gif" multiple onchange="handleForegroundUpload(event)">
+    <input type="file" id="projectInput" accept=".json" onchange="handleProjectLoad(event)">
 
-        // 模拟的示例数据
-        const sampleData = [
-            {
-                id: 1,
-                name: "蕉下雨伞折叠女晴雨两用超轻便小巧",
-                price: 179,
-                totalSales: 12500,
-                dailySales: 43,
-                dailyGMV: 7697,
-                storeName: "蕉下官方旗舰店",
-                storeTotal: 15600,
-                storeDailySales: 89,
-                lastUpdate: "2025-05-22 08:14",
-                url: "https://www.xiaohongshu.com/goods-detail/sample1"
-            },
-            {
-                id: 2,
-                name: "一人无限公司·搞钱社区｜1年会员",
-                price: 179,
-                totalSales: 2014,
-                dailySales: 15,
-                dailyGMV: 2685,
-                storeName: "Pitch.拓点学习室的店",
-                storeTotal: 2708,
-                storeDailySales: 25,
-                lastUpdate: "2025-05-22 08:14",
-                url: "https://www.xiaohongshu.com/goods-detail/sample2"
-            },
-            {
-                id: 3,
-                name: "薯笔海贼王法律书包双肩包",
-                price: 39,
-                totalSales: 1400,
-                dailySales: 12,
-                dailyGMV: 468,
-                storeName: "薯笔小书店的店",
-                storeTotal: 1984,
-                storeDailySales: 18,
-                lastUpdate: "2025-05-22 08:16",
-                url: "https://www.xiaohongshu.com/goods-detail/sample3"
-            }
-        ];
+    <!-- 文字编辑器模态框 -->
+    <div class="modal" id="textModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加文字</h3>
+                <button class="modal-close" onclick="closeTextModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="textInput" placeholder="请输入文字内容..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeTextModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmAddText()">确定</button>
+            </div>
+        </div>
+    </div>
 
-        // 初始化页面
-        function initPage() {
-            // 加载示例数据
-            productsData = [...sampleData];
-            renderTable();
-            updateStats();
-        }
+    <!-- 图片裁剪模态框 -->
+    <div class="modal" id="cropModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>图片裁剪</h3>
+                <button class="modal-close" onclick="closeCropModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="crop-container">
+                    <img id="cropImage" src="" alt="裁剪图片">
+                    <div class="crop-overlay" id="cropOverlay">
+                        <div class="crop-selection" id="cropSelection">
+                            <div class="crop-handle crop-handle-nw"></div>
+                            <div class="crop-handle crop-handle-ne"></div>
+                            <div class="crop-handle crop-handle-sw"></div>
+                            <div class="crop-handle crop-handle-se"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCropModal()">取消</button>
+                <button class="btn btn-primary" onclick="applyCrop()">应用裁剪</button>
+            </div>
+        </div>
+    </div>
 
-        // 模拟添加商品
-        function addProduct() {
-            const urlInput = document.getElementById('productUrl');
-            const url = urlInput.value.trim();
-            
-            if (!url) {
-                alert('请输入商品链接');
-                return;
-            }
+    <!-- 提示消息 -->
+    <div class="toast" id="toast"></div>
 
-            if (!url.includes('xiaohongshu.com')) {
-                alert('请输入有效的小红书商品链接');
-                return;
-            }
+    <!-- 确认对话框 -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="confirmTitle">确认操作</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">确定要执行此操作吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmAction()" id="confirmBtn">确定</button>
+            </div>
+        </div>
+    </div>
 
-            // 模拟爬取数据
-            simulateCrawling(url);
-            urlInput.value = '';
-        }
-
-        // 模拟爬取过程
-        function simulateCrawling(url) {
-            // 显示加载状态
-            const tbody = document.getElementById('dataTableBody');
-            tbody.innerHTML = '<tr><td colspan="10" class="loading">正在爬取商品数据...</td></tr>';
-
-            // 模拟异步爬取
-            setTimeout(() => {
-                const newProduct = {
-                    id: Date.now(),
-                    name: "新添加的商品 - " + Math.random().toString(36).substr(2, 6),
-                    price: Math.floor(Math.random() * 500) + 50,
-                    totalSales: Math.floor(Math.random() * 10000) + 100,
-                    dailySales: Math.floor(Math.random() * 50) + 1,
-                    dailyGMV: 0,
-                    storeName: "新店铺名称",
-                    storeTotal: Math.floor(Math.random() * 50000) + 1000,
-                    storeDailySales: Math.floor(Math.random() * 100) + 10,
-                    lastUpdate: new Date().toLocaleString('zh-CN'),
-                    url: url
-                };
-                
-                // 计算日GMV
-                newProduct.dailyGMV = newProduct.dailySales * newProduct.price;
-                
-                productsData.push(newProduct);
-                renderTable();
-                updateStats();
-                
-                alert('商品添加成功！');
-            }, 2000);
-        }
-
-        // 渲染表格
-        function renderTable() {
-            const tbody = document.getElementById('dataTableBody');
-            
-            if (productsData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="no-data">暂无数据，请添加商品链接开始监控</td></tr>';
-                return;
-            }
-
-            let html = '';
-            productsData.forEach(product => {
-                html += `
-                    <tr>
-                        <td class="product-name" title="${product.name}">${product.name}</td>
-                        <td class="price">¥${product.price}</td>
-                        <td class="sales">${formatNumber(product.totalSales)}</td>
-                        <td class="sales">${product.dailySales}</td>
-                        <td class="gmv">¥${formatNumber(product.dailyGMV)}</td>
-                        <td class="store-name">${product.storeName}</td>
-                        <td class="sales">${formatNumber(product.storeTotal)}</td>
-                        <td class="sales">${product.storeDailySales}</td>
-                        <td class="last-update">${product.lastUpdate}</td>
-                        <td>
-                            <button class="btn btn-secondary btn-small" onclick="downloadData(${product.id})">
-                                下载数据
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = html;
-        }
-
-        // 格式化数字显示
-        function formatNumber(num) {
-            if (num >= 10000) {
-                return (num / 10000).toFixed(1) + '万';
-            }
-            return num.toString();
-        }
-
-        // 解析万为数字
-        function parseNumber(str) {
-            if (typeof str === 'string' && str.includes('万')) {
-                return parseFloat(str.replace('万', '')) * 10000;
-            }
-            return parseInt(str) || 0;
-        }
-
-        // 排序功能
-        function sortTable() {
-            const sortFieldSelect = document.getElementById('sortField');
-            const sortOrderSelect = document.getElementById('sortOrder');
-            
-            sortField = sortFieldSelect.value;
-            sortOrder = sortOrderSelect.value;
-            
-            if (!sortField) return;
-
-            productsData.sort((a, b) => {
-                let valueA, valueB;
-                
-                switch(sortField) {
-                    case 'price':
-                        valueA = a.price;
-                        valueB = b.price;
-                        break;
-                    case 'dailySales':
-                        valueA = a.dailySales;
-                        valueB = b.dailySales;
-                        break;
-                    case 'dailyGMV':
-                        valueA = a.dailyGMV;
-                        valueB = b.dailyGMV;
-                        break;
-                    case 'storeTotal':
-                        valueA = a.storeTotal;
-                        valueB = b.storeTotal;
-                        break;
-                    case 'storeDailySales':
-                        valueA = a.storeDailySales;
-                        valueB = b.storeDailySales;
-                        break;
-                    default:
-                        return 0;
-                }
-                
-                if (sortOrder === 'asc') {
-                    return valueA - valueB;
-                } else {
-                    return valueB - valueA;
-                }
-            });
-            
-            renderTable();
-        }
-
-        // 更新统计信息
-        function updateStats() {
-            document.getElementById('totalCount').textContent = productsData.length;
-            if (productsData.length > 0) {
-                document.getElementById('lastUpdate').textContent = new Date().toLocaleString('zh-CN');
-            }
-        }
-
-        // 下载数据功能
-        function downloadData(productId) {
-            const product = productsData.find(p => p.id === productId);
-            if (!product) return;
-
-            // 模拟历史数据
-            const historicalData = generateHistoricalData(product);
-            
-            // 创建Excel内容
-            let csvContent = "日期,商品销量,商品价格,日销量,日GMV\n";
-            historicalData.forEach(row => {
-                csvContent += `${row.date},${row.totalSales},${row.price},${row.dailySales},${row.dailyGMV}\n`;
-            });
-            
-            // 下载文件
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `${product.name.substring(0, 20)}_数据统计.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // 生成模拟历史数据
-        function generateHistoricalData(product) {
-            const data = [];
-            const days = 30; // 最近30天的数据
-            let currentSales = product.totalSales;
-            
-            for (let i = days - 1; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                const dateStr = date.toISOString().split('T')[0];
-                
-                const dailySales = i === 0 ? product.dailySales : Math.floor(Math.random() * 50) + 1;
-                currentSales = i === 0 ? product.totalSales : currentSales - dailySales;
-                
-                data.push({
-                    date: dateStr,
-                    totalSales: currentSales,
-                    price: product.price,
-                    dailySales: dailySales,
-                    dailyGMV: dailySales * product.price
-                });
-            }
-            
-            return data;
-        }
-
-        // 表头点击排序
-        document.addEventListener('DOMContentLoaded', function() {
-            const headers = document.querySelectorAll('th.sortable');
-            headers.forEach(header => {
-                header.addEventListener('click', function() {
-                    const field = this.dataset.field;
-                    if (sortField === field) {
-                        sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-                    } else {
-                        sortField = field;
-                        sortOrder = 'desc';
-                    }
-                    
-                    // 更新选择框
-                    document.getElementById('sortField').value = field;
-                    document.getElementById('sortOrder').value = sortOrder;
-                    
-                    // 更新表头样式
-                    headers.forEach(h => h.className = 'sortable');
-                    this.className = `sortable ${sortOrder}`;
-                    
-                    sortTable();
-                });
-            });
-            
-            // 初始化页面
-            initPage();
-        });
-
-        // 模拟定时任务 - 每分钟更新一次数据（演示用）
-        setInterval(() => {
-            if (productsData.length > 0) {
-                // 随机更新一些数据
-                productsData.forEach(product => {
-                    const change = Math.floor(Math.random() * 10) - 5; // -5到+5的随机变化
-                    if (change > 0) {
-                        product.totalSales += change;
-                        product.dailySales += change;
-                        product.dailyGMV = product.dailySales * product.price;
-                        product.lastUpdate = new Date().toLocaleString('zh-CN');
-                    }
-                });
-                renderTable();
-                updateStats();
-            }
-        }, 60000); // 60秒更新一次
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
