@@ -1,897 +1,104 @@
-element.text = textDiv.textContent;
-        saveTempState();
-    }, { once: true });
-    
-    textDiv.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            textDiv.blur();
-        }
-    });
-}
+// 全局变量
+let elements = [];
+let selectedElements = [];
+let foregroundImages = [];
+let compositionResults = [];
+let clipboard = [];
+let elementCounter = 0;
+let currentTool = 'select';
+let zoom = 1;
+let canvasWidth = 1920;
+let canvasHeight = 1080;
 
-// 删除选中元素
-function deleteSelectedElements() {
-    if (selectedElements.length === 0) return;
-    
-    selectedElements.forEach(element => deleteElement(element));
-    clearSelection();
-    showToast(`已删除 ${selectedElements.length} 个元素`);
-}
+// 状态管理
+let isDragging = false;
+let isResizing = false;
+let isRotating = false;
+let isCropping = false;
+let isSelecting = false;
+let showGrid = false;
+let showRuler = false;
+let snapToGrid = false;
 
-function deleteElement(element) {
-    const index = elements.indexOf(element);
-    if (index > -1) {
-        elements.splice(index, 1);
-        
-        const domElement = document.getElementById(element.id);
-        if (domElement) {
-            domElement.remove();
-        }
-        
-        // 从选择中移除
-        const selectedIndex = selectedElements.indexOf(element);
-        if (selectedIndex > -1) {
-            selectedElements.splice(selectedIndex, 1);
-        }
-    }
-    
-    updateLayersList();
-    saveTempState();
-}
+// 拖拽和选择相关变量
+let dragStartX = 0;
+let dragStartY = 0;
+let selectionStartX = 0;
+let selectionStartY = 0;
+let currentResizeHandle = null;
+let currentCropElement = null;
 
-// 复制选中元素
-function copySelectedElements() {
-    if (selectedElements.length === 0) return;
-    
-    clipboard = selectedElements.map(element => ({...element}));
-    showToast(`已复制 ${clipboard.length} 个元素`);
-}
+// 合成相关变量
+let isComposing = false;
+let compositionIndex = 0;
 
-// 粘贴元素
-function pasteElements() {
-    if (clipboard.length === 0) return;
-    
-    clearSelection();
-    
-    clipboard.forEach(elementData => {
-        const newElement = createElement(elementData.type, {
-            ...elementData,
-            x: elementData.x + 20,
-            y: elementData.y + 20
-        });
-        selectElement(newElement, true);
-    });
-    
-    showToast(`已粘贴 ${clipboard.length} 个元素`);
-}
+// 元素类型常量
+const ElementType = {
+    BACKGROUND: 'background',
+    IMAGE: 'image',
+    TEXT: 'text'
+};
 
-// 复制选中元素（快捷键用）
-function duplicateSelectedElements() {
-    copySelectedElements();
-    pasteElements();
-}
+// 初始化应用
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+});
 
-// 图层操作
-function moveLayerUp() {
-    if (selectedElements.length !== 1) return;
-    
-    const element = selectedElements[0];
-    const index = elements.indexOf(element);
-    
-    if (index < elements.length - 1) {
-        // 交换位置
-        [elements[index], elements[index + 1]] = [elements[index + 1], elements[index]];
-        
-        // 更新zIndex
-        elements.forEach((el, i) => {
-            el.zIndex = i;
-            updateElementPosition(el);
-        });
-        
-        updateLayersList();
-        saveTempState();
-    }
-}
-
-function moveLayerDown() {
-    if (selectedElements.length !== 1) return;
-    
-    const element = selectedElements[0];
-    const index = elements.indexOf(element);
-    
-    if (index > 0) {
-        // 交换位置
-        [elements[index], elements[index - 1]] = [elements[index - 1], elements[index]];
-        
-        // 更新zIndex
-        elements.forEach((el, i) => {
-            el.zIndex = i;
-            updateElementPosition(el);
-        });
-        
-        updateLayersList();
-        saveTempState();
-    }
-}
-
-// 画布设置
-function setCanvasSize(width, height) {
-    canvasWidth = width;
-    canvasHeight = height;
-    applyCanvasSize();
-}
-
-function applyCustomSize() {
-    const width = parseInt(document.getElementById('canvasWidth').value);
-    const height = parseInt(document.getElementById('canvasHeight').value);
-    
-    if (width > 0 && height > 0) {
-        setCanvasSize(width, height);
-    } else {
-        showToast('请输入有效的画布尺寸', 'warning');
-    }
-}
-
-function applyCanvasSize() {
-    const canvas = document.getElementById('canvas');
-    canvas.style.width = canvasWidth + 'px';
-    canvas.style.height = canvasHeight + 'px';
-    
+function initializeApp() {
+    setupEventListeners();
     updateUI();
-    saveTempState();
+    
+    // 加载保存的状态
+    loadTempState();
+    
+    console.log('高级图像合成工具已初始化');
 }
 
-function updateCanvasBackground() {
-    const color = document.getElementById('canvasBgColor').value;
+// 设置事件监听器
+function setupEventListeners() {
     const canvas = document.getElementById('canvas');
-    canvas.style.backgroundColor = color;
-    saveTempState();
+    const canvasContainer = document.getElementById('canvasContainer');
+    
+    // 画布事件
+    canvas.addEventListener('mousedown', onCanvasMouseDown, true);
+    canvas.addEventListener('mousemove', onCanvasMouseMove, true);
+    canvas.addEventListener('mouseup', onCanvasMouseUp, true);
+    canvas.addEventListener('click', onCanvasClick, true);
+    canvas.addEventListener('dblclick', onCanvasDoubleClick, true);
+    
+    // 拖拽导入
+    canvas.addEventListener('dragover', onDragOver);
+    canvas.addEventListener('drop', onDrop);
+    
+    // 全局事件
+    document.addEventListener('mousemove', onGlobalMouseMove);
+    document.addEventListener('mouseup', onGlobalMouseUp);
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+    
+    // 防止默认的选择行为
+    canvas.addEventListener('selectstart', e => e.preventDefault());
+    
+    // 模态框事件
+    setupModalEvents();
+    
+    // 窗口关闭前保存状态
+    window.addEventListener('beforeunload', saveTempState);
 }
 
-// 工具选择
-function selectTool() {
-    currentTool = 'select';
-    updateToolButtons();
-}
-
-function updateToolButtons() {
-    document.querySelectorAll('.toolbar-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    if (currentTool === 'select') {
-        document.getElementById('selectBtn').classList.add('active');
-    }
-}
-
-// 网格控制
-function toggleGrid() {
-    showGrid = !showGrid;
-    const grid = document.getElementById('grid');
-    const btn = document.getElementById('gridBtn');
-    
-    if (showGrid) {
-        grid.classList.add('show');
-        btn.classList.add('active');
-    } else {
-        grid.classList.remove('show');
-        btn.classList.remove('active');
-    }
-}
-
-// 标尺控制
-function toggleRuler() {
-    showRuler = !showRuler;
-    const rulerH = document.getElementById('rulerHorizontal');
-    const rulerV = document.getElementById('rulerVertical');
-    const btn = document.getElementById('rulerBtn');
-    
-    if (showRuler) {
-        rulerH.classList.add('show');
-        rulerV.classList.add('show');
-        btn.classList.add('active');
-    } else {
-        rulerH.classList.remove('show');
-        rulerV.classList.remove('show');
-        btn.classList.remove('active');
-    }
-}
-
-// 磁性对齐控制
-function toggleSnap() {
-    snapToGrid = !snapToGrid;
-    const btn = document.getElementById('snapBtn');
-    
-    if (snapToGrid) {
-        btn.classList.add('active');
-        showToast('磁性对齐已开启');
-    } else {
-        btn.classList.remove('active');
-        showToast('磁性对齐已关闭');
-    }
-}
-
-// 对齐辅助线
-function showAlignmentGuides() {
-    // 这里可以添加对齐辅助线的显示逻辑
-    // 暂时省略具体实现
-}
-
-function hideAlignmentGuides() {
-    // 隐藏对齐辅助线
-    document.querySelectorAll('.guide-line, .align-indicator').forEach(el => el.remove());
-}
-
-// 缩放控制
-function zoomIn() {
-    zoom = Math.min(zoom * 1.2, 3);
-    applyZoom();
-}
-
-function zoomOut() {
-    zoom = Math.max(zoom / 1.2, 0.1);
-    applyZoom();
-}
-
-function resetZoom() {
-    zoom = 1;
-    applyZoom();
-}
-
-function applyZoom() {
-    const wrapper = document.getElementById('canvasWrapper');
-    wrapper.style.transform = `translate(-50%, -50%) scale(${zoom})`;
-    
-    document.getElementById('zoomLevel').textContent = Math.round(zoom * 100) + '%';
-}
-
-// 项目保存和加载
-function saveProject() {
-    const project = {
-        version: '1.0',
-        canvasWidth: canvasWidth,
-        canvasHeight: canvasHeight,
-        canvasBackground: document.getElementById('canvasBgColor').value,
-        elements: elements,
-        foregroundImages: foregroundImages,
-        timestamp: new Date().toISOString()
-    };
-    
-    const blob = new Blob([JSON.stringify(project, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `项目_${new Date().toLocaleDateString()}.json`;
-    a.click();
-    
-    URL.revokeObjectURL(url);
-    showToast('项目已保存');
-}
-
-function loadProject() {
-    document.getElementById('projectInput').click();
-}
-
-function handleProjectLoad(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const project = JSON.parse(e.target.result);
-            loadProjectData(project);
-            showToast('项目加载成功');
-        } catch (error) {
-            showToast('项目文件格式错误', 'error');
-        }
-    };
-    reader.readAsText(file);
-}
-
-function loadProjectData(project) {
-    // 清空当前内容
-    clearCanvas();
-    
-    // 恢复画布设置
-    canvasWidth = project.canvasWidth || 1920;
-    canvasHeight = project.canvasHeight || 1080;
-    
-    document.getElementById('canvasWidth').value = canvasWidth;
-    document.getElementById('canvasHeight').value = canvasHeight;
-    document.getElementById('canvasBgColor').value = project.canvasBackground || '#ffffff';
-    
-    applyCanvasSize();
-    updateCanvasBackground();
-    
-    // 恢复元素
-    elements = project.elements || [];
-    elementCounter = Math.max(...elements.map(el => parseInt(el.id.split('_')[1])), 0);
-    
-    elements.forEach(element => {
-        createDOMElement(element);
-    });
-    
-    // 恢复前景图
-    foregroundImages = project.foregroundImages || [];
-    updateForegroundList();
-    
-    updateUI();
-}
-
-// 清空画布
-function clearCanvas() {
-    if (elements.length > 0) {
-        showConfirmModal('清空画布', '确定要清空画布吗？此操作不可撤销。', () => {
-            // 删除所有DOM元素
-            elements.forEach(element => {
-                const domElement = document.getElementById(element.id);
-                if (domElement) {
-                    domElement.remove();
-                }
-            });
-            
-            // 清空数据
-            elements = [];
-            selectedElements = [];
-            foregroundImages = [];
-            compositionResults = [];
-            
-            updateUI();
-            saveTempState();
-            showToast('画布已清空');
-        });
-    }
-}
-
-// 开始合成
-function startComposition() {
-    if (foregroundImages.length === 0) {
-        showToast('请先导入前景图', 'warning');
-        return;
-    }
-    
-    if (elements.length === 0) {
-        showToast('画布上没有元素', 'warning');
-        return;
-    }
-    
-    isComposing = true;
-    compositionIndex = 0;
-    compositionResults = [];
-    
-    document.getElementById('composeBtn').disabled = true;
-    document.getElementById('stopBtn').disabled = false;
-    document.getElementById('progressContainer').style.display = 'block';
-    
-    processNextComposition();
-}
-
-function processNextComposition() {
-    if (!isComposing || compositionIndex >= foregroundImages.length) {
-        finishComposition();
-        return;
-    }
-    
-    const foregroundImg = foregroundImages[compositionIndex];
-    const progress = ((compositionIndex + 1) / foregroundImages.length) * 100;
-    
-    document.getElementById('progressText').textContent = 
-        `正在处理 ${compositionIndex + 1}/${foregroundImages.length}: ${foregroundImg.name}`;
-    document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
-    document.getElementById('progressFill').style.width = progress + '%';
-    
-    // 模拟异步处理
-    setTimeout(() => {
-        createCompositionResult(foregroundImg, compositionIndex + 1);
-        compositionIndex++;
-        
-        if (isComposing) {
-            processNextComposition();
-        }
-    }, 100);
-}
-
-function createCompositionResult(foregroundImg, index) {
-    const canvas = document.createElement('canvas');
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-    const ctx = canvas.getContext('2d');
-    
-    // 设置背景色
-    ctx.fillStyle = document.getElementById('canvasBgColor').value;
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-    
-    // 按zIndex排序绘制元素
-    const sortedElements = [...elements].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
-    
-    Promise.all(sortedElements.map(element => drawElementToCanvas(ctx, element, foregroundImg)))
-        .then(() => {
-            const dataURL = canvas.toDataURL('image/png');
-            const result = {
-                id: Date.now() + index,
-                name: `合成结果_${String(index).padStart(3, '0')}.png`,
-                src: dataURL,
-                foregroundName: foregroundImg.name
-            };
-            
-            compositionResults.push(result);
-            updateResultsList();
-        });
-}
-
-function drawElementToCanvas(ctx, element, foregroundImg) {
-    return new Promise((resolve) => {
-        if (element.type === ElementType.BACKGROUND || element.type === ElementType.IMAGE) {
-            // 对于前景图替换逻辑，这里简化处理
-            // 实际应用中可能需要更复杂的替换规则
-            let srcToUse = element.src;
-            if (element.type === ElementType.IMAGE && element.filename) {
-                // 简单匹配：如果元素是最后添加的图片，则替换为前景图
-                srcToUse = foregroundImg.src;
+// 设置模态框事件
+function setupModalEvents() {
+    // 点击模态框背景关闭
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal(this);
             }
-            
-            const img = new Image();
-            img.onload = function() {
-                ctx.save();
-                ctx.globalAlpha = element.opacity || 1;
-                
-                if (element.rotation) {
-                    ctx.translate(element.x + element.width / 2, element.y + element.height / 2);
-                    ctx.rotate((element.rotation * Math.PI) / 180);
-                    ctx.drawImage(img, -element.width / 2, -element.height / 2, element.width, element.height);
-                } else {
-                    ctx.drawImage(img, element.x, element.y, element.width, element.height);
-                }
-                
-                ctx.restore();
-                resolve();
-            };
-            img.src = srcToUse;
-        } else if (element.type === ElementType.TEXT) {
-            ctx.save();
-            ctx.globalAlpha = element.opacity || 1;
-            
-            if (element.rotation) {
-                ctx.translate(element.x + element.width / 2, element.y + element.height / 2);
-                ctx.rotate((element.rotation * Math.PI) / 180);
-            }
-            
-            ctx.font = `${element.fontWeight || 'normal'} ${element.fontStyle || 'normal'} ${element.fontSize || 16}px ${element.fontFamily || 'Microsoft YaHei'}`;
-            ctx.fillStyle = element.color || '#000000';
-            ctx.textAlign = element.textAlign || 'center';
-            ctx.textBaseline = 'middle';
-            
-            const x = element.rotation ? 0 : element.x + element.width / 2;
-            const y = element.rotation ? 0 : element.y + element.height / 2;
-            
-            if (element.textStroke) {
-                ctx.strokeStyle = element.textStrokeColor || '#000000';
-                ctx.lineWidth = element.textStrokeWidth || 1;
-                ctx.strokeText(element.text || '', x, y);
-            }
-            
-            ctx.fillText(element.text || '', x, y);
-            
-            ctx.restore();
-            resolve();
-        } else {
-            resolve();
-        }
-    });
-}
-
-function stopComposition() {
-    isComposing = false;
-    finishComposition();
-    showToast('合成已停止');
-}
-
-function finishComposition() {
-    isComposing = false;
-    
-    document.getElementById('composeBtn').disabled = false;
-    document.getElementById('stopBtn').disabled = true;
-    document.getElementById('progressContainer').style.display = 'none';
-    document.getElementById('downloadAllBtn').disabled = compositionResults.length === 0;
-    
-    if (compositionResults.length > 0) {
-        showToast(`合成完成！生成了 ${compositionResults.length} 张图片`);
-    }
-}
-
-// 更新结果列表
-function updateResultsList() {
-    const list = document.getElementById('resultsList');
-    const count = document.getElementById('resultCount');
-    
-    count.textContent = compositionResults.length;
-    
-    if (compositionResults.length === 0) {
-        list.innerHTML = '<div class="no-results">点击"开始合成"生成结果</div>';
-        return;
-    }
-    
-    list.innerHTML = compositionResults.map(result => `
-        <div class="result-item">
-            <img src="${result.src}" alt="${result.name}" class="result-thumbnail">
-            <div class="result-info">
-                <div class="result-name">${result.name}</div>
-                <div class="result-size">基于: ${result.foregroundName}</div>
-            </div>
-            <button class="result-download" onclick="downloadResult('${result.id}')">下载</button>
-        </div>
-    `).join('');
-}
-
-function downloadResult(id) {
-    const result = compositionResults.find(r => r.id == id);
-    if (!result) return;
-    
-    const a = document.createElement('a');
-    a.href = result.src;
-    a.download = result.name;
-    a.click();
-    
-    showToast(`正在下载 ${result.name}`);
-}
-
-function downloadAllResults() {
-    if (compositionResults.length === 0) return;
-    
-    compositionResults.forEach((result, index) => {
-        setTimeout(() => {
-            downloadResult(result.id);
-        }, index * 500); // 间隔500ms下载，避免浏览器阻止
-    });
-    
-    showToast(`正在批量下载 ${compositionResults.length} 张图片`);
-}
-
-// UI更新函数
-function updateUI() {
-    updateLayersList();
-    updatePropertiesPanel();
-    updateForegroundList();
-    updateResultsList();
-}
-
-function updateLayersList() {
-    const list = document.getElementById('layersList');
-    
-    if (elements.length === 0) {
-        list.innerHTML = '<div class="no-layers">暂无图层</div>';
-        return;
-    }
-    
-    // 按zIndex倒序显示（顶层在上）
-    const sortedElements = [...elements].sort((a, b) => (b.zIndex || 0) - (a.zIndex || 0));
-    
-    list.innerHTML = sortedElements.map(element => {
-        const isSelected = selectedElements.includes(element);
-        const typeText = {
-            [ElementType.BACKGROUND]: '背景',
-            [ElementType.IMAGE]: '图片',
-            [ElementType.TEXT]: '文字'
-        }[element.type];
-        
-        const displayName = element.type === ElementType.TEXT 
-            ? (element.text || '文字') 
-            : (element.filename || typeText);
-        
-        return `
-            <div class="layer-item ${isSelected ? 'selected' : ''}" onclick="selectElementById('${element.id}')">
-                <span>${displayName}</span>
-                <span class="layer-type">${typeText}</span>
-            </div>
-        `;
-    }).join('');
-}
-
-function selectElementById(id) {
-    const element = elements.find(el => el.id === id);
-    if (element) {
-        clearSelection();
-        selectElement(element);
-    }
-}
-
-function updatePropertiesPanel() {
-    const panel = document.getElementById('propertiesPanel');
-    
-    if (selectedElements.length === 0) {
-        panel.innerHTML = '<div class="no-selection">请选择一个图层进行编辑</div>';
-        return;
-    }
-    
-    if (selectedElements.length > 1) {
-        panel.innerHTML = `<div class="no-selection">已选中 ${selectedElements.length} 个图层</div>`;
-        return;
-    }
-    
-    const element = selectedElements[0];
-    
-    let html = '';
-    
-    // 通用属性
-    html += `
-        <div class="property-group">
-            <label class="property-label">位置和大小</label>
-            <div class="property-row">
-                <label>X:</label>
-                <input type="number" value="${Math.round(element.x)}" onchange="updateElementProperty('${element.id}', 'x', parseFloat(this.value))">
-            </div>
-            <div class="property-row">
-                <label>Y:</label>
-                <input type="number" value="${Math.round(element.y)}" onchange="updateElementProperty('${element.id}', 'y', parseFloat(this.value))">
-            </div>
-            <div class="property-row">
-                <label>宽:</label>
-                <input type="number" value="${Math.round(element.width)}" onchange="updateElementProperty('${element.id}', 'width', parseFloat(this.value))">
-            </div>
-            <div class="property-row">
-                <label>高:</label>
-                <input type="number" value="${Math.round(element.height)}" onchange="updateElementProperty('${element.id}', 'height', parseFloat(this.value))">
-            </div>
-        </div>
-        
-        <div class="property-group">
-            <label class="property-label">变换</label>
-            <div class="property-row">
-                <label>旋转:</label>
-                <input type="number" value="${Math.round(element.rotation || 0)}" onchange="updateElementProperty('${element.id}', 'rotation', parseFloat(this.value))">
-                <span>°</span>
-            </div>
-            <div class="property-row">
-                <label>透明度:</label>
-                <input type="range" min="0" max="1" step="0.1" value="${element.opacity || 1}" onchange="updateElementProperty('${element.id}', 'opacity', parseFloat(this.value))">
-                <span>${Math.round((element.opacity || 1) * 100)}%</span>
-            </div>
-        </div>
-    `;
-    
-    // 图片特有属性
-    if (element.type === ElementType.IMAGE || element.type === ElementType.BACKGROUND) {
-        html += `
-            <div class="property-group">
-                <label class="property-label">图片操作</label>
-                <button class="btn btn-secondary" onclick="cropImage('${element.id}')">🔲 裁剪</button>
-                <button class="btn btn-secondary" onclick="flipImage('${element.id}', 'horizontal')">↔️ 水平翻转</button>
-                <button class="btn btn-secondary" onclick="flipImage('${element.id}', 'vertical')">↕️ 垂直翻转</button>
-            </div>
-        `;
-    }
-    
-    // 文字特有属性
-    if (element.type === ElementType.TEXT) {
-        html += `
-            <div class="property-group">
-                <label class="property-label">文字内容</label>
-                <textarea class="property-input" onchange="updateElementProperty('${element.id}', 'text', this.value)">${element.text || ''}</textarea>
-            </div>
-            
-            <div class="property-group">
-                <label class="property-label">字体样式</label>
-                <div class="property-row">
-                    <label>字体:</label>
-                    <select onchange="updateElementProperty('${element.id}', 'fontFamily', this.value)">
-                        <option value="Microsoft YaHei" ${element.fontFamily === 'Microsoft YaHei' ? 'selected' : ''}>微软雅黑</option>
-                        <option value="SimSun" ${element.fontFamily === 'SimSun' ? 'selected' : ''}>宋体</option>
-                        <option value="SimHei" ${element.fontFamily === 'SimHei' ? 'selected' : ''}>黑体</option>
-                    </select>
-                </div>
-                <div class="property-row">
-                    <label>大小:</label>
-                    <input type="number" value="${element.fontSize || 16}" min="8" max="200" onchange="updateElementProperty('${element.id}', 'fontSize', parseInt(this.value))">
-                    <span>px</span>
-                </div>
-                <div class="property-row">
-                    <label>颜色:</label>
-                    <input type="color" value="${element.color || '#000000'}" onchange="updateElementProperty('${element.id}', 'color', this.value)">
-                </div>
-            </div>
-        `;
-    }
-    
-    panel.innerHTML = html;
-}
-
-function updateElementProperty(id, property, value) {
-    const element = elements.find(el => el.id === id);
-    if (!element) return;
-    
-    element[property] = value;
-    
-    if (element.type === ElementType.TEXT) {
-        updateTextElementStyle(element);
-    }
-    
-    updateElementPosition(element);
-    saveTempState();
-}
-
-function updateTextElementStyle(element) {
-    const domElement = document.getElementById(element.id);
-    const textDiv = domElement.querySelector('.text-content');
-    
-    if (!textDiv) return;
-    
-    textDiv.textContent = element.text || '';
-    textDiv.style.fontSize = (element.fontSize || 16) + 'px';
-    textDiv.style.color = element.color || '#000000';
-    textDiv.style.fontFamily = element.fontFamily || 'Microsoft YaHei';
-    textDiv.style.fontWeight = element.fontWeight || 'normal';
-    textDiv.style.fontStyle = element.fontStyle || 'normal';
-    textDiv.style.textAlign = element.textAlign || 'center';
-    textDiv.style.lineHeight = element.lineHeight || '1.2';
-    textDiv.style.letterSpacing = (element.letterSpacing || 0) + 'px';
-    
-    if (element.textStroke) {
-        textDiv.style.webkitTextStroke = `${element.textStrokeWidth || 1}px ${element.textStrokeColor || '#000000'}`;
-    } else {
-        textDiv.style.webkitTextStroke = '';
-    }
-    
-    if (element.textShadow) {
-        textDiv.style.textShadow = `${element.shadowX || 2}px ${element.shadowY || 2}px ${element.shadowBlur || 4}px ${element.shadowColor || 'rgba(0,0,0,0.5)'}`;
-    } else {
-        textDiv.style.textShadow = '';
-    }
-}
-
-// 图片操作函数
-function cropImage(id) {
-    const element = elements.find(el => el.id === id);
-    if (!element) return;
-    
-    showToast('裁剪功能开发中');
-}
-
-function flipImage(id, direction) {
-    const element = elements.find(el => el.id === id);
-    if (!element) return;
-    
-    const canvas = document.createElement('canvas');
-    canvas.width = element.width;
-    canvas.height = element.height;
-    const ctx = canvas.getContext('2d');
-    
-    const img = new Image();
-    img.onload = function() {
-        ctx.save();
-        
-        if (direction === 'horizontal') {
-            ctx.scale(-1, 1);
-            ctx.drawImage(img, -canvas.width, 0, canvas.width, canvas.height);
-        } else {
-            ctx.scale(1, -1);
-            ctx.drawImage(img, 0, -canvas.height, canvas.width, canvas.height);
-        }
-        
-        ctx.restore();
-        
-        element.src = canvas.toDataURL();
-        updateElementPosition(element);
-        showToast(`图片${direction === 'horizontal' ? '水平' : '垂直'}翻转完成`);
-    };
-    img.src = element.src;
-}
-
-// 工具函数
-function isValidImageFile(file) {
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-    return validTypes.includes(file.type);
-}
-
-function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.className = `toast ${type}`;
-    toast.classList.add('show');
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
-
-function showModal(modalId) {
-    const modal = document.getElementById(modalId);
-    modal.classList.add('show');
-}
-
-function closeModal(modal) {
-    if (typeof modal === 'string') {
-        modal = document.getElementById(modal);
-    }
-    modal.classList.remove('show');
-}
-
-function showConfirmModal(title, message, onConfirm) {
-    if (confirm(message)) {
-        onConfirm();
-    }
-}
-
-// 临时状态保存（用于页面刷新恢复）
-function saveTempState() {
-    const state = {
-        elements: elements,
-        foregroundImages: foregroundImages,
-        canvasWidth: canvasWidth,
-        canvasHeight: canvasHeight,
-        canvasBackground: document.getElementById('canvasBgColor').value,
-        zoom: zoom,
-        showGrid: showGrid,
-        showRuler: showRuler,
-        snapToGrid: snapToGrid
-    };
-    
-    try {
-        sessionStorage.setItem('imageComposerTempState', JSON.stringify(state));
-    } catch (error) {
-        console.warn('无法保存临时状态:', error);
-    }
-}
-
-function loadTempState() {
-    try {
-        const stateStr = sessionStorage.getItem('imageComposerTempState');
-        if (!stateStr) return;
-        
-        const state = JSON.parse(stateStr);
-        
-        // 恢复画布设置
-        canvasWidth = state.canvasWidth || 1920;
-        canvasHeight = state.canvasHeight || 1080;
-        document.getElementById('canvasWidth').value = canvasWidth;
-        document.getElementById('canvasHeight').value = canvasHeight;
-        document.getElementById('canvasBgColor').value = state.canvasBackground || '#ffffff';
-        
-        applyCanvasSize();
-        updateCanvasBackground();
-        
-        // 恢复元素
-        elements = state.elements || [];
-        elementCounter = elements.length > 0 ? Math.max(...elements.map(el => parseInt(el.id.split('_')[1]))) : 0;
-        
-        elements.forEach(element => {
-            createDOMElement(element);
         });
-        
-        // 恢复前景图
-        foregroundImages = state.foregroundImages || [];
-        
-        // 恢复界面状态
-        zoom = state.zoom || 1;
-        showGrid = state.showGrid || false;
-        showRuler = state.showRuler || false;
-        snapToGrid = state.snapToGrid || false;
-        
-        applyZoom();
-        
-        if (showGrid) {
-            document.getElementById('grid').classList.add('show');
-            document.getElementById('gridBtn').classList.add('active');
-        }
-        
-        if (showRuler) {
-            document.getElementById('rulerHorizontal').classList.add('show');
-            document.getElementById('rulerVertical').classList.add('show');
-            document.getElementById('rulerBtn').classList.add('active');
-        }
-        
-        if (snapToGrid) {
-            document.getElementById('snapBtn').classList.add('active');
-        }
-        
-        updateUI();
-        
-    } catch (error) {
-        console.warn('无法加载临时状态:', error);
-    }
-}// 导入背景图
+    });
+}
+
+// 导入背景图
 function importBackground() {
     document.getElementById('backgroundInput').click();
 }
@@ -1052,154 +259,7 @@ function handleForegroundUpload(event) {
     });
 }
 
-// 更新前景图列表
-function updateForegroundList() {
-    const list = document.getElementById('foregroundList');
-    const count = document.getElementById('foregroundCount');
-    
-    count.textContent = foregroundImages.length;
-    
-    if (foregroundImages.length === 0) {
-        list.innerHTML = '<div class="no-foregrounds">暂无前景图</div>';
-        return;
-    }
-    
-    list.innerHTML = foregroundImages.map(img => `
-        <div class="foreground-item">
-            <img src="${img.src}" alt="${img.name}" class="foreground-thumbnail">
-            <span class="foreground-name">${img.name}</span>
-            <button class="foreground-remove" onclick="removeForegroundImage('${img.id}')">×</button>
-        </div>
-    `).join('');
-}
-
-function removeForegroundImage(id) {
-    foregroundImages = foregroundImages.filter(img => img.id != id);
-    updateForegroundList();
-    showToast('前景图已删除');
-}
-
-// 开始文字编辑
-function startTextEditing(element) {
-    const domElement = document.getElementById(element.id);
-    const textDiv = domElement.querySelector('.text-content');
-    
-    textDiv.contentEditable = true;
-    textDiv.style.pointerEvents = 'auto'; // 编辑时允许接收事件
-    textDiv.focus();
-    
-    // 选中所有文字
-    const range = document.createRange();
-    range.selectNodeContents(textDiv);
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-    
-    textDiv.addEventListener('blur', function() {
-        textDiv.contentEditable = false;
-        textDiv.style.pointerEvents = 'none'; // 编辑完成后不接收事件
-        element.text = textDiv.textContent;
-        saveTempState// 全局变量
-let elements = [];
-let selectedElements = [];
-let foregroundImages = [];
-let compositionResults = [];
-let clipboard = [];
-let elementCounter = 0;
-let currentTool = 'select';
-let zoom = 1;
-let canvasWidth = 1920;
-let canvasHeight = 1080;
-
-// 状态管理
-let isDragging = false;
-let isResizing = false;
-let isRotating = false;
-let isCropping = false;
-let isSelecting = false;
-let showGrid = false;
-let showRuler = false;
-let snapToGrid = false;
-
-// 拖拽和选择相关变量
-let dragStartX = 0;
-let dragStartY = 0;
-let selectionStartX = 0;
-let selectionStartY = 0;
-let currentResizeHandle = null;
-let currentCropElement = null;
-
-// 合成相关变量
-let isComposing = false;
-let compositionIndex = 0;
-
-// 元素类型常量
-const ElementType = {
-    BACKGROUND: 'background',
-    IMAGE: 'image',
-    TEXT: 'text'
-};
-
-// 初始化应用
-document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
-});
-
-function initializeApp() {
-    setupEventListeners();
-    updateUI();
-    
-    // 加载保存的状态
-    loadTempState();
-    
-    console.log('高级图像合成工具已初始化');
-}
-
-// 设置事件监听器
-function setupEventListeners() {
-    const canvas = document.getElementById('canvas');
-    const canvasContainer = document.getElementById('canvasContainer');
-    
-    // 画布事件 - 修复：使用正确的事件绑定
-    canvas.addEventListener('mousedown', onCanvasMouseDown, true);
-    canvas.addEventListener('mousemove', onCanvasMouseMove, true);
-    canvas.addEventListener('mouseup', onCanvasMouseUp, true);
-    canvas.addEventListener('click', onCanvasClick, true);
-    canvas.addEventListener('dblclick', onCanvasDoubleClick, true);
-    
-    // 拖拽导入
-    canvas.addEventListener('dragover', onDragOver);
-    canvas.addEventListener('drop', onDrop);
-    
-    // 全局事件
-    document.addEventListener('mousemove', onGlobalMouseMove);
-    document.addEventListener('mouseup', onGlobalMouseUp);
-    document.addEventListener('keydown', onKeyDown);
-    document.addEventListener('keyup', onKeyUp);
-    
-    // 防止默认的选择行为
-    canvas.addEventListener('selectstart', e => e.preventDefault());
-    
-    // 模态框事件
-    setupModalEvents();
-    
-    // 窗口关闭前保存状态
-    window.addEventListener('beforeunload', saveTempState);
-}
-
-// 设置模态框事件
-function setupModalEvents() {
-    // 点击模态框背景关闭
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal(this);
-            }
-        });
-    });
-}
-
-// 画布鼠标按下事件 - 修复：改进事件处理
+// 画布鼠标按下事件
 function onCanvasMouseDown(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -1217,7 +277,7 @@ function onCanvasMouseDown(e) {
     }
 }
 
-// 处理选择工具鼠标按下 - 修复：改进元素检测
+// 处理选择工具鼠标按下
 function handleSelectMouseDown(e, x, y) {
     const clickedElement = getElementAt(x, y);
     
@@ -1281,7 +341,6 @@ function onCanvasMouseUp(e) {
 
 // 全局鼠标移动事件
 function onGlobalMouseMove(e) {
-    // 处理全局鼠标移动，用于拖拽到画布外
     if (isDragging || isResizing || isRotating) {
         const canvas = document.getElementById('canvas');
         const rect = canvas.getBoundingClientRect();
@@ -1412,9 +471,8 @@ function onDrop(e) {
     }
 }
 
-// 获取指定位置的元素 - 修复：改进元素检测
+// 获取指定位置的元素
 function getElementAt(x, y) {
-    // 从最上层开始查找，按zIndex排序
     const sortedElements = [...elements].sort((a, b) => (b.zIndex || 0) - (a.zIndex || 0));
     
     for (const element of sortedElements) {
@@ -1431,11 +489,11 @@ function isPointInElement(x, y, element) {
            y >= element.y && y <= element.y + element.height;
 }
 
-// 获取调整手柄 - 修复：更精确的手柄检测
+// 获取调整手柄
 function getResizeHandle(x, y, element) {
     if (!selectedElements.includes(element) || selectedElements.length > 1) return null;
     
-    const handleSize = 12; // 增大手柄检测范围
+    const handleSize = 12;
     const handles = [
         { name: 'nw', x: element.x - 6, y: element.y - 6 },
         { name: 'ne', x: element.x + element.width - 6, y: element.y - 6 },
@@ -1493,7 +551,6 @@ function startResizing(element, handle, x, y) {
     isResizing = true;
     currentResizeHandle = handle;
     
-    // 只调整选中的第一个元素
     if (!selectedElements.includes(element)) {
         clearSelection();
         selectElement(element);
@@ -1601,7 +658,6 @@ function handleSelecting(x, y) {
     selectionBox.style.width = width + 'px';
     selectionBox.style.height = height + 'px';
     
-    // 选择框内的元素
     const selectedInBox = elements.filter(element => {
         return element.x < left + width && element.x + element.width > left &&
                element.y < top + height && element.y + element.height > top;
@@ -1619,14 +675,10 @@ function finishOperation() {
     isSelecting = false;
     currentResizeHandle = null;
     
-    // 隐藏选择框
     const selectionBox = document.getElementById('selectionBox');
     selectionBox.style.display = 'none';
     
-    // 隐藏对齐指示线
     hideAlignmentGuides();
-    
-    // 保存临时状态
     saveTempState();
 }
 
@@ -1660,7 +712,7 @@ function selectAllElements() {
     elements.forEach(element => selectElement(element, true));
 }
 
-// 创建元素 - 修复：确保居中和正确z-index
+// 创建元素
 function createElement(type, options = {}) {
     const element = {
         id: `element_${++elementCounter}`,
@@ -1683,14 +735,13 @@ function createElement(type, options = {}) {
     return element;
 }
 
-// 创建DOM元素 - 修复：确保事件正确绑定
+// 创建DOM元素
 function createDOMElement(element) {
     const canvas = document.getElementById('canvas');
     const domElement = document.createElement('div');
     domElement.id = element.id;
     domElement.className = 'element';
     
-    // 重要：确保元素可以接收事件
     domElement.style.pointerEvents = 'auto';
     
     updateElementPosition(element);
@@ -1699,7 +750,7 @@ function createDOMElement(element) {
         const img = document.createElement('img');
         img.src = element.src;
         img.draggable = false;
-        img.style.pointerEvents = 'none'; // 图片不接收事件，让父容器处理
+        img.style.pointerEvents = 'none';
         domElement.appendChild(img);
     } else if (element.type === ElementType.TEXT) {
         const textDiv = document.createElement('div');
@@ -1713,7 +764,7 @@ function createDOMElement(element) {
         textDiv.style.textAlign = element.textAlign || 'center';
         textDiv.style.lineHeight = element.lineHeight || '1.2';
         textDiv.style.letterSpacing = (element.letterSpacing || 0) + 'px';
-        textDiv.style.pointerEvents = 'none'; // 文字不接收事件，让父容器处理
+        textDiv.style.pointerEvents = 'none';
         
         if (element.textStroke) {
             textDiv.style.webkitTextStroke = `${element.textStrokeWidth || 1}px ${element.textStrokeColor || '#000000'}`;
@@ -1750,14 +801,12 @@ function updateElementAppearance(element) {
     const domElement = document.getElementById(element.id);
     if (!domElement) return;
     
-    // 移除所有控制手柄
     domElement.querySelectorAll('.resize-handle, .rotate-handle').forEach(handle => handle.remove());
     
     if (selectedElements.includes(element)) {
         domElement.classList.add('selected');
         
         if (selectedElements.length === 1) {
-            // 单选时添加控制手柄
             addControlHandles(domElement);
         }
     } else {
@@ -1786,4 +835,915 @@ function addControlHandles(domElement) {
     rotateHandle.className = 'rotate-handle';
     rotateHandle.style.pointerEvents = 'auto';
     domElement.appendChild(rotateHandle);
+}
+
+// 开始文字编辑
+function startTextEditing(element) {
+    const domElement = document.getElementById(element.id);
+    const textDiv = domElement.querySelector('.text-content');
+    
+    textDiv.contentEditable = true;
+    textDiv.style.pointerEvents = 'auto';
+    textDiv.focus();
+    
+    const range = document.createRange();
+    range.selectNodeContents(textDiv);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    textDiv.addEventListener('blur', function() {
+        textDiv.contentEditable = false;
+        textDiv.style.pointerEvents = 'none';
+        element.text = textDiv.textContent;
+        saveTempState();
+    }, { once: true });
+    
+    textDiv.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            textDiv.blur();
+        }
+    });
+}
+
+// 删除选中元素
+function deleteSelectedElements() {
+    if (selectedElements.length === 0) return;
+    
+    selectedElements.forEach(element => deleteElement(element));
+    clearSelection();
+    showToast(`已删除 ${selectedElements.length} 个元素`);
+}
+
+function deleteElement(element) {
+    const index = elements.indexOf(element);
+    if (index > -1) {
+        elements.splice(index, 1);
+        
+        const domElement = document.getElementById(element.id);
+        if (domElement) {
+            domElement.remove();
+        }
+        
+        const selectedIndex = selectedElements.indexOf(element);
+        if (selectedIndex > -1) {
+            selectedElements.splice(selectedIndex, 1);
+        }
+    }
+    
+    updateLayersList();
+    saveTempState();
+}
+
+// 复制选中元素
+function copySelectedElements() {
+    if (selectedElements.length === 0) return;
+    
+    clipboard = selectedElements.map(element => ({...element}));
+    showToast(`已复制 ${clipboard.length} 个元素`);
+}
+
+// 粘贴元素
+function pasteElements() {
+    if (clipboard.length === 0) return;
+    
+    clearSelection();
+    
+    clipboard.forEach(elementData => {
+        const newElement = createElement(elementData.type, {
+            ...elementData,
+            x: elementData.x + 20,
+            y: elementData.y + 20
+        });
+        selectElement(newElement, true);
+    });
+    
+    showToast(`已粘贴 ${clipboard.length} 个元素`);
+}
+
+// 复制选中元素（快捷键用）
+function duplicateSelectedElements() {
+    copySelectedElements();
+    pasteElements();
+}
+
+// 图层操作
+function moveLayerUp() {
+    if (selectedElements.length !== 1) return;
+    
+    const element = selectedElements[0];
+    const index = elements.indexOf(element);
+    
+    if (index < elements.length - 1) {
+        [elements[index], elements[index + 1]] = [elements[index + 1], elements[index]];
+        
+        elements.forEach((el, i) => {
+            el.zIndex = i;
+            updateElementPosition(el);
+        });
+        
+        updateLayersList();
+        saveTempState();
+    }
+}
+
+function moveLayerDown() {
+    if (selectedElements.length !== 1) return;
+    
+    const element = selectedElements[0];
+    const index = elements.indexOf(element);
+    
+    if (index > 0) {
+        [elements[index], elements[index - 1]] = [elements[index - 1], elements[index]];
+        
+        elements.forEach((el, i) => {
+            el.zIndex = i;
+            updateElementPosition(el);
+        });
+        
+        updateLayersList();
+        saveTempState();
+    }
+}
+
+// 画布设置
+function setCanvasSize(width, height) {
+    canvasWidth = width;
+    canvasHeight = height;
+    applyCanvasSize();
+}
+
+function applyCustomSize() {
+    const width = parseInt(document.getElementById('canvasWidth').value);
+    const height = parseInt(document.getElementById('canvasHeight').value);
+    
+    if (width > 0 && height > 0) {
+        setCanvasSize(width, height);
+    } else {
+        showToast('请输入有效的画布尺寸', 'warning');
+    }
+}
+
+function applyCanvasSize() {
+    const canvas = document.getElementById('canvas');
+    canvas.style.width = canvasWidth + 'px';
+    canvas.style.height = canvasHeight + 'px';
+    
+    updateUI();
+    saveTempState();
+}
+
+function updateCanvasBackground() {
+    const color = document.getElementById('canvasBgColor').value;
+    const canvas = document.getElementById('canvas');
+    canvas.style.backgroundColor = color;
+    saveTempState();
+}
+
+// 工具选择
+function selectTool() {
+    currentTool = 'select';
+    updateToolButtons();
+}
+
+function updateToolButtons() {
+    document.querySelectorAll('.toolbar-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    if (currentTool === 'select') {
+        document.getElementById('selectBtn').classList.add('active');
+    }
+}
+
+// 网格控制
+function toggleGrid() {
+    showGrid = !showGrid;
+    const grid = document.getElementById('grid');
+    const btn = document.getElementById('gridBtn');
+    
+    if (showGrid) {
+        grid.classList.add('show');
+        btn.classList.add('active');
+    } else {
+        grid.classList.remove('show');
+        btn.classList.remove('active');
+    }
+}
+
+// 标尺控制
+function toggleRuler() {
+    showRuler = !showRuler;
+    const rulerH = document.getElementById('rulerHorizontal');
+    const rulerV = document.getElementById('rulerVertical');
+    const btn = document.getElementById('rulerBtn');
+    
+    if (showRuler) {
+        rulerH.classList.add('show');
+        rulerV.classList.add('show');
+        btn.classList.add('active');
+    } else {
+        rulerH.classList.remove('show');
+        rulerV.classList.remove('show');
+        btn.classList.remove('active');
+    }
+}
+
+// 磁性对齐控制
+function toggleSnap() {
+    snapToGrid = !snapToGrid;
+    const btn = document.getElementById('snapBtn');
+    
+    if (snapToGrid) {
+        btn.classList.add('active');
+        showToast('磁性对齐已开启');
+    } else {
+        btn.classList.remove('active');
+        showToast('磁性对齐已关闭');
+    }
+}
+
+// 对齐辅助线
+function showAlignmentGuides() {
+    // 对齐辅助线显示逻辑
+}
+
+function hideAlignmentGuides() {
+    document.querySelectorAll('.guide-line, .align-indicator').forEach(el => el.remove());
+}
+
+// 缩放控制
+function zoomIn() {
+    zoom = Math.min(zoom * 1.2, 3);
+    applyZoom();
+}
+
+function zoomOut() {
+    zoom = Math.max(zoom / 1.2, 0.1);
+    applyZoom();
+}
+
+function resetZoom() {
+    zoom = 1;
+    applyZoom();
+}
+
+function applyZoom() {
+    const wrapper = document.getElementById('canvasWrapper');
+    wrapper.style.transform = `translate(-50%, -50%) scale(${zoom})`;
+    
+    document.getElementById('zoomLevel').textContent = Math.round(zoom * 100) + '%';
+}
+
+// 项目保存和加载
+function saveProject() {
+    const project = {
+        version: '1.0',
+        canvasWidth: canvasWidth,
+        canvasHeight: canvasHeight,
+        canvasBackground: document.getElementById('canvasBgColor').value,
+        elements: elements,
+        foregroundImages: foregroundImages,
+        timestamp: new Date().toISOString()
+    };
+    
+    const blob = new Blob([JSON.stringify(project, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `项目_${new Date().toLocaleDateString()}.json`;
+    a.click();
+    
+    URL.revokeObjectURL(url);
+    showToast('项目已保存');
+}
+
+function loadProject() {
+    document.getElementById('projectInput').click();
+}
+
+function handleProjectLoad(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const project = JSON.parse(e.target.result);
+            loadProjectData(project);
+            showToast('项目加载成功');
+        } catch (error) {
+            showToast('项目文件格式错误', 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
+function loadProjectData(project) {
+    clearCanvas();
+    
+    canvasWidth = project.canvasWidth || 1920;
+    canvasHeight = project.canvasHeight || 1080;
+    
+    document.getElementById('canvasWidth').value = canvasWidth;
+    document.getElementById('canvasHeight').value = canvasHeight;
+    document.getElementById('canvasBgColor').value = project.canvasBackground || '#ffffff';
+    
+    applyCanvasSize();
+    updateCanvasBackground();
+    
+    elements = project.elements || [];
+    elementCounter = Math.max(...elements.map(el => parseInt(el.id.split('_')[1])), 0);
+    
+    elements.forEach(element => {
+        createDOMElement(element);
+    });
+    
+    foregroundImages = project.foregroundImages || [];
+    updateForegroundList();
+    
+    updateUI();
+}
+
+// 清空画布
+function clearCanvas() {
+    if (elements.length > 0) {
+        showConfirmModal('清空画布', '确定要清空画布吗？此操作不可撤销。', () => {
+            elements.forEach(element => {
+                const domElement = document.getElementById(element.id);
+                if (domElement) {
+                    domElement.remove();
+                }
+            });
+            
+            elements = [];
+            selectedElements = [];
+            foregroundImages = [];
+            compositionResults = [];
+            
+            updateUI();
+            saveTempState();
+            showToast('画布已清空');
+        });
+    }
+}
+
+// 开始合成
+function startComposition() {
+    if (foregroundImages.length === 0) {
+        showToast('请先导入前景图', 'warning');
+        return;
+    }
+    
+    if (elements.length === 0) {
+        showToast('画布上没有元素', 'warning');
+        return;
+    }
+    
+    isComposing = true;
+    compositionIndex = 0;
+    compositionResults = [];
+    
+    document.getElementById('composeBtn').disabled = true;
+    document.getElementById('stopBtn').disabled = false;
+    document.getElementById('progressContainer').style.display = 'block';
+    
+    processNextComposition();
+}
+
+function processNextComposition() {
+    if (!isComposing || compositionIndex >= foregroundImages.length) {
+        finishComposition();
+        return;
+    }
+    
+    const foregroundImg = foregroundImages[compositionIndex];
+    const progress = ((compositionIndex + 1) / foregroundImages.length) * 100;
+    
+    document.getElementById('progressText').textContent = 
+        `正在处理 ${compositionIndex + 1}/${foregroundImages.length}: ${foregroundImg.name}`;
+    document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
+    document.getElementById('progressFill').style.width = progress + '%';
+    
+    setTimeout(() => {
+        createCompositionResult(foregroundImg, compositionIndex + 1);
+        compositionIndex++;
+        
+        if (isComposing) {
+            processNextComposition();
+        }
+    }, 100);
+}
+
+function createCompositionResult(foregroundImg, index) {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    const ctx = canvas.getContext('2d');
+    
+    ctx.fillStyle = document.getElementById('canvasBgColor').value;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    
+    const sortedElements = [...elements].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+    
+    Promise.all(sortedElements.map(element => drawElementToCanvas(ctx, element, foregroundImg)))
+        .then(() => {
+            const dataURL = canvas.toDataURL('image/png');
+            const result = {
+                id: Date.now() + index,
+                name: `合成结果_${String(index).padStart(3, '0')}.png`,
+                src: dataURL,
+                foregroundName: foregroundImg.name
+            };
+            
+            compositionResults.push(result);
+            updateResultsList();
+        });
+}
+
+function drawElementToCanvas(ctx, element, foregroundImg) {
+    return new Promise((resolve) => {
+        if (element.type === ElementType.BACKGROUND || element.type === ElementType.IMAGE) {
+            let srcToUse = element.src;
+            if (element.type === ElementType.IMAGE && element.filename) {
+                srcToUse = foregroundImg.src;
+            }
+            
+            const img = new Image();
+            img.onload = function() {
+                ctx.save();
+                ctx.globalAlpha = element.opacity || 1;
+                
+                if (element.rotation) {
+                    ctx.translate(element.x + element.width / 2, element.y + element.height / 2);
+                    ctx.rotate((element.rotation * Math.PI) / 180);
+                    ctx.drawImage(img, -element.width / 2, -element.height / 2, element.width, element.height);
+                } else {
+                    ctx.drawImage(img, element.x, element.y, element.width, element.height);
+                }
+                
+                ctx.restore();
+                resolve();
+            };
+            img.src = srcToUse;
+        } else if (element.type === ElementType.TEXT) {
+            ctx.save();
+            ctx.globalAlpha = element.opacity || 1;
+            
+            if (element.rotation) {
+                ctx.translate(element.x + element.width / 2, element.y + element.height / 2);
+                ctx.rotate((element.rotation * Math.PI) / 180);
+            }
+            
+            ctx.font = `${element.fontWeight || 'normal'} ${element.fontStyle || 'normal'} ${element.fontSize || 16}px ${element.fontFamily || 'Microsoft YaHei'}`;
+            ctx.fillStyle = element.color || '#000000';
+            ctx.textAlign = element.textAlign || 'center';
+            ctx.textBaseline = 'middle';
+            
+            const x = element.rotation ? 0 : element.x + element.width / 2;
+            const y = element.rotation ? 0 : element.y + element.height / 2;
+            
+            if (element.textStroke) {
+                ctx.strokeStyle = element.textStrokeColor || '#000000';
+                ctx.lineWidth = element.textStrokeWidth || 1;
+                ctx.strokeText(element.text || '', x, y);
+            }
+            
+            ctx.fillText(element.text || '', x, y);
+            
+            ctx.restore();
+            resolve();
+        } else {
+            resolve();
+        }
+    });
+}
+
+function stopComposition() {
+    isComposing = false;
+    finishComposition();
+    showToast('合成已停止');
+}
+
+function finishComposition() {
+    isComposing = false;
+    
+    document.getElementById('composeBtn').disabled = false;
+    document.getElementById('stopBtn').disabled = true;
+    document.getElementById('progressContainer').style.display = 'none';
+    document.getElementById('downloadAllBtn').disabled = compositionResults.length === 0;
+    
+    if (compositionResults.length > 0) {
+        showToast(`合成完成！生成了 ${compositionResults.length} 张图片`);
+    }
+}
+
+// 更新前景图列表
+function updateForegroundList() {
+    const list = document.getElementById('foregroundList');
+    const count = document.getElementById('foregroundCount');
+    
+    count.textContent = foregroundImages.length;
+    
+    if (foregroundImages.length === 0) {
+        list.innerHTML = '<div class="no-foregrounds">暂无前景图</div>';
+        return;
+    }
+    
+    list.innerHTML = foregroundImages.map(img => `
+        <div class="foreground-item">
+            <img src="${img.src}" alt="${img.name}" class="foreground-thumbnail">
+            <span class="foreground-name">${img.name}</span>
+            <button class="foreground-remove" onclick="removeForegroundImage('${img.id}')">×</button>
+        </div>
+    `).join('');
+}
+
+function removeForegroundImage(id) {
+    foregroundImages = foregroundImages.filter(img => img.id != id);
+    updateForegroundList();
+    showToast('前景图已删除');
+}
+
+// 更新结果列表
+function updateResultsList() {
+    const list = document.getElementById('resultsList');
+    const count = document.getElementById('resultCount');
+    
+    count.textContent = compositionResults.length;
+    
+    if (compositionResults.length === 0) {
+        list.innerHTML = '<div class="no-results">点击"开始合成"生成结果</div>';
+        return;
+    }
+    
+    list.innerHTML = compositionResults.map(result => `
+        <div class="result-item">
+            <img src="${result.src}" alt="${result.name}" class="result-thumbnail">
+            <div class="result-info">
+                <div class="result-name">${result.name}</div>
+                <div class="result-size">基于: ${result.foregroundName}</div>
+            </div>
+            <button class="result-download" onclick="downloadResult('${result.id}')">下载</button>
+        </div>
+    `).join('');
+}
+
+function downloadResult(id) {
+    const result = compositionResults.find(r => r.id == id);
+    if (!result) return;
+    
+    const a = document.createElement('a');
+    a.href = result.src;
+    a.download = result.name;
+    a.click();
+    
+    showToast(`正在下载 ${result.name}`);
+}
+
+function downloadAllResults() {
+    if (compositionResults.length === 0) return;
+    
+    compositionResults.forEach((result, index) => {
+        setTimeout(() => {
+            downloadResult(result.id);
+        }, index * 500);
+    });
+    
+    showToast(`正在批量下载 ${compositionResults.length} 张图片`);
+}
+
+// UI更新函数
+function updateUI() {
+    updateLayersList();
+    updatePropertiesPanel();
+    updateForegroundList();
+    updateResultsList();
+}
+
+function updateLayersList() {
+    const list = document.getElementById('layersList');
+    
+    if (elements.length === 0) {
+        list.innerHTML = '<div class="no-layers">暂无图层</div>';
+        return;
+    }
+    
+    const sortedElements = [...elements].sort((a, b) => (b.zIndex || 0) - (a.zIndex || 0));
+    
+    list.innerHTML = sortedElements.map(element => {
+        const isSelected = selectedElements.includes(element);
+        const typeText = {
+            [ElementType.BACKGROUND]: '背景',
+            [ElementType.IMAGE]: '图片',
+            [ElementType.TEXT]: '文字'
+        }[element.type];
+        
+        const displayName = element.type === ElementType.TEXT 
+            ? (element.text || '文字') 
+            : (element.filename || typeText);
+        
+        return `
+            <div class="layer-item ${isSelected ? 'selected' : ''}" onclick="selectElementById('${element.id}')">
+                <span>${displayName}</span>
+                <span class="layer-type">${typeText}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function selectElementById(id) {
+    const element = elements.find(el => el.id === id);
+    if (element) {
+        clearSelection();
+        selectElement(element);
+    }
+}
+
+function updatePropertiesPanel() {
+    const panel = document.getElementById('propertiesPanel');
+    
+    if (selectedElements.length === 0) {
+        panel.innerHTML = '<div class="no-selection">请选择一个图层进行编辑</div>';
+        return;
+    }
+    
+    if (selectedElements.length > 1) {
+        panel.innerHTML = `<div class="no-selection">已选中 ${selectedElements.length} 个图层</div>`;
+        return;
+    }
+    
+    const element = selectedElements[0];
+    
+    let html = `
+        <div class="property-group">
+            <label class="property-label">位置和大小</label>
+            <div class="property-row">
+                <label>X:</label>
+                <input type="number" value="${Math.round(element.x)}" onchange="updateElementProperty('${element.id}', 'x', parseFloat(this.value))">
+            </div>
+            <div class="property-row">
+                <label>Y:</label>
+                <input type="number" value="${Math.round(element.y)}" onchange="updateElementProperty('${element.id}', 'y', parseFloat(this.value))">
+            </div>
+            <div class="property-row">
+                <label>宽:</label>
+                <input type="number" value="${Math.round(element.width)}" onchange="updateElementProperty('${element.id}', 'width', parseFloat(this.value))">
+            </div>
+            <div class="property-row">
+                <label>高:</label>
+                <input type="number" value="${Math.round(element.height)}" onchange="updateElementProperty('${element.id}', 'height', parseFloat(this.value))">
+            </div>
+        </div>
+        
+        <div class="property-group">
+            <label class="property-label">变换</label>
+            <div class="property-row">
+                <label>旋转:</label>
+                <input type="number" value="${Math.round(element.rotation || 0)}" onchange="updateElementProperty('${element.id}', 'rotation', parseFloat(this.value))">
+                <span>°</span>
+            </div>
+            <div class="property-row">
+                <label>透明度:</label>
+                <input type="range" min="0" max="1" step="0.1" value="${element.opacity || 1}" onchange="updateElementProperty('${element.id}', 'opacity', parseFloat(this.value))">
+                <span>${Math.round((element.opacity || 1) * 100)}%</span>
+            </div>
+        </div>
+    `;
+    
+    if (element.type === ElementType.IMAGE || element.type === ElementType.BACKGROUND) {
+        html += `
+            <div class="property-group">
+                <label class="property-label">图片操作</label>
+                <button class="btn btn-secondary" onclick="cropImage('${element.id}')">🔲 裁剪</button>
+                <button class="btn btn-secondary" onclick="flipImage('${element.id}', 'horizontal')">↔️ 水平翻转</button>
+                <button class="btn btn-secondary" onclick="flipImage('${element.id}', 'vertical')">↕️ 垂直翻转</button>
+            </div>
+        `;
+    }
+    
+    if (element.type === ElementType.TEXT) {
+        html += `
+            <div class="property-group">
+                <label class="property-label">文字内容</label>
+                <textarea class="property-input" onchange="updateElementProperty('${element.id}', 'text', this.value)">${element.text || ''}</textarea>
+            </div>
+            
+            <div class="property-group">
+                <label class="property-label">字体样式</label>
+                <div class="property-row">
+                    <label>字体:</label>
+                    <select onchange="updateElementProperty('${element.id}', 'fontFamily', this.value)">
+                        <option value="Microsoft YaHei" ${element.fontFamily === 'Microsoft YaHei' ? 'selected' : ''}>微软雅黑</option>
+                        <option value="SimSun" ${element.fontFamily === 'SimSun' ? 'selected' : ''}>宋体</option>
+                        <option value="SimHei" ${element.fontFamily === 'SimHei' ? 'selected' : ''}>黑体</option>
+                    </select>
+                </div>
+                <div class="property-row">
+                    <label>大小:</label>
+                    <input type="number" value="${element.fontSize || 16}" min="8" max="200" onchange="updateElementProperty('${element.id}', 'fontSize', parseInt(this.value))">
+                    <span>px</span>
+                </div>
+                <div class="property-row">
+                    <label>颜色:</label>
+                    <input type="color" value="${element.color || '#000000'}" onchange="updateElementProperty('${element.id}', 'color', this.value)">
+                </div>
+            </div>
+        `;
+    }
+    
+    panel.innerHTML = html;
+}
+
+function updateElementProperty(id, property, value) {
+    const element = elements.find(el => el.id === id);
+    if (!element) return;
+    
+    element[property] = value;
+    
+    if (element.type === ElementType.TEXT) {
+        updateTextElementStyle(element);
+    }
+    
+    updateElementPosition(element);
+    saveTempState();
+}
+
+function updateTextElementStyle(element) {
+    const domElement = document.getElementById(element.id);
+    const textDiv = domElement.querySelector('.text-content');
+    
+    if (!textDiv) return;
+    
+    textDiv.textContent = element.text || '';
+    textDiv.style.fontSize = (element.fontSize || 16) + 'px';
+    textDiv.style.color = element.color || '#000000';
+    textDiv.style.fontFamily = element.fontFamily || 'Microsoft YaHei';
+    textDiv.style.fontWeight = element.fontWeight || 'normal';
+    textDiv.style.fontStyle = element.fontStyle || 'normal';
+    textDiv.style.textAlign = element.textAlign || 'center';
+    textDiv.style.lineHeight = element.lineHeight || '1.2';
+    textDiv.style.letterSpacing = (element.letterSpacing || 0) + 'px';
+    
+    if (element.textStroke) {
+        textDiv.style.webkitTextStroke = `${element.textStrokeWidth || 1}px ${element.textStrokeColor || '#000000'}`;
+    } else {
+        textDiv.style.webkitTextStroke = '';
+    }
+    
+    if (element.textShadow) {
+        textDiv.style.textShadow = `${element.shadowX || 2}px ${element.shadowY || 2}px ${element.shadowBlur || 4}px ${element.shadowColor || 'rgba(0,0,0,0.5)'}`;
+    } else {
+        textDiv.style.textShadow = '';
+    }
+}
+
+// 图片操作函数
+function cropImage(id) {
+    const element = elements.find(el => el.id === id);
+    if (!element) return;
+    
+    showToast('裁剪功能开发中');
+}
+
+function flipImage(id, direction) {
+    const element = elements.find(el => el.id === id);
+    if (!element) return;
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = element.width;
+    canvas.height = element.height;
+    const ctx = canvas.getContext('2d');
+    
+    const img = new Image();
+    img.onload = function() {
+        ctx.save();
+        
+        if (direction === 'horizontal') {
+            ctx.scale(-1, 1);
+            ctx.drawImage(img, -canvas.width, 0, canvas.width, canvas.height);
+        } else {
+            ctx.scale(1, -1);
+            ctx.drawImage(img, 0, -canvas.height, canvas.width, canvas.height);
+        }
+        
+        ctx.restore();
+        
+        element.src = canvas.toDataURL();
+        updateElementPosition(element);
+        showToast(`图片${direction === 'horizontal' ? '水平' : '垂直'}翻转完成`);
+    };
+    img.src = element.src;
+}
+
+// 工具函数
+function isValidImageFile(file) {
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    return validTypes.includes(file.type);
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = `toast ${type}`;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.add('show');
+}
+
+function closeModal(modal) {
+    if (typeof modal === 'string') {
+        modal = document.getElementById(modal);
+    }
+    modal.classList.remove('show');
+}
+
+function showConfirmModal(title, message, onConfirm) {
+    if (confirm(message)) {
+        onConfirm();
+    }
+}
+
+// 临时状态保存
+function saveTempState() {
+    const state = {
+        elements: elements,
+        foregroundImages: foregroundImages,
+        canvasWidth: canvasWidth,
+        canvasHeight: canvasHeight,
+        canvasBackground: document.getElementById('canvasBgColor').value,
+        zoom: zoom,
+        showGrid: showGrid,
+        showRuler: showRuler,
+        snapToGrid: snapToGrid
+    };
+    
+    try {
+        sessionStorage.setItem('imageComposerTempState', JSON.stringify(state));
+    } catch (error) {
+        console.warn('无法保存临时状态:', error);
+    }
+}
+
+function loadTempState() {
+    try {
+        const stateStr = sessionStorage.getItem('imageComposerTempState');
+        if (!stateStr) return;
+        
+        const state = JSON.parse(stateStr);
+        
+        canvasWidth = state.canvasWidth || 1920;
+        canvasHeight = state.canvasHeight || 1080;
+        document.getElementById('canvasWidth').value = canvasWidth;
+        document.getElementById('canvasHeight').value = canvasHeight;
+        document.getElementById('canvasBgColor').value = state.canvasBackground || '#ffffff';
+        
+        applyCanvasSize();
+        updateCanvasBackground();
+        
+        elements = state.elements || [];
+        elementCounter = elements.length > 0 ? Math.max(...elements.map(el => parseInt(el.id.split('_')[1]))) : 0;
+        
+        elements.forEach(element => {
+            createDOMElement(element);
+        });
+        
+        foregroundImages = state.foregroundImages || [];
+        
+        zoom = state.zoom || 1;
+        showGrid = state.showGrid || false;
+        showRuler = state.showRuler || false;
+        snapToGrid = state.snapToGrid || false;
+        
+        applyZoom();
+        
+        if (showGrid) {
+            document.getElementById('grid').classList.add('show');
+            document.getElementById('gridBtn').classList.add('active');
+        }
+        
+        if (showRuler) {
+            document.getElementById('rulerHorizontal').classList.add('show');
+            document.getElementById('rulerVertical').classList.add('show');
+            document.getElementById('rulerBtn').classList.add('active');
+        }
+        
+        if (snapToGrid) {
+            document.getElementById('snapBtn').classList.add('active');
+        }
+        
+        updateUI();
+        
+    } catch (error) {
+        console.warn('无法加载临时状态:', error);
+    }
 }
