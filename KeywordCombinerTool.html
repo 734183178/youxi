@@ -52,6 +52,14 @@
             font-size: 12px;
             color: #777;
             margin-top: 5px;
+            line-height: 1.4;
+        }
+        .help-text code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #d63384;
         }
         .button-group {
             text-align: center;
@@ -136,9 +144,15 @@
             </div>
             
             <div class="input-group">
-                <label for="tailKeywords">长尾词（每行一个）:</label>
-                <textarea id="tailKeywords" rows="8" placeholder="请输入长尾词，每行一个，例如：&#10;supplier&#10;distributor&#10;wholesaler&#10;manufacturer&#10;price&#10;buy&#10;purchase"></textarea>
-                <div class="help-text">每行输入一个长尾词</div>
+                <label for="tailKeywords">长尾词模板（每行一个）:</label>
+                <textarea id="tailKeywords" rows="10" placeholder="请输入长尾词模板，每行一个。使用 {keyword} 作为主关键词占位符，例如：&#10;{keyword} supplier&#10;{keyword} distributor&#10;wholesale {keyword}&#10;best {keyword} manufacturer&#10;{keyword} price list&#10;buy {keyword} online&#10;cheap {keyword} for sale&#10;如果不使用 {keyword}，则默认添加在主关键词后面"></textarea>
+                <div class="help-text">
+                    <strong>使用 {keyword} 占位符控制主关键词位置：</strong><br>
+                    • <code>{keyword} supplier</code> → phenol supplier<br>
+                    • <code>wholesale {keyword}</code> → wholesale phenol<br>
+                    • <code>best {keyword} price</code> → best phenol price<br>
+                    • <code>supplier</code> → phenol supplier（默认后接）
+                </div>
             </div>
         </div>
         
@@ -196,7 +210,16 @@
                 
                 tailKeywords.forEach((tailKeyword, index) => {
                     const cleanTailKeyword = tailKeyword.trim();
-                    const combinedKeyword = cleanMainKeyword + ' ' + cleanTailKeyword;
+                    
+                    // 处理占位符替换
+                    let combinedKeyword;
+                    if (cleanTailKeyword.includes('{keyword}')) {
+                        // 使用占位符替换
+                        combinedKeyword = cleanTailKeyword.replace(/{keyword}/g, cleanMainKeyword);
+                    } else {
+                        // 默认添加在主关键词后面
+                        combinedKeyword = cleanMainKeyword + ' ' + cleanTailKeyword;
+                    }
                     
                     const row = document.createElement('tr');
                     
@@ -291,7 +314,16 @@
                 const correspondingLink = mainKeywordLinks.length > 0 ? mainKeywordLinks[keywordIndex]?.trim() || '' : '';
                 tailKeywords.forEach(tailKeyword => {
                     const cleanTailKeyword = tailKeyword.trim();
-                    const combinedKeyword = cleanMainKeyword + ' ' + cleanTailKeyword;
+                    
+                    // 处理占位符替换
+                    let combinedKeyword;
+                    if (cleanTailKeyword.includes('{keyword}')) {
+                        // 使用占位符替换
+                        combinedKeyword = cleanTailKeyword.replace(/{keyword}/g, cleanMainKeyword);
+                    } else {
+                        // 默认添加在主关键词后面
+                        combinedKeyword = cleanMainKeyword + ' ' + cleanTailKeyword;
+                    }
                     csvContent += `"${cleanMainKeyword}","${correspondingLink}","${combinedKeyword}"\n`;
                 });
             });
@@ -334,7 +366,16 @@
                 const correspondingLink = mainKeywordLinks.length > 0 ? mainKeywordLinks[keywordIndex]?.trim() || '' : '';
                 tailKeywords.forEach(tailKeyword => {
                     const cleanTailKeyword = tailKeyword.trim();
-                    const combinedKeyword = cleanMainKeyword + ' ' + cleanTailKeyword;
+                    
+                    // 处理占位符替换
+                    let combinedKeyword;
+                    if (cleanTailKeyword.includes('{keyword}')) {
+                        // 使用占位符替换
+                        combinedKeyword = cleanTailKeyword.replace(/{keyword}/g, cleanMainKeyword);
+                    } else {
+                        // 默认添加在主关键词后面
+                        combinedKeyword = cleanMainKeyword + ' ' + cleanTailKeyword;
+                    }
                     excelContent += `<tr><td>${cleanMainKeyword}</td><td>${correspondingLink}</td><td>${combinedKeyword}</td></tr>`;
                 });
             });
@@ -352,7 +393,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('mainKeywords').value = 'phenol\nproduct A\nservice B';
             document.getElementById('mainKeywordLinks').value = 'https://www.cnchemshop.com/prodetail/30.html\nhttps://www.example.com/product-a\nhttps://www.example.com/service-b';
-            document.getElementById('tailKeywords').value = 'supplier\ndistributor\nwholesaler\nmanufacturer\nprice\nbuy\npurchase';
+            document.getElementById('tailKeywords').value = '{keyword} supplier\n{keyword} distributor\nwholesale {keyword}\nbest {keyword} manufacturer\n{keyword} price\nbuy {keyword} online\ncheap {keyword} for sale';
         });
     </script>
 </body>
