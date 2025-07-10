@@ -124,11 +124,68 @@
             margin: 0 0 10px 0;
             color: #2e7d32;
         }
+        .tool-description {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #4CAF50;
+        }
+        .tool-description h2 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .tool-description p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .tool-description code {
+            background-color: #e8f5e8;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #2e7d32;
+        }
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .feature-item {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .feature-item strong {
+            color: #2e7d32;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>关键词组合表格生成器</h1>
+        
+        <!-- 工具介绍部分 -->
+        <div class="tool-description">
+            <h2>SEO关键词批量组合工具</h2>
+            <p>这是一款专业的SEO关键词组合工具，帮助您快速生成大量长尾关键词组合。支持灵活的关键词位置控制，使用 <code>{keyword}</code> 占位符可以将主关键词放置在任意位置，生成更自然的搜索词组合。</p>
+            <div class="features-list">
+                <div class="feature-item">
+                    <strong>智能位置控制：</strong>使用 {keyword} 占位符灵活控制主关键词在组合中的位置
+                </div>
+                <div class="feature-item">
+                    <strong>批量高效处理：</strong>一次性处理大量关键词组合，大幅提升SEO工作效率
+                </div>
+                <div class="feature-item">
+                    <strong>表格化管理：</strong>合并单元格显示，便于查看和管理关键词结构
+                </div>
+                <div class="feature-item">
+                    <strong>多格式导出：</strong>支持复制、CSV、Excel等多种导出方式，满足不同使用需求
+                </div>
+            </div>
+        </div>
         
         <div class="input-section">
             <div class="input-group">
@@ -392,7 +449,7 @@
         // 示例数据
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('mainKeywords').value = 'phenol\nproduct A\nservice B';
-            document.getElementById('mainKeywordLinks').value = 'https://www.cnchemshop.com/prodetail/30.html\nhttps://www.example.com/product-a\nhttps://www.example.com/service-b';
+            document.getElementById('mainKeywordLinks').value = 'https://www.example.com/phenol\nhttps://www.example.com/product-a\nhttps://www.example.com/service-b';
             document.getElementById('tailKeywords').value = '{keyword} supplier\n{keyword} distributor\nwholesale {keyword}\nbest {keyword} manufacturer\n{keyword} price\nbuy {keyword} online\ncheap {keyword} for sale';
         });
     </script>
