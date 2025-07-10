@@ -1,1 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关键词组合表格生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-section {
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .help-text {
+            font-size: 12px;
+            color: #777;
+            margin-top: 5px;
+        }
+        .button-group {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .result-section {
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        .main-keyword {
+            font-weight: bold;
+            background-color: #f0f8ff;
+            vertical-align: middle;
+        }
+        .combined-keyword {
+            background-color: #fafafa;
+        }
+        .export-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .stats {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .stats h3 {
+            margin: 0 0 10px 0;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>关键词组合表格生成器</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="mainKeywords">主关键词（每行一个）:</label>
+                <textarea id="mainKeywords" rows="6" placeholder="请输入主关键词，每行一个，例如：&#10;phenol&#10;product A&#10;service B"></textarea>
+                <div class="help-text">每行输入一个主关键词</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="mainKeywordLinks">主关键词对应链接（每行一个，顺序与主关键词对应）:</label>
+                <textarea id="mainKeywordLinks" rows="6" placeholder="请输入主关键词对应的链接，每行一个，例如：&#10;https://www.example.com/phenol&#10;https://www.example.com/product-a&#10;https://www.example.com/service-b"></textarea>
+                <div class="help-text">每行输入一个链接，顺序要与主关键词对应</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="tailKeywords">长尾词（每行一个）:</label>
+                <textarea id="tailKeywords" rows="8" placeholder="请输入长尾词，每行一个，例如：&#10;supplier&#10;distributor&#10;wholesaler&#10;manufacturer&#10;price&#10;buy&#10;purchase"></textarea>
+                <div class="help-text">每行输入一个长尾词</div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button onclick="generateTable()">生成表格</button>
+            <button onclick="clearAll()">清空所有</button>
+        </div>
+        
+        <div class="result-section" id="resultSection" style="display:none;">
+            <div class="stats" id="statsInfo"></div>
+            <table id="resultTable">
+                <thead>
+                    <tr>
+                        <th>主关键词</th>
+                        <th>链接</th>
+                        <th>组合关键词</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+            
+            <div class="export-section">
+                <button onclick="copyTable()">复制表格</button>
+                <button onclick="downloadCSV()">下载CSV</button>
+                <button onclick="downloadExcel()">下载Excel格式</button>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        function generateTable() {
+            const mainKeywords = document.getElementById('mainKeywords').value.trim().split('\n').filter(k => k.trim());
+            const mainKeywordLinks = document.getElementById('mainKeywordLinks').value.trim().split('\n').filter(k => k.trim());
+            const tailKeywords = document.getElementById('tailKeywords').value.trim().split('\n').filter(k => k.trim());
+            
+            if (mainKeywords.length === 0 || tailKeywords.length === 0) {
+                alert('请输入主关键词和长尾词！');
+                return;
+            }
+            
+            if (mainKeywordLinks.length > 0 && mainKeywordLinks.length !== mainKeywords.length) {
+                alert('链接数量必须与主关键词数量相同，或者留空不填！');
+                return;
+            }
+            
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            let totalRows = 0;
+            
+            mainKeywords.forEach((mainKeyword, keywordIndex) => {
+                const cleanMainKeyword = mainKeyword.trim();
+                const correspondingLink = mainKeywordLinks.length > 0 ? mainKeywordLinks[keywordIndex]?.trim() || '' : '';
+                
+                tailKeywords.forEach((tailKeyword, index) => {
+                    const cleanTailKeyword = tailKeyword.trim();
+                    const combinedKeyword = cleanMainKeyword + ' ' + cleanTailKeyword;
+                    
+                    const row = document.createElement('tr');
+                    
+                    if (index === 0) {
+                        // 第一行显示主关键词，并设置rowspan
+                        const mainKeywordCell = document.createElement('td');
+                        mainKeywordCell.textContent = cleanMainKeyword;
+                        mainKeywordCell.rowSpan = tailKeywords.length;
+                        mainKeywordCell.className = 'main-keyword';
+                        row.appendChild(mainKeywordCell);
+                        
+                        // 第一行显示链接，并设置rowspan
+                        const linkCell = document.createElement('td');
+                        if (correspondingLink) {
+                            if (correspondingLink.startsWith('http')) {
+                                linkCell.innerHTML = `<a href="${correspondingLink}" target="_blank">${correspondingLink}</a>`;
+                            } else {
+                                linkCell.textContent = correspondingLink;
+                            }
+                        } else {
+                            linkCell.textContent = '';
+                        }
+                        linkCell.rowSpan = tailKeywords.length;
+                        linkCell.className = 'main-keyword';
+                        row.appendChild(linkCell);
+                    }
+                    
+                    const combinedKeywordCell = document.createElement('td');
+                    combinedKeywordCell.textContent = combinedKeyword;
+                    combinedKeywordCell.className = 'combined-keyword';
+                    row.appendChild(combinedKeywordCell);
+                    
+                    tableBody.appendChild(row);
+                    totalRows++;
+                });
+            });
+            
+            // 显示统计信息
+            const statsInfo = document.getElementById('statsInfo');
+            statsInfo.innerHTML = `
+                <h3>生成统计</h3>
+                <p>主关键词数量: ${mainKeywords.length}</p>
+                <p>长尾词数量: ${tailKeywords.length}</p>
+                <p>总组合数: ${totalRows}</p>
+            `;
+            
+            // 显示结果区域
+            document.getElementById('resultSection').style.display = 'block';
+            
+            // 滚动到结果区域
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function clearAll() {
+            document.getElementById('mainKeywords').value = '';
+            document.getElementById('mainKeywordLinks').value = '';
+            document.getElementById('tailKeywords').value = '';
+            document.getElementById('resultSection').style.display = 'none';
+        }
+        
+        function copyTable() {
+            const table = document.getElementById('resultTable');
+            const range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            
+            try {
+                document.execCommand('copy');
+                alert('表格已复制到剪贴板！');
+            } catch (err) {
+                alert('复制失败，请手动选择复制。');
+            }
+            
+            window.getSelection().removeAllRanges();
+        }
+        
+        function downloadCSV() {
+            const mainKeywords = document.getElementById('mainKeywords').value.trim().split('\n').filter(k => k.trim());
+            const mainKeywordLinks = document.getElementById('mainKeywordLinks').value.trim().split('\n').filter(k => k.trim());
+            const tailKeywords = document.getElementById('tailKeywords').value.trim().split('\n').filter(k => k.trim());
+            
+            if (mainKeywords.length === 0 || tailKeywords.length === 0) {
+                alert('请先生成表格！');
+                return;
+            }
+            
+            let csvContent = '主关键词,链接,组合关键词\n';
+            
+            mainKeywords.forEach((mainKeyword, keywordIndex) => {
+                const cleanMainKeyword = mainKeyword.trim();
+                const correspondingLink = mainKeywordLinks.length > 0 ? mainKeywordLinks[keywordIndex]?.trim() || '' : '';
+                tailKeywords.forEach(tailKeyword => {
+                    const cleanTailKeyword = tailKeyword.trim();
+                    const combinedKeyword = cleanMainKeyword + ' ' + cleanTailKeyword;
+                    csvContent += `"${cleanMainKeyword}","${correspondingLink}","${combinedKeyword}"\n`;
+                });
+            });
+            
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '关键词组合表格.csv';
+            link.click();
+        }
+        
+        function downloadExcel() {
+            const mainKeywords = document.getElementById('mainKeywords').value.trim().split('\n').filter(k => k.trim());
+            const mainKeywordLinks = document.getElementById('mainKeywordLinks').value.trim().split('\n').filter(k => k.trim());
+            const tailKeywords = document.getElementById('tailKeywords').value.trim().split('\n').filter(k => k.trim());
+            
+            if (mainKeywords.length === 0 || tailKeywords.length === 0) {
+                alert('请先生成表格！');
+                return;
+            }
+            
+            // 创建Excel格式的HTML
+            let excelContent = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
+                <head>
+                    <meta charset="UTF-8">
+                    <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>关键词组合</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+                </head>
+                <body>
+                    <table border="1">
+                        <tr>
+                            <th>主关键词</th>
+                            <th>链接</th>
+                            <th>组合关键词</th>
+                        </tr>
+            `;
+            
+            mainKeywords.forEach((mainKeyword, keywordIndex) => {
+                const cleanMainKeyword = mainKeyword.trim();
+                const correspondingLink = mainKeywordLinks.length > 0 ? mainKeywordLinks[keywordIndex]?.trim() || '' : '';
+                tailKeywords.forEach(tailKeyword => {
+                    const cleanTailKeyword = tailKeyword.trim();
+                    const combinedKeyword = cleanMainKeyword + ' ' + cleanTailKeyword;
+                    excelContent += `<tr><td>${cleanMainKeyword}</td><td>${correspondingLink}</td><td>${combinedKeyword}</td></tr>`;
+                });
+            });
+            
+            excelContent += '</table></body></html>';
+            
+            const blob = new Blob([excelContent], { type: 'application/vnd.ms-excel' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '关键词组合表格.xls';
+            link.click();
+        }
+        
+        // 示例数据
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('mainKeywords').value = 'phenol\nproduct A\nservice B';
+            document.getElementById('mainKeywordLinks').value = 'https://www.cnchemshop.com/prodetail/30.html\nhttps://www.example.com/product-a\nhttps://www.example.com/service-b';
+            document.getElementById('tailKeywords').value = 'supplier\ndistributor\nwholesaler\nmanufacturer\nprice\nbuy\npurchase';
+        });
+    </script>
+</body>
+</html>
