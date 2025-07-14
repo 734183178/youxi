@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批量文件夹生成工具</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        
+        .upload-section {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-section:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .upload-section.dragover {
+            border-color: #667eea;
+            background: #e8f2ff;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        
+        .file-input-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .path-section {
+            margin: 20px 0;
+        }
+        
+        .path-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+        
+        .path-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .preview-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .folder-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            background: white;
+            padding: 10px;
+        }
+        
+        .folder-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: #e9ecef;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .folder-item::before {
+            content: "📁";
+            margin-right: 10px;
+        }
+        
+        .generate-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+        
+        .generate-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .generate-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .log-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .log-content {
+            background: #343a40;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .instructions {
+            background: #e8f4f8;
+            border-left: 4px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .instructions h3 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 批量文件夹生成工具</h1>
+        
+        <div class="instructions">
+            <h3>使用说明：</h3>
+            <ol>
+                <li>准备一个Excel文件，在第一列（A列）输入要创建的文件夹名称</li>
+                <li>点击"选择Excel文件"按钮或拖拽文件到上传区域</li>
+                <li>设置文件夹创建路径（默认为桌面）</li>
+                <li>预览文件夹列表，确认无误后点击"生成文件夹"</li>
+            </ol>
+        </div>
+        
+        <div class="upload-section" id="uploadSection">
+            <div class="file-input-wrapper">
+                <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls" />
+                <button class="file-input-button">选择Excel文件</button>
+            </div>
+            <p style="margin-top: 15px; color: #666;">支持 .xlsx 和 .xls 格式，或直接拖拽文件到此区域</p>
+        </div>
+        
+        <div class="path-section">
+            <label for="folderPath"><strong>文件夹创建路径：</strong></label>
+            <input type="text" id="folderPath" class="path-input" placeholder="例如: C:\Users\用户名\Desktop\新建文件夹" />
+            <p style="color: #666; margin-top: 5px;">留空则在桌面创建文件夹</p>
+        </div>
+        
+        <div class="preview-section" id="previewSection">
+            <h3>📋 文件夹预览 (<span id="folderCount">0</span> 个文件夹)</h3>
+            <div class="folder-list" id="folderList"></div>
+        </div>
+        
+        <button class="generate-button" id="generateButton" disabled>生成文件夹</button>
+        
+        <div class="log-section" id="logSection">
+            <h3>📝 生成日志</h3>
+            <div class="log-content" id="logContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let folderNames = [];
+        
+        const fileInput = document.getElementById('fileInput');
+        const uploadSection = document.getElementById('uploadSection');
+        const previewSection = document.getElementById('previewSection');
+        const folderList = document.getElementById('folderList');
+        const folderCount = document.getElementById('folderCount');
+        const generateButton = document.getElementById('generateButton');
+        const logSection = document.getElementById('logSection');
+        const logContent = document.getElementById('logContent');
+        const folderPath = document.getElementById('folderPath');
+        
+        // 文件选择事件
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        // 拖拽事件
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+        
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+        
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+        
+        // 生成按钮事件
+        generateButton.addEventListener('click', generateFolders);
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+        
+        function handleFile(file) {
+            if (!file.name.match(/\.(xlsx|xls)$/)) {
+                showMessage('请选择Excel文件（.xlsx 或 .xls 格式）', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    
+                    // 提取第一列的文件夹名称
+                    folderNames = jsonData
+                        .map(row => row[0])
+                        .filter(name => name && typeof name === 'string' && name.trim() !== '')
+                        .map(name => name.trim());
+                    
+                    if (folderNames.length === 0) {
+                        showMessage('Excel文件第一列没有找到有效的文件夹名称', 'error');
+                        return;
+                    }
+                    
+                    // 去重
+                    folderNames = [...new Set(folderNames)];
+                    
+                    displayPreview();
+                    showMessage(`成功读取 ${folderNames.length} 个文件夹名称`, 'success');
+                    
+                } catch (error) {
+                    showMessage('读取Excel文件失败：' + error.message, 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function displayPreview() {
+            folderList.innerHTML = '';
+            folderNames.forEach(name => {
+                const div = document.createElement('div');
+                div.className = 'folder-item';
+                div.textContent = name;
+                folderList.appendChild(div);
+            });
+            
+            folderCount.textContent = folderNames.length;
+            previewSection.style.display = 'block';
+            generateButton.disabled = false;
+        }
+        
+        function generateFolders() {
+            if (folderNames.length === 0) {
+                showMessage('请先选择Excel文件', 'error');
+                return;
+            }
+            
+            // 在浏览器环境中，我们无法直接创建文件夹
+            // 这里提供批处理脚本和PowerShell脚本
+            generateBatchScript();
+            generatePowerShellScript();
+            
+            showMessage('已生成批处理脚本和PowerShell脚本，请下载后在电脑上运行', 'success');
+        }
+        
+        function generateBatchScript() {
+            const basePath = folderPath.value.trim() || '%USERPROFILE%\\Desktop';
+            let script = `@echo off\nchcp 65001 > nul\necho 开始创建文件夹...\necho.\n\n`;
+            
+            folderNames.forEach(name => {
+                const safeName = name.replace(/"/g, '""');
+                script += `mkdir "${basePath}\\${safeName}" 2>nul\n`;
+                script += `if exist "${basePath}\\${safeName}" (\n`;
+                script += `    echo ✓ 成功创建: ${safeName}\n`;
+                script += `) else (\n`;
+                script += `    echo ✗ 创建失败: ${safeName}\n`;
+                script += `)\n\n`;
+            });
+            
+            script += `echo.\necho 文件夹创建完成！\npause\n`;
+            
+            downloadFile('create_folders.bat', script);
+        }
+        
+        function generatePowerShellScript() {
+            const basePath = folderPath.value.trim() || '$env:USERPROFILE\\Desktop';
+            let script = `# PowerShell脚本 - 批量创建文件夹\n`;
+            script += `Write-Host "开始创建文件夹..." -ForegroundColor Green\n`;
+            script += `Write-Host "目标路径: ${basePath}" -ForegroundColor Yellow\n`;
+            script += `Write-Host ""\n\n`;
+            
+            folderNames.forEach(name => {
+                script += `try {\n`;
+                script += `    New-Item -ItemType Directory -Path "${basePath}\\${name}" -Force | Out-Null\n`;
+                script += `    Write-Host "✓ 成功创建: ${name}" -ForegroundColor Green\n`;
+                script += `} catch {\n`;
+                script += `    Write-Host "✗ 创建失败: ${name} - $_" -ForegroundColor Red\n`;
+                script += `}\n\n`;
+            });
+            
+            script += `Write-Host ""\nWrite-Host "文件夹创建完成！" -ForegroundColor Green\n`;
+            script += `Read-Host "按回车键退出"\n`;
+            
+            downloadFile('create_folders.ps1', script);
+        }
+        
+        function downloadFile(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function showMessage(message, type) {
+            // 移除现有消息
+            const existingMessages = document.querySelectorAll('.warning, .success, .error');
+            existingMessages.forEach(msg => msg.remove());
+            
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = message;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(div, generateButton);
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                if (div.parentNode) {
+                    div.remove();
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
