@@ -229,7 +229,7 @@
             <ol>
                 <li>准备一个Excel文件，在第一列（A列）输入要创建的文件夹名称</li>
                 <li>点击"选择Excel文件"按钮或拖拽文件到上传区域</li>
-                <li>设置文件夹创建路径（默认为桌面）</li>
+                <li>点击"选择文件夹"按钮，选择要创建文件夹的目标位置</li>
                 <li>预览文件夹列表，确认无误后点击"生成文件夹"</li>
             </ol>
         </div>
@@ -243,9 +243,14 @@
         </div>
         
         <div class="path-section">
-            <label for="folderPath"><strong>文件夹创建路径：</strong></label>
-            <input type="text" id="folderPath" class="path-input" placeholder="例如: C:\Users\用户名\Desktop\新建文件夹" />
-            <p style="color: #666; margin-top: 5px;">留空则在桌面创建文件夹</p>
+            <label for="pathSelector"><strong>文件夹创建路径：</strong></label>
+            <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                <div class="file-input-wrapper">
+                    <input type="file" id="folderInput" class="file-input" webkitdirectory directory multiple />
+                    <button class="file-input-button">选择文件夹</button>
+                </div>
+            </div>
+            <p style="color: #666; margin-top: 5px;" id="pathDescription">请选择文件夹创建路径</p>
         </div>
         
         <div class="preview-section" id="previewSection">
@@ -272,7 +277,46 @@
         const generateButton = document.getElementById('generateButton');
         const logSection = document.getElementById('logSection');
         const logContent = document.getElementById('logContent');
-        const folderPath = document.getElementById('folderPath');
+        const pathDescription = document.getElementById('pathDescription');
+        const folderInput = document.getElementById('folderInput');
+        
+        let selectedFolderPath = '';
+        
+        // 文件夹选择事件
+        folderInput.addEventListener('change', handleFolderSelect);
+        
+        function handleFolderSelect(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                // 获取选中文件夹的路径
+                const file = files[0];
+                const path = file.webkitRelativePath;
+                const folderName = path.split('/')[0];
+                
+                // 由于浏览器安全限制，我们无法获取完整的系统路径
+                // 但我们可以获取文件夹名称
+                selectedFolderPath = folderName;
+                pathDescription.textContent = `已选择文件夹: ${folderName}`;
+                pathDescription.style.color = '#28a745';
+                
+                // 显示提示信息
+                showMessage('文件夹已选择，生成的脚本将在该文件夹内创建子文件夹', 'success');
+            }
+        }
+        
+        function getSelectedPath() {
+            if (selectedFolderPath) {
+                return `%CD%\\${selectedFolderPath}`;
+            }
+            return '%USERPROFILE%\\Desktop';
+        }
+        
+        function getPowerShellPath() {
+            if (selectedFolderPath) {
+                return `$PWD\\${selectedFolderPath}`;
+            }
+            return '$env:USERPROFILE\\Desktop';
+        }
         
         // 文件选择事件
         fileInput.addEventListener('change', handleFileSelect);
@@ -373,8 +417,8 @@
         }
         
         function generateBatchScript() {
-            const basePath = folderPath.value.trim() || '%USERPROFILE%\\Desktop';
-            let script = `@echo off\nchcp 65001 > nul\necho 开始创建文件夹...\necho.\n\n`;
+            const basePath = getSelectedPath();
+            let script = `@echo off\nchcp 65001 > nul\necho 开始创建文件夹...\necho 目标路径: ${basePath}\necho.\n\n`;
             
             folderNames.forEach(name => {
                 const safeName = name.replace(/"/g, '""');
@@ -392,7 +436,7 @@
         }
         
         function generatePowerShellScript() {
-            const basePath = folderPath.value.trim() || '$env:USERPROFILE\\Desktop';
+            const basePath = getPowerShellPath();
             let script = `# PowerShell脚本 - 批量创建文件夹\n`;
             script += `Write-Host "开始创建文件夹..." -ForegroundColor Green\n`;
             script += `Write-Host "目标路径: ${basePath}" -ForegroundColor Yellow\n`;
