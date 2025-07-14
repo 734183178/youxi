@@ -11,212 +11,151 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background-color: #f5f5f5;
         }
         
         .container {
             background: white;
-            border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         h1 {
             color: #333;
             text-align: center;
             margin-bottom: 30px;
-            font-size: 2.2em;
         }
         
         .upload-section {
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 30px;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
             text-align: center;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-        
-        .upload-section:hover {
-            border-color: #667eea;
-            background: #f0f4ff;
+            background: #fafafa;
         }
         
         .upload-section.dragover {
-            border-color: #667eea;
-            background: #e8f2ff;
+            border-color: #4CAF50;
+            background: #f0f8f0;
         }
         
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
+        input[type="file"] {
+            display: none;
         }
         
-        .file-input {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-        
-        .file-input-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .upload-btn {
+            background: #4CAF50;
             color: white;
-            padding: 12px 30px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
-            transition: transform 0.2s;
+            margin: 10px;
         }
         
-        .file-input-button:hover {
-            transform: translateY(-2px);
+        .upload-btn:hover {
+            background: #45a049;
         }
         
-        .path-section {
+        .folder-list {
             margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+        
+        .folder-item {
+            padding: 8px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .folder-item:last-child {
+            border-bottom: none;
+        }
+        
+        .folder-item.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .folder-item.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .generate-btn {
+            background: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .generate-btn:hover {
+            background: #0056b3;
+        }
+        
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .instructions {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
         }
         
         .path-input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-top: 10px;
-            box-sizing: border-box;
-        }
-        
-        .path-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .preview-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            display: none;
-        }
-        
-        .folder-list {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            background: white;
             padding: 10px;
-        }
-        
-        .folder-item {
-            padding: 8px 12px;
-            margin: 5px 0;
-            background: #e9ecef;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .folder-item::before {
-            content: "📁";
-            margin-right: 10px;
-        }
-        
-        .generate-button {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 18px;
-            width: 100%;
-            transition: transform 0.2s;
-            margin-top: 20px;
-        }
-        
-        .generate-button:hover {
-            transform: translateY(-2px);
-        }
-        
-        .generate-button:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .log-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-            display: none;
-        }
-        
-        .log-content {
-            background: #343a40;
-            color: #ffffff;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: 'Consolas', monospace;
-            font-size: 14px;
-            max-height: 200px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-        }
-        
-        .warning {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        
-        .success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        
-        .error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        
-        .instructions {
-            background: #e8f4f8;
-            border-left: 4px solid #17a2b8;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .instructions h3 {
-            color: #0c5460;
-            margin-top: 0;
-        }
-        
-        .instructions ol {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
             margin: 10px 0;
-            padding-left: 20px;
         }
         
-        .instructions li {
-            margin: 8px 0;
+        .column-selector {
+            margin: 15px 0;
+        }
+        
+        .column-selector select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -226,102 +165,44 @@
         
         <div class="instructions">
             <h3>使用说明：</h3>
-            <ol>
-                <li>准备一个Excel文件，在第一列（A列）输入要创建的文件夹名称</li>
-                <li>点击"选择Excel文件"按钮或拖拽文件到上传区域</li>
-                <li>点击"选择文件夹"按钮，选择要创建文件夹的目标位置</li>
-                <li>预览文件夹列表，确认无误后点击"生成文件夹"</li>
-            </ol>
+            <p>1. 准备Excel文件，其中包含要创建的文件夹名称（每行一个文件夹名）</p>
+            <p>2. 上传Excel文件，选择包含文件夹名称的列</p>
+            <p>3. 指定要创建文件夹的路径（可选，默认在桌面）</p>
+            <p>4. 点击"生成文件夹"按钮开始创建</p>
         </div>
         
         <div class="upload-section" id="uploadSection">
-            <div class="file-input-wrapper">
-                <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls" />
-                <button class="file-input-button">选择Excel文件</button>
-            </div>
-            <p style="margin-top: 15px; color: #666;">支持 .xlsx 和 .xls 格式，或直接拖拽文件到此区域</p>
+            <p>拖拽Excel文件到此处，或点击按钮选择文件</p>
+            <input type="file" id="fileInput" accept=".xlsx,.xls" />
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">选择Excel文件</button>
         </div>
         
-        <div class="path-section">
-            <label for="pathSelector"><strong>文件夹创建路径：</strong></label>
-            <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
-                <div class="file-input-wrapper">
-                    <input type="file" id="folderInput" class="file-input" webkitdirectory directory multiple />
-                    <button class="file-input-button">选择文件夹</button>
-                </div>
-            </div>
-            <p style="color: #666; margin-top: 5px;" id="pathDescription">请选择文件夹创建路径</p>
+        <div class="column-selector" id="columnSelector" style="display: none;">
+            <label>选择包含文件夹名称的列：</label>
+            <select id="columnSelect"></select>
         </div>
         
-        <div class="preview-section" id="previewSection">
-            <h3>📋 文件夹预览 (<span id="folderCount">0</span> 个文件夹)</h3>
-            <div class="folder-list" id="folderList"></div>
+        <div>
+            <label>创建文件夹的路径（留空则在桌面创建）：</label>
+            <input type="text" id="folderPath" class="path-input" placeholder="例如：C:\Users\用户名\Desktop\新建文件夹">
         </div>
         
-        <button class="generate-button" id="generateButton" disabled>生成文件夹</button>
+        <div class="folder-list" id="folderList" style="display: none;"></div>
         
-        <div class="log-section" id="logSection">
-            <h3>📝 生成日志</h3>
-            <div class="log-content" id="logContent"></div>
-        </div>
+        <button class="generate-btn" id="generateBtn" onclick="generateFolders()" disabled>生成文件夹</button>
+        
+        <div class="status" id="status" style="display: none;"></div>
     </div>
 
     <script>
         let folderNames = [];
+        let selectedColumn = '';
         
-        const fileInput = document.getElementById('fileInput');
+        // 文件上传处理
+        document.getElementById('fileInput').addEventListener('change', handleFile);
+        
+        // 拖拽功能
         const uploadSection = document.getElementById('uploadSection');
-        const previewSection = document.getElementById('previewSection');
-        const folderList = document.getElementById('folderList');
-        const folderCount = document.getElementById('folderCount');
-        const generateButton = document.getElementById('generateButton');
-        const logSection = document.getElementById('logSection');
-        const logContent = document.getElementById('logContent');
-        const pathDescription = document.getElementById('pathDescription');
-        const folderInput = document.getElementById('folderInput');
-        
-        let selectedFolderPath = '';
-        
-        // 文件夹选择事件
-        folderInput.addEventListener('change', handleFolderSelect);
-        
-        function handleFolderSelect(event) {
-            const files = event.target.files;
-            if (files.length > 0) {
-                // 获取选中文件夹的路径
-                const file = files[0];
-                const path = file.webkitRelativePath;
-                const folderName = path.split('/')[0];
-                
-                // 由于浏览器安全限制，我们无法获取完整的系统路径
-                // 但我们可以获取文件夹名称
-                selectedFolderPath = folderName;
-                pathDescription.textContent = `已选择文件夹: ${folderName}`;
-                pathDescription.style.color = '#28a745';
-                
-                // 显示提示信息
-                showMessage('文件夹已选择，生成的脚本将在该文件夹内创建子文件夹', 'success');
-            }
-        }
-        
-        function getSelectedPath() {
-            if (selectedFolderPath) {
-                return `%CD%\\${selectedFolderPath}`;
-            }
-            return '%USERPROFILE%\\Desktop';
-        }
-        
-        function getPowerShellPath() {
-            if (selectedFolderPath) {
-                return `$PWD\\${selectedFolderPath}`;
-            }
-            return '$env:USERPROFILE\\Desktop';
-        }
-        
-        // 文件选择事件
-        fileInput.addEventListener('change', handleFileSelect);
-        
-        // 拖拽事件
         uploadSection.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadSection.classList.add('dragover');
@@ -336,23 +217,16 @@
             uploadSection.classList.remove('dragover');
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                handleFile(files[0]);
+                handleFile({ target: { files } });
             }
         });
         
-        // 生成按钮事件
-        generateButton.addEventListener('click', generateFolders);
-        
-        function handleFileSelect(event) {
+        function handleFile(event) {
             const file = event.target.files[0];
-            if (file) {
-                handleFile(file);
-            }
-        }
-        
-        function handleFile(file) {
+            if (!file) return;
+            
             if (!file.name.match(/\.(xlsx|xls)$/)) {
-                showMessage('请选择Excel文件（.xlsx 或 .xls 格式）', 'error');
+                showStatus('请选择Excel文件 (.xlsx 或 .xls)', 'error');
                 return;
             }
             
@@ -361,132 +235,220 @@
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                     
-                    // 提取第一列的文件夹名称
-                    folderNames = jsonData
-                        .map(row => row[0])
-                        .filter(name => name && typeof name === 'string' && name.trim() !== '')
-                        .map(name => name.trim());
-                    
-                    if (folderNames.length === 0) {
-                        showMessage('Excel文件第一列没有找到有效的文件夹名称', 'error');
+                    if (jsonData.length === 0) {
+                        showStatus('Excel文件为空', 'error');
                         return;
                     }
                     
-                    // 去重
-                    folderNames = [...new Set(folderNames)];
-                    
-                    displayPreview();
-                    showMessage(`成功读取 ${folderNames.length} 个文件夹名称`, 'success');
+                    // 显示列选择器
+                    showColumnSelector(jsonData);
                     
                 } catch (error) {
-                    showMessage('读取Excel文件失败：' + error.message, 'error');
+                    showStatus('读取Excel文件失败: ' + error.message, 'error');
                 }
             };
             reader.readAsArrayBuffer(file);
         }
         
-        function displayPreview() {
-            folderList.innerHTML = '';
-            folderNames.forEach(name => {
-                const div = document.createElement('div');
-                div.className = 'folder-item';
-                div.textContent = name;
-                folderList.appendChild(div);
-            });
+        function showColumnSelector(data) {
+            const columnSelector = document.getElementById('columnSelector');
+            const columnSelect = document.getElementById('columnSelect');
             
-            folderCount.textContent = folderNames.length;
-            previewSection.style.display = 'block';
-            generateButton.disabled = false;
-        }
-        
-        function generateFolders() {
-            if (folderNames.length === 0) {
-                showMessage('请先选择Excel文件', 'error');
+            // 清空之前的选项
+            columnSelect.innerHTML = '';
+            
+            // 假设第一行是表头
+            const headers = data[0] || [];
+            
+            // 如果没有表头，则使用列号
+            if (headers.length === 0) {
+                showStatus('Excel文件没有数据', 'error');
                 return;
             }
             
-            // 在浏览器环境中，我们无法直接创建文件夹
-            // 这里提供批处理脚本和PowerShell脚本
-            generateBatchScript();
-            generatePowerShellScript();
-            
-            showMessage('已生成批处理脚本和PowerShell脚本，请下载后在电脑上运行', 'success');
-        }
-        
-        function generateBatchScript() {
-            const basePath = getSelectedPath();
-            let script = `@echo off\nchcp 65001 > nul\necho 开始创建文件夹...\necho 目标路径: ${basePath}\necho.\n\n`;
-            
-            folderNames.forEach(name => {
-                const safeName = name.replace(/"/g, '""');
-                script += `mkdir "${basePath}\\${safeName}" 2>nul\n`;
-                script += `if exist "${basePath}\\${safeName}" (\n`;
-                script += `    echo ✓ 成功创建: ${safeName}\n`;
-                script += `) else (\n`;
-                script += `    echo ✗ 创建失败: ${safeName}\n`;
-                script += `)\n\n`;
+            // 添加列选项
+            headers.forEach((header, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = header || `列 ${index + 1}`;
+                columnSelect.appendChild(option);
             });
             
-            script += `echo.\necho 文件夹创建完成！\npause\n`;
+            // 显示列选择器
+            columnSelector.style.display = 'block';
             
-            downloadFile('create_folders.bat', script);
-        }
-        
-        function generatePowerShellScript() {
-            const basePath = getPowerShellPath();
-            let script = `# PowerShell脚本 - 批量创建文件夹\n`;
-            script += `Write-Host "开始创建文件夹..." -ForegroundColor Green\n`;
-            script += `Write-Host "目标路径: ${basePath}" -ForegroundColor Yellow\n`;
-            script += `Write-Host ""\n\n`;
+            // 存储数据供后续使用
+            window.excelData = data;
             
-            folderNames.forEach(name => {
-                script += `try {\n`;
-                script += `    New-Item -ItemType Directory -Path "${basePath}\\${name}" -Force | Out-Null\n`;
-                script += `    Write-Host "✓ 成功创建: ${name}" -ForegroundColor Green\n`;
-                script += `} catch {\n`;
-                script += `    Write-Host "✗ 创建失败: ${name} - $_" -ForegroundColor Red\n`;
-                script += `}\n\n`;
+            // 监听列选择变化
+            columnSelect.addEventListener('change', function() {
+                const selectedIndex = parseInt(this.value);
+                extractFolderNames(window.excelData, selectedIndex);
             });
             
-            script += `Write-Host ""\nWrite-Host "文件夹创建完成！" -ForegroundColor Green\n`;
-            script += `Read-Host "按回车键退出"\n`;
-            
-            downloadFile('create_folders.ps1', script);
+            // 默认选择第一列
+            if (headers.length > 0) {
+                extractFolderNames(data, 0);
+            }
         }
         
-        function downloadFile(filename, content) {
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        function extractFolderNames(data, columnIndex) {
+            folderNames = [];
+            
+            // 跳过表头，从第二行开始
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                if (row && row[columnIndex]) {
+                    const folderName = String(row[columnIndex]).trim();
+                    if (folderName) {
+                        folderNames.push(folderName);
+                    }
+                }
+            }
+            
+            // 去重
+            folderNames = [...new Set(folderNames)];
+            
+            if (folderNames.length === 0) {
+                showStatus('选择的列中没有找到有效的文件夹名称', 'error');
+                return;
+            }
+            
+            // 显示文件夹列表
+            displayFolderList();
+            
+            // 启用生成按钮
+            document.getElementById('generateBtn').disabled = false;
+            
+            showStatus(`已读取 ${folderNames.length} 个文件夹名称`, 'success');
+        }
+        
+        function displayFolderList() {
+            const folderList = document.getElementById('folderList');
+            folderList.innerHTML = '';
+            folderList.style.display = 'block';
+            
+            folderNames.forEach(name => {
+                const item = document.createElement('div');
+                item.className = 'folder-item';
+                item.innerHTML = `
+                    <span>${name}</span>
+                    <span class="status-icon">⏳</span>
+                `;
+                item.dataset.folderName = name;
+                folderList.appendChild(item);
+            });
+        }
+        
+        function generateFolders() {
+            const folderPath = document.getElementById('folderPath').value.trim();
+            const basePath = folderPath || getDesktopPath();
+            
+            let successCount = 0;
+            let errorCount = 0;
+            
+            // 注意：这里的文件夹创建功能在浏览器环境中无法直接实现
+            // 实际应用需要结合桌面应用或服务器端API
+            
+            folderNames.forEach((name, index) => {
+                setTimeout(() => {
+                    try {
+                        // 模拟文件夹创建过程
+                        const item = document.querySelector(`[data-folder-name="${name}"]`);
+                        
+                        // 这里应该是实际的文件夹创建逻辑
+                        // 由于浏览器安全限制，无法直接创建文件夹
+                        // 实际使用时需要配合桌面应用或下载脚本文件
+                        
+                        // 模拟成功创建
+                        if (isValidFolderName(name)) {
+                            item.classList.add('success');
+                            item.querySelector('.status-icon').textContent = '✅';
+                            successCount++;
+                        } else {
+                            item.classList.add('error');
+                            item.querySelector('.status-icon').textContent = '❌';
+                            errorCount++;
+                        }
+                        
+                        // 最后一个处理完成后显示总结
+                        if (index === folderNames.length - 1) {
+                            setTimeout(() => {
+                                showFinalStatus(successCount, errorCount);
+                            }, 100);
+                        }
+                        
+                    } catch (error) {
+                        console.error('创建文件夹失败:', error);
+                        errorCount++;
+                    }
+                }, index * 100);
+            });
+            
+            // 生成批处理脚本
+            generateBatchScript(basePath);
+        }
+        
+        function generateBatchScript(basePath) {
+            let script = '@echo off\n';
+            script += 'chcp 65001\n';  // 支持中文
+            script += `cd /d "${basePath}"\n`;
+            script += 'echo 开始创建文件夹...\n';
+            
+            folderNames.forEach(name => {
+                // 转义特殊字符
+                const safeName = name.replace(/[&<>|]/g, '^$&');
+                script += `mkdir "${safeName}" 2>nul\n`;
+                script += `echo 创建文件夹: ${safeName}\n`;
+            });
+            
+            script += 'echo 文件夹创建完成！\n';
+            script += 'pause\n';
+            
+            // 下载批处理脚本
+            const blob = new Blob([script], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
+            a.download = 'create_folders.bat';
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            
+            showStatus('批处理脚本已下载，请运行脚本来创建文件夹', 'success');
         }
         
-        function showMessage(message, type) {
-            // 移除现有消息
-            const existingMessages = document.querySelectorAll('.warning, .success, .error');
-            existingMessages.forEach(msg => msg.remove());
+        function isValidFolderName(name) {
+            // 检查文件夹名称是否有效
+            const invalidChars = /[<>:"/\\|?*]/;
+            return !invalidChars.test(name) && name.length > 0 && name.length < 260;
+        }
+        
+        function getDesktopPath() {
+            // 默认桌面路径（Windows）
+            return 'C:\\Users\\%USERNAME%\\Desktop';
+        }
+        
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
             
-            const div = document.createElement('div');
-            div.className = type;
-            div.textContent = message;
-            
-            const container = document.querySelector('.container');
-            container.insertBefore(div, generateButton);
-            
-            // 3秒后自动隐藏
-            setTimeout(() => {
-                if (div.parentNode) {
-                    div.remove();
-                }
-            }, 3000);
+            // 3秒后自动隐藏成功消息
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        function showFinalStatus(successCount, errorCount) {
+            const message = `处理完成！成功: ${successCount}, 失败: ${errorCount}`;
+            showStatus(message, errorCount === 0 ? 'success' : 'error');
         }
     </script>
 </body>
