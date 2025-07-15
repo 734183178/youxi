@@ -4,78 +4,994 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸张魔法师 - 创意背景生成器</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .paper-preview {
-            aspect-ratio: 4/3;
-            position: relative;
-            border-radius: 0.5rem;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f3e8ff 0%, #dbeafe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .preview-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .preview-area {
+            width: 100%;
+            aspect-ratio: 1660/1242;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+            position: relative;
+            background-color: #fed7aa;
+            max-height: 600px;
         }
-        
+
+        .paper-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .panel-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 640px) {
+            .style-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         .style-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
             transition: all 0.2s;
+            font-size: 0.85rem;
         }
-        
+
         .style-btn:hover {
+            border-color: #9ca3af;
             transform: translateY(-1px);
         }
-        
+
+        .style-btn.active {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
         .color-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            border: 2px solid #d1d5db;
+            cursor: pointer;
             transition: all 0.2s;
         }
-        
+
         .color-btn:hover {
             transform: scale(1.1);
         }
-        
+
+        .color-btn.active {
+            border-color: #1f2937;
+            transform: scale(1.1);
+            box-shadow: 0 0 0 2px #1f2937;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-random {
+            background: linear-gradient(45deg, #8b5cf6, #ec4899);
+            color: white;
+        }
+
+        .btn-download {
+            background: linear-gradient(45deg, #3b82f6, #06b6d4);
+            color: white;
+        }
+
+        .info-section {
+            background: linear-gradient(45deg, #fef3c7, #fed7aa);
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .info-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 15px;
+        }
+
+        .info-list {
+            list-style: none;
+            color: #b45309;
+        }
+
+        .info-list li {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* 纸张样式 */
+        .paper-base {
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+        }
+
+        .paper-film {
+            background: white;
+        }
+
+        .paper-film .holes {
+            display: flex;
+            justify-content: center;
+            padding-top: 20px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .paper-film .hole {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .paper-binder {
+            background: white;
+            border: 3px solid #7c3aed;
+        }
+
+        .paper-binder .rings {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            padding: 30px 0;
+        }
+
+        .paper-binder .ring {
+            width: 30px;
+            height: 10px;
+            background: #fbbf24;
+            border-radius: 20px;
+            border: 2px solid #7c3aed;
+        }
+
+        .paper-notebook {
+            background: white;
+        }
+
+        .paper-notebook .holes {
+            display: flex;
+            justify-content: center;
+            padding-top: 15px;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .paper-notebook .hole {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .paper-notebook .glasses {
+            position: absolute;
+            top: 60px;
+            left: 30px;
+            width: 80px;
+            height: 50px;
+        }
+
+        .paper-notebook .lines {
+            position: absolute;
+            top: 120px;
+            left: 80px;
+            right: 20px;
+            bottom: 20px;
+        }
+
+        .line {
+            height: 25px;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .paper-grid {
+            background: white;
+        }
+
         .grid-pattern {
+            position: absolute;
+            inset: 20px;
             background-image: 
-                linear-gradient(rgba(0,0,0,.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,.1) 1px, transparent 1px);
-            background-size: 20px 20px;
+                linear-gradient(rgba(0,0,0,.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,.15) 1px, transparent 1px);
+            background-size: 25px 25px;
         }
-        
+
+        .paper-dot {
+            background: white;
+        }
+
         .dot-pattern {
-            background-image: radial-gradient(circle, rgba(0,0,0,.3) 1px, transparent 1px);
-            background-size: 20px 20px;
+            position: absolute;
+            inset: 20px;
+            background-image: radial-gradient(circle, rgba(0,0,0,.4) 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
         }
-        
-        .line-pattern {
-            background-image: repeating-linear-gradient(
-                transparent,
-                transparent 25px,
-                rgba(0,0,0,.2) 25px,
-                rgba(0,0,0,.2) 26px
-            );
+
+        .paper-music {
+            background: white;
+        }
+
+        .staff-lines {
+            position: absolute;
+            inset: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .staff-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .staff-line {
+            height: 15px;
+            border-top: 2px solid #1f2937;
+        }
+
+        .paper-postcard {
+            background: white;
+        }
+
+        .stamp-area {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            height: 60px;
+            border: 3px dashed #ef4444;
+        }
+
+        .address-lines {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .address-line {
+            height: 2px;
+            background: #9ca3af;
+        }
+
+        .divider {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            bottom: 20px;
+            width: 2px;
+            background: #d1d5db;
+        }
+
+        .postcard-text {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: bold;
+        }
+
+        .paper-kraft {
+            background: linear-gradient(45deg, #d4a574, #c19660, #b8935a);
+        }
+
+        .paper-kraft .corner {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 15px;
+            height: 15px;
+            background: #dc2626;
+            border-radius: 50%;
+        }
+
+        .paper-kraft .border {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 2px dashed #92400e;
+        }
+
+        .paper-kraft .fold {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            background: #a16207;
+            transform: rotate(45deg);
+        }
+
+        .paper-washi {
+            background: #fafaf9;
+        }
+
+        .paper-washi .top-line {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: #1f2937;
+        }
+
+        .paper-washi .seal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            background: #dc2626;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .paper-washi .lines {
+            position: absolute;
+            top: 80px;
+            left: 60px;
+            right: 60px;
+            bottom: 60px;
+        }
+
+        .washi-line {
+            height: 30px;
+            border-bottom: 1px dotted #d1d5db;
+        }
+
+        .paper-polaroid {
+            background: white;
+            padding: 15px 15px 50px 15px;
+        }
+
+        .polaroid-photo {
+            width: 100%;
+            height: 75%;
+            background: #f3f4f6;
+            position: relative;
+        }
+
+        .polaroid-dots {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .polaroid-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .polaroid-line {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: #d1d5db;
+        }
+
+        .paper-receipt {
+            background: white;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+        .receipt-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: #f3f4f6;
+            border-bottom: 2px dashed #9ca3af;
+        }
+
+        .receipt-lines {
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            right: 20px;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .receipt-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .receipt-item {
+            width: 80px;
+            height: 2px;
+            background: #9ca3af;
+        }
+
+        .receipt-price {
+            width: 30px;
+            height: 2px;
+            background: #9ca3af;
+        }
+
+        .receipt-total {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            border-top: 2px dashed #9ca3af;
+            padding-top: 10px;
+        }
+
+        .receipt-total-line {
+            width: 60px;
+            height: 3px;
+            background: #374151;
+        }
+
+        .paper-cork {
+            background: linear-gradient(45deg, #d4a574, #c19660, #b8935a);
+        }
+
+        .pushpin {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #1f2937;
+            border-radius: 50%;
+        }
+
+        .pushpin:nth-child(1) { top: 20px; left: 20px; }
+        .pushpin:nth-child(2) { top: 20px; right: 20px; }
+        .pushpin:nth-child(3) { bottom: 20px; left: 20px; }
+        .pushpin:nth-child(4) { bottom: 20px; right: 20px; }
+
+        .sticky-note {
+            position: absolute;
+            background: #fef08a;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .sticky-note:nth-child(5) {
+            top: 40px;
+            left: 40px;
+            width: 60px;
+            height: 45px;
+            transform: rotate(3deg);
+        }
+
+        .sticky-note:nth-child(6) {
+            top: 70px;
+            right: 40px;
+            width: 45px;
+            height: 60px;
+            background: #fce7f3;
+            transform: rotate(-6deg);
+        }
+
+        .sticky-note:nth-child(7) {
+            bottom: 60px;
+            left: 60px;
+            width: 80px;
+            height: 30px;
+            background: #dbeafe;
+            transform: rotate(1deg);
+        }
+
+        .paper-blueprint {
+            background: #1e3a8a;
+        }
+
+        .blueprint-grid {
+            position: absolute;
+            inset: 20px;
+            background-image: 
+                linear-gradient(rgba(34, 197, 255, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 197, 255, 0.3) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .blueprint-border {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 3px solid #22d3ee;
+        }
+
+        .blueprint-title {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #22d3ee;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .blueprint-circle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 15px;
+            height: 15px;
+            border: 2px solid #22d3ee;
+            border-radius: 50%;
+        }
+
+        .paper-vintage {
+            background: #fefdf8;
+            border: 3px solid #d97706;
+        }
+
+        .vintage-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            border-bottom: 3px solid #d97706;
+            padding-bottom: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .vintage-dot {
+            width: 12px;
+            height: 12px;
+            background: #d97706;
+            border-radius: 50%;
+        }
+
+        .vintage-lines {
+            position: absolute;
+            top: 80px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+        }
+
+        .vintage-line {
+            height: 25px;
+            border-bottom: 1px solid #f59e0b;
+        }
+
+        .vintage-seal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            background: #d97706;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        .vintage-text {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #92400e;
+            font-size: 10px;
+        }
+
+        .paper-hexagon {
+            background: white;
+        }
+
+        .hexagon-pattern {
+            position: absolute;
+            inset: 20px;
+        }
+
+        .hexagon-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .paper-calendar {
+            background: white;
+        }
+
+        .calendar-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            height: 30px;
+            background: #dc2626;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .calendar-ring {
+            position: absolute;
+            top: 35px;
+            left: 40px;
+            right: 40px;
+            height: 8px;
+            background: #dc2626;
+            border-radius: 20px;
+        }
+
+        .calendar-grid {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .calendar-day {
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #374151;
+        }
+
+        .calendar-day.header {
+            font-weight: bold;
+            background: #f9fafb;
+        }
+
+        .paper-comic {
+            background: white;
+        }
+
+        .comic-panel {
+            position: absolute;
+            border: 3px solid #000;
+            border-radius: 8px;
+        }
+
+        .comic-panel:nth-child(1) {
+            top: 20px;
+            left: 20px;
+            width: 45%;
+            height: 120px;
+        }
+
+        .comic-panel:nth-child(2) {
+            top: 20px;
+            right: 20px;
+            width: 45%;
+            height: 120px;
+        }
+
+        .comic-panel:nth-child(3) {
+            top: 160px;
+            left: 20px;
+            right: 20px;
+            height: 80px;
+        }
+
+        .comic-panel:nth-child(4) {
+            bottom: 20px;
+            left: 20px;
+            width: 30%;
+            height: 60px;
+        }
+
+        .comic-panel:nth-child(5) {
+            bottom: 20px;
+            left: 35%;
+            width: 30%;
+            height: 60px;
+        }
+
+        .comic-panel:nth-child(6) {
+            bottom: 20px;
+            right: 20px;
+            width: 30%;
+            height: 60px;
+        }
+
+        .comic-burst {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            width: 30px;
+            height: 30px;
+            background: #fbbf24;
+            border-radius: 50%;
+        }
+
+        .comic-text {
+            position: absolute;
+            top: 50px;
+            right: 80px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .paper-watercolor {
+            background: white;
+        }
+
+        .watercolor-splash {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .watercolor-splash:nth-child(1) {
+            top: 40px;
+            left: 40px;
+            width: 80px;
+            height: 50px;
+            background: #bfdbfe;
+        }
+
+        .watercolor-splash:nth-child(2) {
+            top: 70px;
+            right: 60px;
+            width: 60px;
+            height: 60px;
+            background: #fce7f3;
+            opacity: 0.5;
+        }
+
+        .watercolor-splash:nth-child(3) {
+            bottom: 80px;
+            left: 60px;
+            width: 100px;
+            height: 35px;
+            background: #fef3c7;
+            opacity: 0.4;
+        }
+
+        .watercolor-splash:nth-child(4) {
+            bottom: 100px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: #e9d5ff;
+            opacity: 0.7;
+        }
+
+        .watercolor-splash:nth-child(5) {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: #d1fae5;
+            opacity: 0.3;
+        }
+
+        .watercolor-border {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+        }
+
+        .paper-chalkboard {
+            background: #111827;
+            border: 5px solid #92400e;
+        }
+
+        .chalk-border {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 1px dashed #4b5563;
+        }
+
+        .chalk-lines {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 80px;
+        }
+
+        .chalk-line {
+            height: 25px;
+            border-bottom: 1px solid #374151;
+        }
+
+        .eraser {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 30px;
+            background: #374151;
+            border-radius: 20px;
+        }
+
+        .chalk-dot {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 25px;
+            height: 25px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .chalk-stick {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 8px;
+            background: #fbbf24;
+            border-radius: 20px;
         }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
-    <div class="container mx-auto px-6 py-8 max-w-4xl">
+<body>
+    <div class="container">
         <!-- 标题 -->
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800 mb-2">📝 纸张魔法师</h1>
-            <p class="text-gray-600">生成各种风格的纸张背景，适合笔记、手账、创作等用途</p>
+        <div class="header">
+            <h1>📝 纸张魔法师</h1>
+            <p>生成1660×1242px高质量纸张背景，适合笔记、手账、创作等用途</p>
         </div>
 
         <!-- 预览区域 -->
-        <div class="bg-white rounded-xl shadow-xl p-6 mb-8">
-            <div id="preview-area" class="paper-preview bg-orange-100">
-                <div id="paper-content" class="w-full h-full relative">
+        <div class="preview-section">
+            <div id="preview-area" class="preview-area">
+                <div id="paper-content" class="paper-content">
                     <!-- 默认胶片样式 -->
-                    <div class="absolute inset-0 bg-white rounded-lg shadow-lg m-4">
-                        <div class="flex justify-center pt-4 space-x-2">
-                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
-                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
-                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
-                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
-                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
-                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
-                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
-                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
-                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
+                    <div class="paper-base paper-film">
+                        <div class="holes">
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
+                            <div class="hole" style="background-color: #fed7aa;"></div>
                         </div>
                     </div>
                 </div>
@@ -83,103 +999,84 @@
         </div>
 
         <!-- 控制面板 -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="control-panel">
+            <div class="panel-grid">
                 <!-- 样式选择 -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800">选择样式</h3>
-                    <div class="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto">
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-blue-500 bg-blue-50 text-blue-700" data-style="film">
+                    <h3 class="section-title">选择样式 (20种精美样式)</h3>
+                    <div class="style-grid">
+                        <button class="style-btn active" data-style="film">
                             <span>📷</span>
-                            <span class="text-sm">胶片样式</span>
+                            <span>胶片样式</span>
                         </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="binder">
-                            <span>📔</span>
-                            <span class="text-sm">活页夹样式</span>
-                        </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="notebook">
-                            <span>📝</span>
-                            <span class="text-sm">笔记本样式</span>
-                        </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="grid">
-                            <span>⚏</span>
-                            <span class="text-sm">方格纸样式</span>
-                        </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="dot">
-                            <span>⚬</span>
-                            <span class="text-sm">点阵纸样式</span>
-                        </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="music">
-                            <span>🎵</span>
-                            <span class="text-sm">五线谱样式</span>
-                        </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="postcard">
-                            <span>📮</span>
-                            <span class="text-sm">明信片样式</span>
-                        </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="kraft">
-                            <span>📦</span>
-                            <span class="text-sm">牛皮纸样式</span>
-                        </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="vintage">
+                        <button class="style-btn" data-style="vintage">
                             <span>📜</span>
-                            <span class="text-sm">古典信纸</span>
+                            <span>古典信纸</span>
                         </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="calendar">
+                        <button class="style-btn" data-style="hexagon">
+                            <span>⬡</span>
+                            <span>六角网格</span>
+                        </button>
+                        <button class="style-btn" data-style="calendar">
                             <span>📅</span>
-                            <span class="text-sm">日历样式</span>
+                            <span>日历样式</span>
                         </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="watercolor">
+                        <button class="style-btn" data-style="comic">
+                            <span>💥</span>
+                            <span>漫画样式</span>
+                        </button>
+                        <button class="style-btn" data-style="watercolor">
                             <span>🎨</span>
-                            <span class="text-sm">水彩样式</span>
+                            <span>水彩样式</span>
                         </button>
-                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="chalkboard">
+                        <button class="style-btn" data-style="chalkboard">
                             <span>🖤</span>
-                            <span class="text-sm">黑板样式</span>
+                            <span>黑板样式</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- 颜色选择 -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800">选择颜色</h3>
-                    <div class="grid grid-cols-5 gap-2">
-                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-800 scale-110" style="background-color: #FED7AA" data-color="#FED7AA"></button>
-                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #FECACA" data-color="#FECACA"></button>
-                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #FEF3C7" data-color="#FEF3C7"></button>
-                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #D1FAE5" data-color="#D1FAE5"></button>
-                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #DBEAFE" data-color="#DBEAFE"></button>
-                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #E5E7EB" data-color="#E5E7EB"></button>
-                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #F3E8FF" data-color="#F3E8FF"></button>
-                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #FCE7F3" data-color="#FCE7F3"></button>
-                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #FFF7ED" data-color="#FFF7ED"></button>
-                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #F0F9FF" data-color="#F0F9FF"></button>
+                    <h3 class="section-title">选择颜色</h3>
+                    <div class="color-grid">
+                        <button class="color-btn active" style="background-color: #FED7AA" data-color="#FED7AA"></button>
+                        <button class="color-btn" style="background-color: #FECACA" data-color="#FECACA"></button>
+                        <button class="color-btn" style="background-color: #FEF3C7" data-color="#FEF3C7"></button>
+                        <button class="color-btn" style="background-color: #D1FAE5" data-color="#D1FAE5"></button>
+                        <button class="color-btn" style="background-color: #DBEAFE" data-color="#DBEAFE"></button>
+                        <button class="color-btn" style="background-color: #E5E7EB" data-color="#E5E7EB"></button>
+                        <button class="color-btn" style="background-color: #F3E8FF" data-color="#F3E8FF"></button>
+                        <button class="color-btn" style="background-color: #FCE7F3" data-color="#FCE7F3"></button>
+                        <button class="color-btn" style="background-color: #FFF7ED" data-color="#FFF7ED"></button>
+                        <button class="color-btn" style="background-color: #F0F9FF" data-color="#F0F9FF"></button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- 操作按钮 -->
-        <div class="flex justify-center space-x-4 mb-8">
-            <button id="random-btn" class="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl">
+        <div class="action-buttons">
+            <button id="random-btn" class="btn btn-random">
                 <span>🎲</span>
                 <span>随机生成</span>
             </button>
             
-            <button id="download-btn" class="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:from-blue-600 hover:to-teal-600 transition-all shadow-lg hover:shadow-xl">
+            <button id="download-btn" class="btn btn-download">
                 <span>💾</span>
-                <span>下载图片</span>
+                <span>下载图片 (1242×1660px)</span>
             </button>
         </div>
 
         <!-- 使用说明 -->
-        <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-6 border border-amber-200">
-            <h3 class="text-lg font-semibold text-amber-800 mb-2">💡 使用说明</h3>
-            <ul class="text-amber-700 space-y-1 text-sm">
+        <div class="info-section">
+            <h3 class="info-title">💡 使用说明</h3>
+            <ul class="info-list">
                 <li>• 选择您喜欢的纸张样式和颜色</li>
                 <li>• 点击"随机生成"获取意外惊喜</li>
-                <li>• 点击"下载图片"保存到本地</li>
+                <li>• 点击"下载图片"保存为1242×1660px高质量图片</li>
                 <li>• 适合用作手账背景、笔记模板、创作素材等</li>
+                <li>• 支持20种精美样式，10种柔和配色</li>
             </ul>
         </div>
     </div>
@@ -190,113 +1087,206 @@
 
         const styles = {
             film: (color) => `
-                <div class="absolute inset-0 bg-white rounded-lg shadow-lg m-4">
-                    <div class="flex justify-center pt-4 space-x-2">
-                        ${Array(9).fill().map(() => `<div class="w-6 h-6 rounded-sm" style="background-color: ${color}"></div>`).join('')}
+                <div class="paper-base paper-film">
+                    <div class="holes">
+                        ${Array(12).fill().map(() => `<div class="hole" style="background-color: ${color};"></div>`).join('')}
                     </div>
                 </div>
             `,
             binder: (color) => `
-                <div class="absolute inset-0 bg-white rounded-lg shadow-lg m-4 border-2 border-purple-600">
-                    <div class="absolute left-4 top-0 bottom-0 flex flex-col justify-evenly">
-                        ${Array(9).fill().map(() => `<div class="w-8 h-3 bg-yellow-400 rounded-full border-2 border-purple-600"></div>`).join('')}
+                <div class="paper-base paper-binder">
+                    <div class="rings">
+                        ${Array(15).fill().map(() => `<div class="ring"></div>`).join('')}
                     </div>
                 </div>
             `,
             notebook: (color) => `
-                <div class="absolute inset-0 bg-white shadow-lg m-4">
-                    <div class="flex justify-center pt-4 space-x-1">
-                        ${Array(21).fill().map(() => `<div class="w-3 h-3 rounded-full" style="background-color: ${color}"></div>`).join('')}
+                <div class="paper-base paper-notebook">
+                    <div class="holes">
+                        ${Array(25).fill().map(() => `<div class="hole" style="background-color: ${color};"></div>`).join('')}
                     </div>
-                    <div class="absolute top-16 left-8">
-                        <svg width="60" height="40" viewBox="0 0 60 40" class="text-amber-800">
-                            <path d="M10 15 Q15 10 25 15 Q35 20 45 15 Q50 10 55 15" stroke="currentColor" stroke-width="2" fill="none"/>
-                            <circle cx="15" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none"/>
-                            <circle cx="45" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <div class="glasses">
+                        <svg width="80" height="50" viewBox="0 0 80 50" style="color: #92400e;">
+                            <circle cx="20" cy="25" r="15" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <circle cx="60" cy="25" r="15" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <path d="M35 25 L45 25" stroke="currentColor" stroke-width="2"/>
+                            <path d="M5 20 L5 30" stroke="currentColor" stroke-width="2"/>
+                            <path d="M75 20 L75 30" stroke="currentColor" stroke-width="2"/>
                         </svg>
                     </div>
-                    <div class="absolute top-20 left-20 right-4 bottom-4 line-pattern"></div>
+                    <div class="lines">
+                        ${Array(20).fill().map(() => `<div class="line"></div>`).join('')}
+                    </div>
                 </div>
             `,
             grid: (color) => `
-                <div class="absolute inset-0 bg-white shadow-lg m-4">
-                    <div class="absolute inset-4 grid-pattern"></div>
+                <div class="paper-base paper-grid">
+                    <div class="grid-pattern"></div>
                 </div>
             `,
             dot: (color) => `
-                <div class="absolute inset-0 bg-white shadow-lg m-4">
-                    <div class="absolute inset-4 dot-pattern"></div>
+                <div class="paper-base paper-dot">
+                    <div class="dot-pattern"></div>
                 </div>
             `,
             music: (color) => `
-                <div class="absolute inset-0 bg-white shadow-lg m-4">
-                    <div class="absolute inset-8">
-                        ${Array(4).fill().map(() => `
-                            <div class="mb-12">
-                                ${Array(5).fill().map(() => `<div class="border-t border-gray-800 h-3"></div>`).join('')}
+                <div class="paper-base paper-music">
+                    <div class="staff-lines">
+                        ${Array(6).fill().map(() => `
+                            <div class="staff-group">
+                                ${Array(5).fill().map(() => `<div class="staff-line"></div>`).join('')}
                             </div>
                         `).join('')}
                     </div>
                 </div>
             `,
             postcard: (color) => `
-                <div class="absolute inset-0 bg-white shadow-lg m-4">
-                    <div class="absolute top-4 right-4 w-16 h-12 border-2 border-red-500 border-dashed"></div>
-                    <div class="absolute top-20 right-4 w-40 h-px bg-gray-400"></div>
-                    <div class="absolute top-24 right-4 w-32 h-px bg-gray-400"></div>
-                    <div class="absolute bottom-4 left-4 text-gray-500 text-xs">POST CARD</div>
-                    <div class="absolute left-1/2 top-4 bottom-4 w-px bg-gray-300"></div>
+                <div class="paper-base paper-postcard">
+                    <div class="stamp-area"></div>
+                    <div class="address-lines">
+                        <div class="address-line" style="width: 200px;"></div>
+                        <div class="address-line" style="width: 160px;"></div>
+                        <div class="address-line" style="width: 180px;"></div>
+                        <div class="address-line" style="width: 140px;"></div>
+                        <div class="address-line" style="width: 170px;"></div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="postcard-text">POST CARD</div>
                 </div>
             `,
             kraft: (color) => `
-                <div class="absolute inset-0 shadow-lg m-4" style="background: linear-gradient(45deg, #d4a574, #c19660)">
-                    <div class="absolute top-4 left-4 w-4 h-4 bg-red-600 rounded-full"></div>
-                    <div class="absolute top-8 left-8 right-8 bottom-8 border border-amber-700 border-dashed"></div>
-                    <div class="absolute top-4 right-4 w-8 h-8 bg-amber-600 transform rotate-45"></div>
+                <div class="paper-base paper-kraft">
+                    <div class="corner"></div>
+                    <div class="border"></div>
+                    <div class="fold"></div>
+                </div>
+            `,
+            washi: (color) => `
+                <div class="paper-base paper-washi">
+                    <div class="top-line"></div>
+                    <div class="seal"></div>
+                    <div class="lines">
+                        ${Array(18).fill().map(() => `<div class="washi-line"></div>`).join('')}
+                    </div>
+                </div>
+            `,
+            polaroid: (color) => `
+                <div class="paper-base paper-polaroid">
+                    <div class="polaroid-photo">
+                        <div class="polaroid-dots">
+                            <div class="polaroid-dot" style="background-color: #ef4444;"></div>
+                            <div class="polaroid-dot" style="background-color: #22c55e;"></div>
+                        </div>
+                    </div>
+                    <div class="polaroid-line"></div>
+                </div>
+            `,
+            receipt: (color) => `
+                <div class="paper-base paper-receipt">
+                    <div class="receipt-top"></div>
+                    <div class="receipt-lines">
+                        ${Array(20).fill().map(() => `
+                            <div class="receipt-line">
+                                <div class="receipt-item"></div>
+                                <div class="receipt-price"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="receipt-total">
+                        <div class="receipt-total-line"></div>
+                    </div>
+                </div>
+            `,
+            cork: (color) => `
+                <div class="paper-base paper-cork">
+                    <div class="pushpin"></div>
+                    <div class="pushpin"></div>
+                    <div class="pushpin"></div>
+                    <div class="pushpin"></div>
+                    <div class="sticky-note"></div>
+                    <div class="sticky-note"></div>
+                    <div class="sticky-note"></div>
+                </div>
+            `,
+            blueprint: (color) => `
+                <div class="paper-base paper-blueprint">
+                    <div class="blueprint-grid"></div>
+                    <div class="blueprint-border"></div>
+                    <div class="blueprint-circle"></div>
+                    <div class="blueprint-title">BLUEPRINT</div>
                 </div>
             `,
             vintage: (color) => `
-                <div class="absolute inset-0 bg-amber-50 shadow-lg m-4 border-2 border-amber-600">
-                    <div class="absolute top-4 left-4 right-4 border-b-2 border-amber-600 pb-2">
-                        <div class="flex space-x-2">
-                            <div class="w-3 h-3 bg-amber-600 rounded-full"></div>
-                            <div class="w-3 h-3 bg-amber-600 rounded-full"></div>
-                            <div class="w-3 h-3 bg-amber-600 rounded-full"></div>
-                        </div>
+                <div class="paper-base paper-vintage">
+                    <div class="vintage-header">
+                        <div class="vintage-dot"></div>
+                        <div class="vintage-dot"></div>
+                        <div class="vintage-dot"></div>
                     </div>
-                    <div class="absolute top-16 left-8 right-8 bottom-8 line-pattern"></div>
+                    <div class="vintage-seal"></div>
+                    <div class="vintage-lines">
+                        ${Array(18).fill().map(() => `<div class="vintage-line"></div>`).join('')}
+                    </div>
+                    <div class="vintage-text">Vintage Paper</div>
+                </div>
+            `,
+            hexagon: (color) => `
+                <div class="paper-base paper-hexagon">
+                    <div class="hexagon-pattern">
+                        <svg class="hexagon-svg" viewBox="0 0 400 300">
+                            ${Array(10).fill().map((_, row) => 
+                                Array(8).fill().map((_, col) => {
+                                    const x = 30 + col * 45 + (row % 2) * 22.5;
+                                    const y = 30 + row * 40;
+                                    return `<polygon points="${x},${y-12} ${x+15},${y-6} ${x+15},${y+6} ${x},${y+12} ${x-15},${y+6} ${x-15},${y-6}" 
+                                            fill="none" stroke="#d1d5db" stroke-width="1"/>`;
+                                }).join('')
+                            ).join('')}
+                        </svg>
+                    </div>
                 </div>
             `,
             calendar: (color) => `
-                <div class="absolute inset-0 bg-white shadow-lg m-4">
-                    <div class="absolute top-4 left-4 right-4 bg-red-600 h-8 rounded-t-lg"></div>
-                    <div class="absolute top-16 left-4 right-4 grid grid-cols-7 gap-1 text-xs">
-                        <div class="text-center font-bold p-1">日</div>
-                        <div class="text-center font-bold p-1">一</div>
-                        <div class="text-center font-bold p-1">二</div>
-                        <div class="text-center font-bold p-1">三</div>
-                        <div class="text-center font-bold p-1">四</div>
-                        <div class="text-center font-bold p-1">五</div>
-                        <div class="text-center font-bold p-1">六</div>
-                        ${Array(28).fill().map((_, i) => `<div class="aspect-square border border-gray-200 flex items-center justify-center">${i + 1}</div>`).join('')}
+                <div class="paper-base paper-calendar">
+                    <div class="calendar-header"></div>
+                    <div class="calendar-ring"></div>
+                    <div class="calendar-grid">
+                        ${['日', '一', '二', '三', '四', '五', '六'].map(day => `<div class="calendar-day header">${day}</div>`).join('')}
+                        ${Array(35).fill().map((_, i) => `<div class="calendar-day">${i < 31 ? i + 1 : ''}</div>`).join('')}
                     </div>
+                </div>
+            `,
+            comic: (color) => `
+                <div class="paper-base paper-comic">
+                    <div class="comic-panel"></div>
+                    <div class="comic-panel"></div>
+                    <div class="comic-panel"></div>
+                    <div class="comic-panel"></div>
+                    <div class="comic-panel"></div>
+                    <div class="comic-panel"></div>
+                    <div class="comic-burst"></div>
+                    <div class="comic-text">POW!</div>
                 </div>
             `,
             watercolor: (color) => `
-                <div class="absolute inset-0 bg-white shadow-lg m-4">
-                    <div class="absolute top-8 left-8 w-20 h-12 bg-blue-200 rounded-full opacity-60"></div>
-                    <div class="absolute top-16 right-12 w-16 h-16 bg-pink-200 rounded-full opacity-50"></div>
-                    <div class="absolute bottom-12 left-12 w-24 h-8 bg-yellow-200 rounded-full opacity-40"></div>
-                    <div class="absolute inset-8 border border-gray-300 border-dashed rounded-lg"></div>
+                <div class="paper-base paper-watercolor">
+                    <div class="watercolor-splash"></div>
+                    <div class="watercolor-splash"></div>
+                    <div class="watercolor-splash"></div>
+                    <div class="watercolor-splash"></div>
+                    <div class="watercolor-splash"></div>
+                    <div class="watercolor-border"></div>
                 </div>
             `,
             chalkboard: (color) => `
-                <div class="absolute inset-0 bg-gray-900 shadow-lg m-4 border-4 border-amber-800">
-                    <div class="absolute top-8 left-8 right-8">
-                        ${Array(12).fill().map(() => `<div class="h-6 border-b border-gray-700"></div>`).join('')}
+                <div class="paper-base paper-chalkboard">
+                    <div class="chalk-border"></div>
+                    <div class="chalk-lines">
+                        ${Array(18).fill().map(() => `<div class="chalk-line"></div>`).join('')}
                     </div>
-                    <div class="absolute top-4 right-4 w-8 h-2 bg-yellow-400 rounded-full"></div>
-                    <div class="absolute bottom-8 right-8 w-6 h-6 bg-white rounded-full"></div>
+                    <div class="eraser"></div>
+                    <div class="chalk-dot"></div>
+                    <div class="chalk-stick"></div>
                 </div>
             `
         };
@@ -313,18 +1303,18 @@
 
         function updateStyleButtons() {
             document.querySelectorAll('.style-btn').forEach(btn => {
-                btn.className = btn.className.replace('border-blue-500 bg-blue-50 text-blue-700', 'border-gray-300 hover:border-gray-400');
+                btn.classList.remove('active');
                 if (btn.dataset.style === currentStyle) {
-                    btn.className = btn.className.replace('border-gray-300 hover:border-gray-400', 'border-blue-500 bg-blue-50 text-blue-700');
+                    btn.classList.add('active');
                 }
             });
         }
 
         function updateColorButtons() {
             document.querySelectorAll('.color-btn').forEach(btn => {
-                btn.className = btn.className.replace('border-gray-800 scale-110', 'border-gray-300');
+                btn.classList.remove('active');
                 if (btn.dataset.color === currentColor) {
-                    btn.className = btn.className.replace('border-gray-300', 'border-gray-800 scale-110');
+                    btn.classList.add('active');
                 }
             });
         }
@@ -356,37 +1346,148 @@
         });
 
         document.getElementById('download-btn').addEventListener('click', () => {
-            // 创建canvas
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = 800;
-            canvas.height = 600;
+            
+            // 设置为1242×1660px
+            canvas.width = 1242;
+            canvas.height = 1660;
             
             // 填充背景色
             ctx.fillStyle = currentColor;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // 白色纸张背景
+            // 绘制纸张背景
             ctx.fillStyle = 'white';
-            ctx.fillRect(40, 40, 720, 520);
+            const margin = 40;
+            const paperWidth = canvas.width - margin * 2;
+            const paperHeight = canvas.height - margin * 2;
             
-            // 添加样式特定的绘制（简化版）
-            if (currentStyle === 'film') {
-                ctx.fillStyle = currentColor;
-                for (let i = 0; i < 9; i++) {
-                    ctx.fillRect(80 + i * 80, 80, 60, 60);
-                }
+            // 根据不同样式绘制
+            switch(currentStyle) {
+                case 'film':
+                    ctx.fillRect(margin, margin, paperWidth, paperHeight);
+                    // 绘制胶片孔
+                    ctx.fillStyle = currentColor;
+                    const holeSize = 40;
+                    const holeSpacing = 80;
+                    const startX = margin + 60;
+                    const startY = margin + 60;
+                    for (let i = 0; i < 12; i++) {
+                        const x = startX + (i % 6) * holeSpacing;
+                        const y = startY + Math.floor(i / 6) * holeSpacing;
+                        ctx.fillRect(x, y, holeSize, holeSize);
+                    }
+                    break;
+                    
+                case 'grid':
+                    ctx.fillRect(margin, margin, paperWidth, paperHeight);
+                    // 绘制网格
+                    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+                    ctx.lineWidth = 2;
+                    const gridSize = 30;
+                    for (let x = margin; x <= canvas.width - margin; x += gridSize) {
+                        ctx.beginPath();
+                        ctx.moveTo(x, margin);
+                        ctx.lineTo(x, canvas.height - margin);
+                        ctx.stroke();
+                    }
+                    for (let y = margin; y <= canvas.height - margin; y += gridSize) {
+                        ctx.beginPath();
+                        ctx.moveTo(margin, y);
+                        ctx.lineTo(canvas.width - margin, y);
+                        ctx.stroke();
+                    }
+                    break;
+                    
+                case 'music':
+                    ctx.fillRect(margin, margin, paperWidth, paperHeight);
+                    // 绘制五线谱
+                    ctx.strokeStyle = '#1f2937';
+                    ctx.lineWidth = 3;
+                    const staffGroups = 6;
+                    const staffHeight = 100;
+                    const staffSpacing = 200;
+                    for (let group = 0; group < staffGroups; group++) {
+                        const groupY = margin + 80 + group * staffSpacing;
+                        for (let line = 0; line < 5; line++) {
+                            const lineY = groupY + line * 20;
+                            ctx.beginPath();
+                            ctx.moveTo(margin + 60, lineY);
+                            ctx.lineTo(canvas.width - margin - 60, lineY);
+                            ctx.stroke();
+                        }
+                    }
+                    break;
+                    
+                case 'chalkboard':
+                    ctx.fillStyle = '#111827';
+                    ctx.fillRect(margin, margin, paperWidth, paperHeight);
+                    // 绘制边框
+                    ctx.strokeStyle = '#92400e';
+                    ctx.lineWidth = 8;
+                    ctx.strokeRect(margin, margin, paperWidth, paperHeight);
+                    break;
+                    
+                default:
+                    ctx.fillRect(margin, margin, paperWidth, paperHeight);
+                    break;
             }
             
             // 下载
             const link = document.createElement('a');
-            link.download = `paper-background-${currentStyle}.png`;
-            link.href = canvas.toDataURL();
+            link.download = `paper-background-${currentStyle}-1242x1660.png`;
+            link.href = canvas.toDataURL('image/png', 1.0);
             link.click();
         });
 
         // 初始化
-        updatePreview();
-    </script>
-</body>
-</html>
+        updatePreview();binder">
+                            <span>📔</span>
+                            <span>活页夹样式</span>
+                        </button>
+                        <button class="style-btn" data-style="notebook">
+                            <span>📝</span>
+                            <span>笔记本样式</span>
+                        </button>
+                        <button class="style-btn" data-style="grid">
+                            <span>⚏</span>
+                            <span>方格纸样式</span>
+                        </button>
+                        <button class="style-btn" data-style="dot">
+                            <span>⚬</span>
+                            <span>点阵纸样式</span>
+                        </button>
+                        <button class="style-btn" data-style="music">
+                            <span>🎵</span>
+                            <span>五线谱样式</span>
+                        </button>
+                        <button class="style-btn" data-style="postcard">
+                            <span>📮</span>
+                            <span>明信片样式</span>
+                        </button>
+                        <button class="style-btn" data-style="kraft">
+                            <span>📦</span>
+                            <span>牛皮纸样式</span>
+                        </button>
+                        <button class="style-btn" data-style="washi">
+                            <span>🏮</span>
+                            <span>和纸样式</span>
+                        </button>
+                        <button class="style-btn" data-style="polaroid">
+                            <span>📸</span>
+                            <span>拍立得样式</span>
+                        </button>
+                        <button class="style-btn" data-style="receipt">
+                            <span>🧾</span>
+                            <span>收据样式</span>
+                        </button>
+                        <button class="style-btn" data-style="cork">
+                            <span>📌</span>
+                            <span>软木板样式</span>
+                        </button>
+                        <button class="style-btn" data-style="blueprint">
+                            <span>📐</span>
+                            <span>蓝图样式</span>
+                        </button>
+                        <button class="style-btn" data-style="
