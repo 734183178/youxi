@@ -1,503 +1,392 @@
-import React, { useState } from 'react';
-import { Shuffle, Download, Camera, BookOpen, FileText } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>纸张魔法师 - 创意背景生成器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .paper-preview {
+            aspect-ratio: 4/3;
+            position: relative;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+        }
+        
+        .style-btn {
+            transition: all 0.2s;
+        }
+        
+        .style-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .color-btn {
+            transition: all 0.2s;
+        }
+        
+        .color-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(0,0,0,.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .dot-pattern {
+            background-image: radial-gradient(circle, rgba(0,0,0,.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .line-pattern {
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 25px,
+                rgba(0,0,0,.2) 25px,
+                rgba(0,0,0,.2) 26px
+            );
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+    <div class="container mx-auto px-6 py-8 max-w-4xl">
+        <!-- 标题 -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">📝 纸张魔法师</h1>
+            <p class="text-gray-600">生成各种风格的纸张背景，适合笔记、手账、创作等用途</p>
+        </div>
 
-const PaperBackgroundGenerator = () => {
-  const [currentBackground, setCurrentBackground] = useState('film');
-  const [currentColor, setCurrentColor] = useState('#FED7AA');
-
-  const backgrounds = {
-    film: {
-      name: '胶片样式',
-      icon: <Camera className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white rounded-lg shadow-lg m-4">
-            <div className="flex justify-center pt-4 space-x-2">
-              {[...Array(9)].map((_, i) => (
-                <div key={i} className="w-6 h-6 rounded-sm" style={{ backgroundColor: color }}></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    },
-    binder: {
-      name: '活页夹样式',
-      icon: <BookOpen className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white rounded-lg shadow-lg m-4 border-2 border-purple-600">
-            <div className="absolute left-4 top-0 bottom-0 flex flex-col justify-evenly">
-              {[...Array(9)].map((_, i) => (
-                <div key={i} className="w-8 h-3 bg-yellow-400 rounded-full border-2 border-purple-600"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    },
-    notebook: {
-      name: '笔记本样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg m-4">
-            <div className="flex justify-center pt-4 space-x-1">
-              {[...Array(21)].map((_, i) => (
-                <div key={i} className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
-              ))}
-            </div>
-            <div className="absolute top-16 left-8">
-              <svg width="60" height="40" viewBox="0 0 60 40" className="text-amber-800">
-                <path d="M10 15 Q15 10 25 15 Q35 20 45 15 Q50 10 55 15" 
-                      stroke="currentColor" strokeWidth="2" fill="none"/>
-                <path d="M5 20 Q10 15 20 20 Q30 25 40 20 Q50 15 55 20" 
-                      stroke="currentColor" strokeWidth="2" fill="none"/>
-                <circle cx="15" cy="10" r="8" stroke="currentColor" strokeWidth="2" fill="none"/>
-                <circle cx="45" cy="10" r="8" stroke="currentColor" strokeWidth="2" fill="none"/>
-                <path d="M15 2 L15 18 M45 2 L45 18" stroke="currentColor" strokeWidth="1"/>
-              </svg>
-            </div>
-            <div className="absolute top-20 left-20 right-4 bottom-4">
-              {[...Array(15)].map((_, i) => (
-                <div key={i} className="border-b border-gray-300 h-6"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    },
-    grid: {
-      name: '方格纸样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg m-4">
-            <div className="absolute inset-4 grid grid-cols-16 gap-0">
-              {[...Array(192)].map((_, i) => (
-                <div key={i} className="border border-gray-200 aspect-square"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    },
-    dot: {
-      name: '点阵纸样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg m-4">
-            <div className="absolute inset-4">
-              {[...Array(20)].map((_, row) => (
-                <div key={row} className="flex justify-between mb-4">
-                  {[...Array(15)].map((_, col) => (
-                    <div key={col} className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                  ))}
+        <!-- 预览区域 -->
+        <div class="bg-white rounded-xl shadow-xl p-6 mb-8">
+            <div id="preview-area" class="paper-preview bg-orange-100">
+                <div id="paper-content" class="w-full h-full relative">
+                    <!-- 默认胶片样式 -->
+                    <div class="absolute inset-0 bg-white rounded-lg shadow-lg m-4">
+                        <div class="flex justify-center pt-4 space-x-2">
+                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
+                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
+                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
+                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
+                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
+                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
+                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
+                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
+                            <div class="w-6 h-6 rounded-sm bg-orange-200"></div>
+                        </div>
+                    </div>
                 </div>
-              ))}
             </div>
-          </div>
         </div>
-      )
-    },
-    music: {
-      name: '五线谱样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg m-4">
-            <div className="absolute inset-8 space-y-12">
-              {[...Array(4)].map((_, section) => (
-                <div key={section} className="relative">
-                  {[...Array(5)].map((_, line) => (
-                    <div key={line} className="border-t border-gray-800 h-3"></div>
-                  ))}
+
+        <!-- 控制面板 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 样式选择 -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">选择样式</h3>
+                    <div class="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto">
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-blue-500 bg-blue-50 text-blue-700" data-style="film">
+                            <span>📷</span>
+                            <span class="text-sm">胶片样式</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="binder">
+                            <span>📔</span>
+                            <span class="text-sm">活页夹样式</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="notebook">
+                            <span>📝</span>
+                            <span class="text-sm">笔记本样式</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="grid">
+                            <span>⚏</span>
+                            <span class="text-sm">方格纸样式</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="dot">
+                            <span>⚬</span>
+                            <span class="text-sm">点阵纸样式</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="music">
+                            <span>🎵</span>
+                            <span class="text-sm">五线谱样式</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="postcard">
+                            <span>📮</span>
+                            <span class="text-sm">明信片样式</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="kraft">
+                            <span>📦</span>
+                            <span class="text-sm">牛皮纸样式</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="vintage">
+                            <span>📜</span>
+                            <span class="text-sm">古典信纸</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="calendar">
+                            <span>📅</span>
+                            <span class="text-sm">日历样式</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="watercolor">
+                            <span>🎨</span>
+                            <span class="text-sm">水彩样式</span>
+                        </button>
+                        <button class="style-btn flex items-center space-x-2 p-3 rounded-lg border border-gray-300 hover:border-gray-400" data-style="chalkboard">
+                            <span>🖤</span>
+                            <span class="text-sm">黑板样式</span>
+                        </button>
+                    </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    },
-    postcard: {
-      name: '明信片样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg m-4">
-            <div className="absolute top-4 right-4">
-              <div className="w-16 h-12 border-2 border-red-500 border-dashed"></div>
-            </div>
-            <div className="absolute top-20 right-4 w-40 h-px bg-gray-400"></div>
-            <div className="absolute top-24 right-4 w-32 h-px bg-gray-400"></div>
-            <div className="absolute top-28 right-4 w-36 h-px bg-gray-400"></div>
-            <div className="absolute bottom-4 left-4 text-gray-500 text-xs">POST CARD</div>
-            <div className="absolute left-1/2 top-4 bottom-4 w-px bg-gray-300"></div>
-          </div>
-        </div>
-      )
-    },
-    kraft: {
-      name: '牛皮纸样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 shadow-lg m-4" style={{ background: 'linear-gradient(45deg, #d4a574, #c19660)' }}>
-            <div className="absolute top-4 left-4">
-              <div className="w-4 h-4 bg-red-600 rounded-full"></div>
-            </div>
-            <div className="absolute top-8 left-8 right-8 bottom-8 border border-amber-700 border-dashed"></div>
-            <div className="absolute top-4 right-4 w-8 h-8 bg-amber-600 transform rotate-45"></div>
-            <div className="absolute bottom-4 left-4 right-4 h-px bg-amber-700"></div>
-          </div>
-        </div>
-      )
-    },
-    washi: {
-      name: '和纸样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-stone-50 shadow-lg m-4">
-            <div className="absolute top-8 left-8 right-8">
-              <div className="h-px bg-gray-800"></div>
-            </div>
-            <div className="absolute top-12 left-12 right-12 bottom-12">
-              {[...Array(15)].map((_, i) => (
-                <div key={i} className="h-6 border-b border-gray-300 border-dotted"></div>
-              ))}
-            </div>
-            <div className="absolute top-4 right-4 w-8 h-8 bg-red-600 rounded-full opacity-80"></div>
-            <div className="absolute bottom-4 left-4 w-12 h-2 bg-gray-800"></div>
-          </div>
-        </div>
-      )
-    },
-    polaroid: {
-      name: '拍立得样式',
-      icon: <Camera className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg m-8 p-4">
-            <div className="w-full h-3/4 bg-gray-100 mb-4"></div>
-            <div className="flex justify-center">
-              <div className="w-24 h-1 bg-gray-300"></div>
-            </div>
-            <div className="absolute top-2 left-2 w-2 h-2 bg-red-500 rounded-full"></div>
-            <div className="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full"></div>
-          </div>
-        </div>
-      )
-    },
-    receipt: {
-      name: '收据样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg mx-8 my-4">
-            <div className="absolute top-0 left-0 right-0 h-4 bg-gray-100 border-b border-dashed border-gray-400"></div>
-            <div className="absolute top-8 left-4 right-4">
-              {[...Array(12)].map((_, i) => (
-                <div key={i} className="flex justify-between items-center h-5 text-xs">
-                  <div className="w-20 h-px bg-gray-400"></div>
-                  <div className="w-8 h-px bg-gray-400"></div>
+
+                <!-- 颜色选择 -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">选择颜色</h3>
+                    <div class="grid grid-cols-5 gap-2">
+                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-800 scale-110" style="background-color: #FED7AA" data-color="#FED7AA"></button>
+                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #FECACA" data-color="#FECACA"></button>
+                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #FEF3C7" data-color="#FEF3C7"></button>
+                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #D1FAE5" data-color="#D1FAE5"></button>
+                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #DBEAFE" data-color="#DBEAFE"></button>
+                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #E5E7EB" data-color="#E5E7EB"></button>
+                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #F3E8FF" data-color="#F3E8FF"></button>
+                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #FCE7F3" data-color="#FCE7F3"></button>
+                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #FFF7ED" data-color="#FFF7ED"></button>
+                        <button class="color-btn w-12 h-12 rounded-lg border-2 border-gray-300" style="background-color: #F0F9FF" data-color="#F0F9FF"></button>
+                    </div>
                 </div>
-              ))}
             </div>
-            <div className="absolute bottom-4 left-4 right-4 border-t border-dashed border-gray-400 pt-2">
-              <div className="w-16 h-px bg-gray-600"></div>
-            </div>
-          </div>
-        </div>
-      )
-    },
-    cork: {
-      name: '软木板样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 shadow-lg m-4" style={{ background: 'linear-gradient(45deg, #d4a574, #c19660, #b8935a)' }}>
-            <div className="absolute top-4 left-4 w-2 h-2 bg-gray-800 rounded-full"></div>
-            <div className="absolute top-4 right-4 w-2 h-2 bg-gray-800 rounded-full"></div>
-            <div className="absolute bottom-4 left-4 w-2 h-2 bg-gray-800 rounded-full"></div>
-            <div className="absolute bottom-4 right-4 w-2 h-2 bg-gray-800 rounded-full"></div>
-            <div className="absolute top-8 left-8 w-16 h-12 bg-yellow-200 shadow-md transform rotate-3"></div>
-            <div className="absolute top-16 right-8 w-12 h-16 bg-pink-200 shadow-md transform -rotate-6"></div>
-            <div className="absolute bottom-12 left-12 w-20 h-8 bg-blue-200 shadow-md transform rotate-1"></div>
-          </div>
-        </div>
-      )
-    },
-    blueprint: {
-      name: '蓝图样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-blue-900 shadow-lg m-4">
-            <div className="absolute inset-4 grid grid-cols-12 gap-0">
-              {[...Array(96)].map((_, i) => (
-                <div key={i} className="border border-blue-400 border-opacity-30 aspect-square"></div>
-              ))}
-            </div>
-            <div className="absolute top-8 left-8 right-8 bottom-8 border-2 border-cyan-300"></div>
-            <div className="absolute bottom-4 right-4 text-cyan-300 text-xs">BLUEPRINT</div>
-            <div className="absolute top-4 left-4 w-4 h-4 border-2 border-cyan-300 rounded-full"></div>
-          </div>
-        </div>
-      )
-    },
-    vintage: {
-      name: '古典信纸样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-amber-50 shadow-lg m-4 border-2 border-amber-600">
-            <div className="absolute top-4 left-4 right-4 border-b-2 border-amber-600 pb-2">
-              <div className="flex space-x-2">
-                <div className="w-3 h-3 bg-amber-600 rounded-full"></div>
-                <div className="w-3 h-3 bg-amber-600 rounded-full"></div>
-                <div className="w-3 h-3 bg-amber-600 rounded-full"></div>
-              </div>
-            </div>
-            <div className="absolute top-16 left-8 right-8 bottom-8">
-              {[...Array(15)].map((_, i) => (
-                <div key={i} className="h-6 border-b border-amber-300"></div>
-              ))}
-            </div>
-            <div className="absolute top-4 right-4 w-8 h-8 bg-amber-600 rounded-full opacity-20"></div>
-            <div className="absolute bottom-4 left-4 text-amber-700 text-xs">Vintage Paper</div>
-          </div>
-        </div>
-      )
-    },
-    hexagon: {
-      name: '六角网格样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg m-4">
-            <div className="absolute inset-4">
-              <svg width="100%" height="100%" className="text-gray-300">
-                {[...Array(8)].map((_, row) => (
-                  [...Array(6)].map((_, col) => (
-                    <polygon
-                      key={`${row}-${col}`}
-                      points={`${20 + col * 35 + (row % 2) * 17.5},${20 + row * 30} ${30 + col * 35 + (row % 2) * 17.5},${15 + row * 30} ${40 + col * 35 + (row % 2) * 17.5},${15 + row * 30} ${50 + col * 35 + (row % 2) * 17.5},${20 + row * 30} ${40 + col * 35 + (row % 2) * 17.5},${25 + row * 30} ${30 + col * 35 + (row % 2) * 17.5},${25 + row * 30}`}
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="0.5"
-                    />
-                  ))
-                ))}
-              </svg>
-            </div>
-          </div>
-        </div>
-      )
-    },
-    calendar: {
-      name: '日历样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg m-4">
-            <div className="absolute top-4 left-4 right-4 bg-red-600 h-8 rounded-t-lg"></div>
-            <div className="absolute top-8 left-8 right-8 h-2 bg-red-600 rounded-full"></div>
-            <div className="absolute top-16 left-4 right-4 grid grid-cols-7 gap-1 text-xs">
-              {['日', '一', '二', '三', '四', '五', '六'].map((day) => (
-                <div key={day} className="text-center font-bold text-gray-600 p-1">{day}</div>
-              ))}
-              {[...Array(35)].map((_, i) => (
-                <div key={i} className="aspect-square border border-gray-200 flex items-center justify-center text-xs">
-                  {i < 31 ? i + 1 : ''}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    },
-    comic: {
-      name: '漫画样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg m-4">
-            <div className="absolute top-4 left-4 right-4 grid grid-cols-2 gap-4 h-32">
-              <div className="border-2 border-black rounded-lg"></div>
-              <div className="border-2 border-black rounded-lg"></div>
-            </div>
-            <div className="absolute top-40 left-4 right-4 h-20 border-2 border-black rounded-lg"></div>
-            <div className="absolute bottom-4 left-4 right-4 grid grid-cols-3 gap-2 h-16">
-              <div className="border-2 border-black rounded-lg"></div>
-              <div className="border-2 border-black rounded-lg"></div>
-              <div className="border-2 border-black rounded-lg"></div>
-            </div>
-            <div className="absolute top-8 right-8 w-8 h-8 bg-yellow-400 rounded-full"></div>
-            <div className="absolute top-12 right-12 text-xs font-bold">POW!</div>
-          </div>
-        </div>
-      )
-    },
-    watercolor: {
-      name: '水彩样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-white shadow-lg m-4">
-            <div className="absolute top-8 left-8 w-20 h-12 bg-blue-200 rounded-full opacity-60"></div>
-            <div className="absolute top-16 right-12 w-16 h-16 bg-pink-200 rounded-full opacity-50"></div>
-            <div className="absolute bottom-12 left-12 w-24 h-8 bg-yellow-200 rounded-full opacity-40"></div>
-            <div className="absolute bottom-16 right-8 w-12 h-12 bg-purple-200 rounded-full opacity-70"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-green-200 rounded-full opacity-30"></div>
-            <div className="absolute inset-8 border border-gray-300 border-dashed rounded-lg"></div>
-          </div>
-        </div>
-      )
-    },
-    chalkboard: {
-      name: '黑板样式',
-      icon: <FileText className="w-4 h-4" />,
-      component: (color) => (
-        <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-gray-900 shadow-lg m-4 border-4 border-amber-800">
-            <div className="absolute top-4 left-4 right-4 bottom-4 border border-gray-600 border-dashed"></div>
-            <div className="absolute top-8 left-8 right-8">
-              {[...Array(12)].map((_, i) => (
-                <div key={i} className="h-6 border-b border-gray-700"></div>
-              ))}
-            </div>
-            <div className="absolute bottom-4 left-4 right-4 h-8 bg-gray-800 rounded-full"></div>
-            <div className="absolute bottom-8 right-8 w-6 h-6 bg-white rounded-full"></div>
-            <div className="absolute top-4 right-4 w-8 h-2 bg-yellow-400 rounded-full"></div>
-          </div>
-        </div>
-      )
-    }
-  };
-
-  const colors = [
-    '#FED7AA', '#FECACA', '#FEF3C7', '#D1FAE5', '#DBEAFE', 
-    '#E5E7EB', '#F3E8FF', '#FCE7F3', '#FFF7ED', '#F0F9FF'
-  ];
-
-  const generateRandom = () => {
-    const backgroundKeys = Object.keys(backgrounds);
-    const randomBg = backgroundKeys[Math.floor(Math.random() * backgroundKeys.length)];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    
-    setCurrentBackground(randomBg);
-    setCurrentColor(randomColor);
-  };
-
-  const downloadImage = () => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = 800;
-    canvas.height = 600;
-    
-    // 填充背景色
-    ctx.fillStyle = currentColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // 创建下载链接
-    const link = document.createElement('a');
-    link.download = `paper-background-${currentBackground}.png`;
-    link.href = canvas.toDataURL();
-    link.click();
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">📝 纸张魔法师</h1>
-          <p className="text-gray-600">生成各种风格的纸张背景，适合笔记、手账、创作等用途</p>
         </div>
 
-        {/* 预览区域 */}
-        <div className="bg-white rounded-xl shadow-xl p-6 mb-8">
-          <div className="aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden shadow-inner">
-            {backgrounds[currentBackground].component(currentColor)}
-          </div>
+        <!-- 操作按钮 -->
+        <div class="flex justify-center space-x-4 mb-8">
+            <button id="random-btn" class="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl">
+                <span>🎲</span>
+                <span>随机生成</span>
+            </button>
+            
+            <button id="download-btn" class="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:from-blue-600 hover:to-teal-600 transition-all shadow-lg hover:shadow-xl">
+                <span>💾</span>
+                <span>下载图片</span>
+            </button>
         </div>
 
-        {/* 控制面板 */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* 背景样式选择 */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">选择样式</h3>
-              <div className="grid grid-cols-3 gap-2 max-h-80 overflow-y-auto">
-                {Object.entries(backgrounds).map(([key, bg]) => (
-                  <button
-                    key={key}
-                    onClick={() => setCurrentBackground(key)}
-                    className={`flex items-center space-x-2 p-3 rounded-lg border transition-all ${
-                      currentBackground === key 
-                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
-                        : 'border-gray-300 hover:border-gray-400'
-                    }`}
-                  >
-                    {bg.icon}
-                    <span className="text-sm">{bg.name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 颜色选择 */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">选择颜色</h3>
-              <div className="grid grid-cols-5 gap-2">
-                {colors.map((color) => (
-                  <button
-                    key={color}
-                    onClick={() => setCurrentColor(color)}
-                    className={`w-12 h-12 rounded-lg border-2 transition-all ${
-                      currentColor === color ? 'border-gray-800 scale-110' : 'border-gray-300'
-                    }`}
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+        <!-- 使用说明 -->
+        <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-6 border border-amber-200">
+            <h3 class="text-lg font-semibold text-amber-800 mb-2">💡 使用说明</h3>
+            <ul class="text-amber-700 space-y-1 text-sm">
+                <li>• 选择您喜欢的纸张样式和颜色</li>
+                <li>• 点击"随机生成"获取意外惊喜</li>
+                <li>• 点击"下载图片"保存到本地</li>
+                <li>• 适合用作手账背景、笔记模板、创作素材等</li>
+            </ul>
         </div>
-
-        {/* 操作按钮 */}
-        <div className="flex justify-center space-x-4">
-          <button
-            onClick={generateRandom}
-            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl"
-          >
-            <Shuffle className="w-5 h-5" />
-            <span>随机生成</span>
-          </button>
-          
-          <button
-            onClick={downloadImage}
-            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:from-blue-600 hover:to-teal-600 transition-all shadow-lg hover:shadow-xl"
-          >
-            <Download className="w-5 h-5" />
-            <span>下载图片</span>
-          </button>
-        </div>
-
-        {/* 使用说明 */}
-        <div className="mt-8 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-6 border border-amber-200">
-          <h3 className="text-lg font-semibold text-amber-800 mb-2">💡 使用说明</h3>
-          <ul className="text-amber-700 space-y-1 text-sm">
-            <li>• 选择您喜欢的纸张样式和颜色</li>
-            <li>• 点击"随机生成"获取意外惊喜</li>
-            <li>• 点击"下载图片"保存到本地</li>
-            <li>• 适合用作手账背景、笔记模板、创作素材等</li>
-          </ul>
-        </div>
-      </div>
     </div>
-  );
-};
 
-export default PaperBackgroundGenerator;
+    <script>
+        let currentStyle = 'film';
+        let currentColor = '#FED7AA';
+
+        const styles = {
+            film: (color) => `
+                <div class="absolute inset-0 bg-white rounded-lg shadow-lg m-4">
+                    <div class="flex justify-center pt-4 space-x-2">
+                        ${Array(9).fill().map(() => `<div class="w-6 h-6 rounded-sm" style="background-color: ${color}"></div>`).join('')}
+                    </div>
+                </div>
+            `,
+            binder: (color) => `
+                <div class="absolute inset-0 bg-white rounded-lg shadow-lg m-4 border-2 border-purple-600">
+                    <div class="absolute left-4 top-0 bottom-0 flex flex-col justify-evenly">
+                        ${Array(9).fill().map(() => `<div class="w-8 h-3 bg-yellow-400 rounded-full border-2 border-purple-600"></div>`).join('')}
+                    </div>
+                </div>
+            `,
+            notebook: (color) => `
+                <div class="absolute inset-0 bg-white shadow-lg m-4">
+                    <div class="flex justify-center pt-4 space-x-1">
+                        ${Array(21).fill().map(() => `<div class="w-3 h-3 rounded-full" style="background-color: ${color}"></div>`).join('')}
+                    </div>
+                    <div class="absolute top-16 left-8">
+                        <svg width="60" height="40" viewBox="0 0 60 40" class="text-amber-800">
+                            <path d="M10 15 Q15 10 25 15 Q35 20 45 15 Q50 10 55 15" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <circle cx="15" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <circle cx="45" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="absolute top-20 left-20 right-4 bottom-4 line-pattern"></div>
+                </div>
+            `,
+            grid: (color) => `
+                <div class="absolute inset-0 bg-white shadow-lg m-4">
+                    <div class="absolute inset-4 grid-pattern"></div>
+                </div>
+            `,
+            dot: (color) => `
+                <div class="absolute inset-0 bg-white shadow-lg m-4">
+                    <div class="absolute inset-4 dot-pattern"></div>
+                </div>
+            `,
+            music: (color) => `
+                <div class="absolute inset-0 bg-white shadow-lg m-4">
+                    <div class="absolute inset-8">
+                        ${Array(4).fill().map(() => `
+                            <div class="mb-12">
+                                ${Array(5).fill().map(() => `<div class="border-t border-gray-800 h-3"></div>`).join('')}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `,
+            postcard: (color) => `
+                <div class="absolute inset-0 bg-white shadow-lg m-4">
+                    <div class="absolute top-4 right-4 w-16 h-12 border-2 border-red-500 border-dashed"></div>
+                    <div class="absolute top-20 right-4 w-40 h-px bg-gray-400"></div>
+                    <div class="absolute top-24 right-4 w-32 h-px bg-gray-400"></div>
+                    <div class="absolute bottom-4 left-4 text-gray-500 text-xs">POST CARD</div>
+                    <div class="absolute left-1/2 top-4 bottom-4 w-px bg-gray-300"></div>
+                </div>
+            `,
+            kraft: (color) => `
+                <div class="absolute inset-0 shadow-lg m-4" style="background: linear-gradient(45deg, #d4a574, #c19660)">
+                    <div class="absolute top-4 left-4 w-4 h-4 bg-red-600 rounded-full"></div>
+                    <div class="absolute top-8 left-8 right-8 bottom-8 border border-amber-700 border-dashed"></div>
+                    <div class="absolute top-4 right-4 w-8 h-8 bg-amber-600 transform rotate-45"></div>
+                </div>
+            `,
+            vintage: (color) => `
+                <div class="absolute inset-0 bg-amber-50 shadow-lg m-4 border-2 border-amber-600">
+                    <div class="absolute top-4 left-4 right-4 border-b-2 border-amber-600 pb-2">
+                        <div class="flex space-x-2">
+                            <div class="w-3 h-3 bg-amber-600 rounded-full"></div>
+                            <div class="w-3 h-3 bg-amber-600 rounded-full"></div>
+                            <div class="w-3 h-3 bg-amber-600 rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="absolute top-16 left-8 right-8 bottom-8 line-pattern"></div>
+                </div>
+            `,
+            calendar: (color) => `
+                <div class="absolute inset-0 bg-white shadow-lg m-4">
+                    <div class="absolute top-4 left-4 right-4 bg-red-600 h-8 rounded-t-lg"></div>
+                    <div class="absolute top-16 left-4 right-4 grid grid-cols-7 gap-1 text-xs">
+                        <div class="text-center font-bold p-1">日</div>
+                        <div class="text-center font-bold p-1">一</div>
+                        <div class="text-center font-bold p-1">二</div>
+                        <div class="text-center font-bold p-1">三</div>
+                        <div class="text-center font-bold p-1">四</div>
+                        <div class="text-center font-bold p-1">五</div>
+                        <div class="text-center font-bold p-1">六</div>
+                        ${Array(28).fill().map((_, i) => `<div class="aspect-square border border-gray-200 flex items-center justify-center">${i + 1}</div>`).join('')}
+                    </div>
+                </div>
+            `,
+            watercolor: (color) => `
+                <div class="absolute inset-0 bg-white shadow-lg m-4">
+                    <div class="absolute top-8 left-8 w-20 h-12 bg-blue-200 rounded-full opacity-60"></div>
+                    <div class="absolute top-16 right-12 w-16 h-16 bg-pink-200 rounded-full opacity-50"></div>
+                    <div class="absolute bottom-12 left-12 w-24 h-8 bg-yellow-200 rounded-full opacity-40"></div>
+                    <div class="absolute inset-8 border border-gray-300 border-dashed rounded-lg"></div>
+                </div>
+            `,
+            chalkboard: (color) => `
+                <div class="absolute inset-0 bg-gray-900 shadow-lg m-4 border-4 border-amber-800">
+                    <div class="absolute top-8 left-8 right-8">
+                        ${Array(12).fill().map(() => `<div class="h-6 border-b border-gray-700"></div>`).join('')}
+                    </div>
+                    <div class="absolute top-4 right-4 w-8 h-2 bg-yellow-400 rounded-full"></div>
+                    <div class="absolute bottom-8 right-8 w-6 h-6 bg-white rounded-full"></div>
+                </div>
+            `
+        };
+
+        const colors = ['#FED7AA', '#FECACA', '#FEF3C7', '#D1FAE5', '#DBEAFE', '#E5E7EB', '#F3E8FF', '#FCE7F3', '#FFF7ED', '#F0F9FF'];
+
+        function updatePreview() {
+            const previewArea = document.getElementById('preview-area');
+            const paperContent = document.getElementById('paper-content');
+            
+            previewArea.style.backgroundColor = currentColor;
+            paperContent.innerHTML = styles[currentStyle](currentColor);
+        }
+
+        function updateStyleButtons() {
+            document.querySelectorAll('.style-btn').forEach(btn => {
+                btn.className = btn.className.replace('border-blue-500 bg-blue-50 text-blue-700', 'border-gray-300 hover:border-gray-400');
+                if (btn.dataset.style === currentStyle) {
+                    btn.className = btn.className.replace('border-gray-300 hover:border-gray-400', 'border-blue-500 bg-blue-50 text-blue-700');
+                }
+            });
+        }
+
+        function updateColorButtons() {
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.className = btn.className.replace('border-gray-800 scale-110', 'border-gray-300');
+                if (btn.dataset.color === currentColor) {
+                    btn.className = btn.className.replace('border-gray-300', 'border-gray-800 scale-110');
+                }
+            });
+        }
+
+        // 事件监听
+        document.querySelectorAll('.style-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentStyle = btn.dataset.style;
+                updatePreview();
+                updateStyleButtons();
+            });
+        });
+
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentColor = btn.dataset.color;
+                updatePreview();
+                updateColorButtons();
+            });
+        });
+
+        document.getElementById('random-btn').addEventListener('click', () => {
+            const styleKeys = Object.keys(styles);
+            currentStyle = styleKeys[Math.floor(Math.random() * styleKeys.length)];
+            currentColor = colors[Math.floor(Math.random() * colors.length)];
+            updatePreview();
+            updateStyleButtons();
+            updateColorButtons();
+        });
+
+        document.getElementById('download-btn').addEventListener('click', () => {
+            // 创建canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 800;
+            canvas.height = 600;
+            
+            // 填充背景色
+            ctx.fillStyle = currentColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 白色纸张背景
+            ctx.fillStyle = 'white';
+            ctx.fillRect(40, 40, 720, 520);
+            
+            // 添加样式特定的绘制（简化版）
+            if (currentStyle === 'film') {
+                ctx.fillStyle = currentColor;
+                for (let i = 0; i < 9; i++) {
+                    ctx.fillRect(80 + i * 80, 80, 60, 60);
+                }
+            }
+            
+            // 下载
+            const link = document.createElement('a');
+            link.download = `paper-background-${currentStyle}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+
+        // 初始化
+        updatePreview();
+    </script>
+</body>
+</html>
