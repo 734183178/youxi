@@ -74,7 +74,7 @@ const PaperBackgroundGenerator = () => {
         <div className="w-full h-full relative" style={{ backgroundColor: color }}>
           <div className="absolute inset-0 bg-white shadow-lg m-4">
             <div className="absolute inset-4 grid grid-cols-16 gap-0">
-              {[...Array(16 * 12)].map((_, i) => (
+              {[...Array(192)].map((_, i) => (
                 <div key={i} className="border border-gray-200 aspect-square"></div>
               ))}
             </div>
@@ -143,7 +143,7 @@ const PaperBackgroundGenerator = () => {
       icon: <FileText className="w-4 h-4" />,
       component: (color) => (
         <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-amber-100 shadow-lg m-4" style={{ background: 'linear-gradient(45deg, #d4a574, #c19660)' }}>
+          <div className="absolute inset-0 shadow-lg m-4" style={{ background: 'linear-gradient(45deg, #d4a574, #c19660)' }}>
             <div className="absolute top-4 left-4">
               <div className="w-4 h-4 bg-red-600 rounded-full"></div>
             </div>
@@ -217,7 +217,7 @@ const PaperBackgroundGenerator = () => {
       icon: <FileText className="w-4 h-4" />,
       component: (color) => (
         <div className="w-full h-full relative" style={{ backgroundColor: color }}>
-          <div className="absolute inset-0 bg-amber-200 shadow-lg m-4" style={{ background: 'linear-gradient(45deg, #d4a574, #c19660, #b8935a)' }}>
+          <div className="absolute inset-0 shadow-lg m-4" style={{ background: 'linear-gradient(45deg, #d4a574, #c19660, #b8935a)' }}>
             <div className="absolute top-4 left-4 w-2 h-2 bg-gray-800 rounded-full"></div>
             <div className="absolute top-4 right-4 w-2 h-2 bg-gray-800 rounded-full"></div>
             <div className="absolute bottom-4 left-4 w-2 h-2 bg-gray-800 rounded-full"></div>
@@ -236,7 +236,7 @@ const PaperBackgroundGenerator = () => {
         <div className="w-full h-full relative" style={{ backgroundColor: color }}>
           <div className="absolute inset-0 bg-blue-900 shadow-lg m-4">
             <div className="absolute inset-4 grid grid-cols-12 gap-0">
-              {[...Array(12 * 8)].map((_, i) => (
+              {[...Array(96)].map((_, i) => (
                 <div key={i} className="border border-blue-400 border-opacity-30 aspect-square"></div>
               ))}
             </div>
@@ -304,12 +304,12 @@ const PaperBackgroundGenerator = () => {
           <div className="absolute inset-0 bg-white shadow-lg m-4">
             <div className="absolute top-4 left-4 right-4 bg-red-600 h-8 rounded-t-lg"></div>
             <div className="absolute top-8 left-8 right-8 h-2 bg-red-600 rounded-full"></div>
-            <div className="absolute top-16 left-4 right-4 grid grid-cols-7 gap-1">
+            <div className="absolute top-16 left-4 right-4 grid grid-cols-7 gap-1 text-xs">
               {['日', '一', '二', '三', '四', '五', '六'].map((day) => (
-                <div key={day} className="text-center text-xs font-bold text-gray-600 p-1">{day}</div>
+                <div key={day} className="text-center font-bold text-gray-600 p-1">{day}</div>
               ))}
               {[...Array(35)].map((_, i) => (
-                <div key={i} className="aspect-square border border-gray-200 text-xs flex items-center justify-center">
+                <div key={i} className="aspect-square border border-gray-200 flex items-center justify-center text-xs">
                   {i < 31 ? i + 1 : ''}
                 </div>
               ))}
@@ -412,7 +412,7 @@ const PaperBackgroundGenerator = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">📝 纸张背景生成器</h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">📝 纸张魔法师</h1>
           <p className="text-gray-600">生成各种风格的纸张背景，适合笔记、手账、创作等用途</p>
         </div>
 
