@@ -1,0 +1,398 @@
+import React, { useState } from 'react';
+
+const SCL90Assessment = () => {
+  const [currentPage, setCurrentPage] = useState('intro'); // 'intro', 'test', 'result'
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState({});
+
+  // SCL-90题目数据
+  const questions = [
+    { id: 1, text: "头痛", factor: "躯体化" },
+    { id: 2, text: "神经过敏，心中不踏实", factor: "强迫症状" },
+    { id: 3, text: "头脑中有不必要的想法或字句盘旋", factor: "强迫症状" },
+    { id: 4, text: "头昏或昏倒", factor: "躯体化" },
+    { id: 5, text: "对异性的兴趣减退", factor: "抑郁症状" },
+    { id: 6, text: "对旁人责备求全", factor: "敌对症状" },
+    { id: 7, text: "感到别人能控制您的思想", factor: "精神病性" },
+    { id: 8, text: "责怪别人制造麻烦", factor: "敌对症状" },
+    { id: 9, text: "忘记性大", factor: "强迫症状" },
+    { id: 10, text: "担心自己的衣饰整齐及仪表的端正", factor: "强迫症状" },
+    { id: 11, text: "容易烦恼和激动", factor: "焦虑症状" },
+    { id: 12, text: "胸痛", factor: "躯体化" },
+    { id: 13, text: "害怕空旷的场所或街道", factor: "恐怖症状" },
+    { id: 14, text: "感到自己的精力下降，活动减慢", factor: "抑郁症状" },
+    { id: 15, text: "想结束自己的生命", factor: "抑郁症状" },
+    { id: 16, text: "听到旁人听不到的声音", factor: "精神病性" },
+    { id: 17, text: "发抖", factor: "焦虑症状" },
+    { id: 18, text: "感到大多数人都不可信任", factor: "偏执症状" },
+    { id: 19, text: "食欲不振", factor: "睡眠饮食" },
+    { id: 20, text: "容易哭泣", factor: "抑郁症状" },
+    { id: 21, text: "同异性相处时感到害羞不自在", factor: "人际关系敏感" },
+    { id: 22, text: "感到受骗，中圈套或有人想抓住您", factor: "偏执症状" },
+    { id: 23, text: "无缘无故地突然感到害怕", factor: "焦虑症状" },
+    { id: 24, text: "自己不能控制地大发脾气", factor: "敌对症状" },
+    { id: 25, text: "怕单独出门", factor: "恐怖症状" },
+    { id: 26, text: "经常责怪自己", factor: "抑郁症状" },
+    { id: 27, text: "腰痛", factor: "躯体化" },
+    { id: 28, text: "感到难以完成任务", factor: "强迫症状" },
+    { id: 29, text: "感到孤独", factor: "抑郁症状" },
+    { id: 30, text: "感到苦闷", factor: "抑郁症状" },
+    { id: 31, text: "过分担忧", factor: "焦虑症状" },
+    { id: 32, text: "对事物不感兴趣", factor: "抑郁症状" },
+    { id: 33, text: "感到害怕", factor: "焦虑症状" },
+    { id: 34, text: "您的感情容易受到伤害", factor: "人际关系敏感" },
+    { id: 35, text: "旁人能知道您的私下想法", factor: "精神病性" },
+    { id: 36, text: "感到别人不理解您或不同情您", factor: "人际关系敏感" },
+    { id: 37, text: "感到人们对您不友好，不喜欢您", factor: "人际关系敏感" },
+    { id: 38, text: "做事必须做得很慢以保证做得正确", factor: "强迫症状" },
+    { id: 39, text: "心跳得很厉害", factor: "焦虑症状" },
+    { id: 40, text: "恶心或胃部不舒服", factor: "躯体化" },
+    { id: 41, text: "感到比不上他人", factor: "人际关系敏感" },
+    { id: 42, text: "肌肉酸痛", factor: "躯体化" },
+    { id: 43, text: "感到有人在监视您，谈论您", factor: "偏执症状" },
+    { id: 44, text: "难以入睡", factor: "睡眠饮食" },
+    { id: 45, text: "做事必须反复检查", factor: "强迫症状" },
+    { id: 46, text: "难以做出决定", factor: "强迫症状" },
+    { id: 47, text: "怕乘电车、公共汽车、地铁或火车", factor: "恐怖症状" },
+    { id: 48, text: "呼吸有困难", factor: "焦虑症状" },
+    { id: 49, text: "一阵阵发冷或发热", factor: "躯体化" },
+    { id: 50, text: "因为感到害怕而避开某些东西、场所或活动", factor: "恐怖症状" },
+    { id: 51, text: "脑子变空了", factor: "精神病性" },
+    { id: 52, text: "身体发麻或刺痛", factor: "躯体化" },
+    { id: 53, text: "喉咙有梗塞感", factor: "躯体化" },
+    { id: 54, text: "感到前途没有希望", factor: "抑郁症状" },
+    { id: 55, text: "不能集中注意力", factor: "强迫症状" },
+    { id: 56, text: "感到身体的某一部分软弱无力", factor: "躯体化" },
+    { id: 57, text: "感到紧张或心神不定", factor: "焦虑症状" },
+    { id: 58, text: "感到手或脚发重", factor: "躯体化" },
+    { id: 59, text: "想到死亡的事", factor: "抑郁症状" },
+    { id: 60, text: "吃得太多", factor: "睡眠饮食" },
+    { id: 61, text: "当别人看着您或谈论您时感到不自在", factor: "人际关系敏感" },
+    { id: 62, text: "有一些不属于您自己的想法", factor: "精神病性" },
+    { id: 63, text: "有想打人或伤害他人的冲动", factor: "敌对症状" },
+    { id: 64, text: "醒得太早", factor: "睡眠饮食" },
+    { id: 65, text: "必须反复洗手、点数", factor: "强迫症状" },
+    { id: 66, text: "睡得不稳不深", factor: "睡眠饮食" },
+    { id: 67, text: "有想摔坏或破坏东西的想法", factor: "敌对症状" },
+    { id: 68, text: "有一些别人没有的想法", factor: "精神病性" },
+    { id: 69, text: "感到对别人神经过敏", factor: "人际关系敏感" },
+    { id: 70, text: "在商店或电影院等人多的地方感到不自在", factor: "恐怖症状" },
+    { id: 71, text: "感到任何事情都很困难", factor: "抑郁症状" },
+    { id: 72, text: "一阵阵恐惧或惊恐", factor: "焦虑症状" },
+    { id: 73, text: "感到在公共场所吃东西很不舒服", factor: "恐怖症状" },
+    { id: 74, text: "经常与人争论", factor: "敌对症状" },
+    { id: 75, text: "单独一人时神经很紧张", factor: "恐怖症状" },
+    { id: 76, text: "别人对您的成绩没有作出恰当的评价", factor: "偏执症状" },
+    { id: 77, text: "即使和别人在一起也感到孤单", factor: "抑郁症状" },
+    { id: 78, text: "感到坐立不安心神不定", factor: "焦虑症状" },
+    { id: 79, text: "感到自己没有什么价值", factor: "抑郁症状" },
+    { id: 80, text: "感到熟悉的东西变成陌生或不真实", factor: "精神病性" },
+    { id: 81, text: "大叫或摔东西", factor: "敌对症状" },
+    { id: 82, text: "害怕会在公共场所昏倒", factor: "恐怖症状" },
+    { id: 83, text: "感到别人想占您的便宜", factor: "偏执症状" },
+    { id: 84, text: "为一些有关性的想法而很苦恼", factor: "精神病性" },
+    { id: 85, text: "您认为应该因为自己的过错而受到惩罚", factor: "偏执症状" },
+    { id: 86, text: "感到要很快把事情做完", factor: "强迫症状" },
+    { id: 87, text: "感到自己的身体有严重问题", factor: "躯体化" },
+    { id: 88, text: "从未感到和其他人很亲近", factor: "人际关系敏感" },
+    { id: 89, text: "感到有罪", factor: "偏执症状" },
+    { id: 90, text: "感到自己的脑子有毛病", factor: "精神病性" }
+  ];
+
+  // 选项标签
+  const options = [
+    { value: 1, label: 'A', text: '从无' },
+    { value: 2, label: 'B', text: '很轻' },
+    { value: 3, label: 'C', text: '中等' },
+    { value: 4, label: 'D', text: '偏重' },
+    { value: 5, label: 'E', text: '严重' }
+  ];
+
+  // 因子分类
+  const factors = {
+    "躯体化": { name: "躯体化", items: [] },
+    "强迫症状": { name: "强迫症状", items: [] },
+    "人际关系敏感": { name: "人际关系敏感", items: [] },
+    "抑郁症状": { name: "抑郁症状", items: [] },
+    "焦虑症状": { name: "焦虑症状", items: [] },
+    "敌对症状": { name: "敌对症状", items: [] },
+    "恐怖症状": { name: "恐怖症状", items: [] },
+    "偏执症状": { name: "偏执症状", items: [] },
+    "精神病性": { name: "精神病性", items: [] },
+    "睡眠饮食": { name: "睡眠饮食", items: [] }
+  };
+
+  // 将题目分配到对应因子
+  questions.forEach(q => {
+    if (factors[q.factor]) {
+      factors[q.factor].items.push(q.id);
+    }
+  });
+
+  const handleStartTest = () => {
+    setCurrentPage('test');
+    setCurrentQuestion(0);
+    setAnswers({});
+  };
+
+  const handleAnswer = (value) => {
+    const newAnswers = { ...answers, [questions[currentQuestion].id]: value };
+    setAnswers(newAnswers);
+
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setCurrentPage('result');
+    }
+  };
+
+  const calculateResults = () => {
+    let totalScore = 0;
+    const factorScores = {};
+
+    // 初始化因子分数
+    Object.keys(factors).forEach(factor => {
+      factorScores[factor] = 0;
+    });
+
+    // 计算总分和各因子分数
+    questions.forEach(q => {
+      const score = answers[q.id] || 1;
+      totalScore += score;
+      if (factorScores[q.factor] !== undefined) {
+        factorScores[q.factor] += score;
+      }
+    });
+
+    // 计算平均分
+    const avgScore = (totalScore / 90).toFixed(2);
+    
+    // 计算各因子平均分
+    const factorAvgScores = {};
+    Object.keys(factors).forEach(factor => {
+      const itemCount = factors[factor].items.length;
+      if (itemCount > 0) {
+        factorAvgScores[factor] = (factorScores[factor] / itemCount).toFixed(2);
+      }
+    });
+
+    return { totalScore, avgScore, factorScores, factorAvgScores };
+  };
+
+  const getLevel = (avgScore) => {
+    const score = parseFloat(avgScore);
+    if (score >= 1.0 && score < 2.0) return { level: '良好', color: 'bg-green-500' };
+    if (score >= 2.0 && score < 3.0) return { level: '轻微', color: 'bg-green-400' };
+    if (score >= 3.0 && score < 4.0) return { level: '中度', color: 'bg-orange-500' };
+    if (score >= 4.0 && score <= 5.0) return { level: '重度', color: 'bg-red-500' };
+    return { level: '良好', color: 'bg-green-500' };
+  };
+
+  const renderIntro = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">SCL-90症状自评量表</h1>
+        </div>
+        
+        <div className="space-y-6 text-gray-700 leading-relaxed">
+          <p className="text-lg">
+            SCL-90（Symptom Checklist 90）是一种常用的心理健康自评量表，包含90个项目，涉及感觉、情感、思维、意识、行为、
+            生活习惯、人际关系、饮食睡眠等多个方面。
+          </p>
+          
+          <p>
+            量表只是辅助师者工具，可以发现和了解自己的情绪状况，测试结果仅供参考，不代表实际诊断。
+          </p>
+          
+          <p>
+            请仔细阅读以下每一条述，并根据您在最近一周内的实际感受，选择最适合的答案。
+          </p>
+          
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h3 className="text-xl font-semibold mb-4">评分标准：</h3>
+            <ul className="space-y-2">
+              <li><span className="font-medium">A. 从无：</span> 没有或很少时间有</li>
+              <li><span className="font-medium">B. 很轻：</span> 少部分时间有</li>
+              <li><span className="font-medium">C. 中等：</span> 相当多时间有</li>
+              <li><span className="font-medium">D. 偏重：</span> 绝大部分时间有</li>
+              <li><span className="font-medium">E. 严重：</span> 全部时间都有</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="mt-8 text-center">
+          <button
+            onClick={handleStartTest}
+            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors duration-200"
+          >
+            开始测试
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderTest = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">SCL-90症状自评量表</h2>
+          <div className="text-gray-600">
+            <span className="text-xl">第 {currentQuestion + 1} 题</span>
+            <span className="ml-4">共 90 题</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
+            <div 
+              className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${((currentQuestion + 1) / 90) * 100}%` }}
+            ></div>
+          </div>
+        </div>
+        
+        <div className="mb-8">
+          <h3 className="text-2xl font-medium text-gray-800 text-center mb-8">
+            {questions[currentQuestion].text}
+          </h3>
+          
+          <div className="space-y-4">
+            {options.map(option => (
+              <button
+                key={option.value}
+                onClick={() => handleAnswer(option.value)}
+                className="w-full text-left p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
+              >
+                <div className="flex items-center">
+                  <span className="font-bold text-lg text-blue-600 mr-4">{option.label}</span>
+                  <span className="text-gray-800">{option.text}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        {currentQuestion > 0 && (
+          <div className="text-center">
+            <button
+              onClick={() => setCurrentQuestion(currentQuestion - 1)}
+              className="text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              &lt;&lt; 上一题
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  const renderResult = () => {
+    const results = calculateResults();
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">测试结果仅供参考，不作诊断使用</h2>
+            <div className="text-6xl font-bold text-green-600 mb-2">{results.totalScore}</div>
+            <div className="text-gray-600">您的SCL-90总分</div>
+            <div className="text-lg text-gray-600 mt-2">单项平均分: {results.avgScore}</div>
+          </div>
+          
+          <div className="mb-8">
+            <h3 className="text-2xl font-bold text-gray-800 mb-6">各因子得分及测试情况</h3>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="text-left p-3 font-semibold">因子名称</th>
+                    <th className="text-center p-3 font-semibold">总分</th>
+                    <th className="text-center p-3 font-semibold">平均分</th>
+                    <th className="text-center p-3 font-semibold">测试情况</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(factors).map(factor => {
+                    const avgScore = results.factorAvgScores[factor];
+                    const level = getLevel(avgScore);
+                    return (
+                      <tr key={factor} className="border-b border-gray-200">
+                        <td className="p-3">{factors[factor].name}</td>
+                        <td className="text-center p-3">{results.factorScores[factor]}</td>
+                        <td className="text-center p-3">{avgScore}</td>
+                        <td className="text-center p-3">
+                          <span className={`px-3 py-1 rounded-full text-white text-sm ${level.color}`}>
+                            {level.level}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">结果解释</h3>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              请用从容的心态来看待本次测试。无论分数如何，请一定记得，我们始终都在你身边。
+              SCL-90心理健康自评量表涵盖了情绪状态、思维模式、人际关系、生活习惯等多个维度，它就像一面温暖的镜子，能
+              帮你更清晰地看见自己当下的心理状态。需要知道的是，量表得分只是近期心理感受的投射。
+            </p>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              若某些因子得分较高，或许只是说明你在最近在这些方面时有感受到了压力或困扰，但这绝不等于你存在严重的问题。很
+              多时候，短期的心理波动本就是生活的常态——可能是学习的节奏、工作的挑战，或是人际关系中的小插曲带来的暂
+              时影响。
+            </p>
+            
+            <div className="mt-6">
+              <h4 className="font-bold text-gray-800 mb-3">测试情况分级标准：</h4>
+              <ul className="space-y-2 text-gray-700">
+                <li><span className="inline-block w-4 h-4 bg-green-500 rounded mr-2"></span><strong>良好：</strong> 平均分1.0-2.0分，症状轻微或很少出现</li>
+                <li><span className="inline-block w-4 h-4 bg-green-400 rounded mr-2"></span><strong>轻微：</strong> 平均分2.0-3.0分，症状程度但不影响日常生活</li>
+                <li><span className="inline-block w-4 h-4 bg-orange-500 rounded mr-2"></span><strong>中度：</strong> 平均分3.0-4.0分，症状程度对日常生活有一定影响</li>
+                <li><span className="inline-block w-4 h-4 bg-red-500 rounded mr-2"></span><strong>重度：</strong> 平均分4.0-5.0分，症状严重明显影响日常生活</li>
+              </ul>
+            </div>
+            
+            <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
+              <p className="text-gray-700">
+                按中国常模结果，如果您的SCL90总分超过160分，单项均分超过2分就应作进一步检查，标准分为大于200分说明有有
+                很明显的心理问题，可求助于心理咨询，大于250分则比较严重，需要作医学上的详细检查，很可能要做针对性的心理
+                治疗或在医生的指导下服药。
+              </p>
+            </div>
+          </div>
+          
+          <div className="mt-8 text-center">
+            <button
+              onClick={() => {
+                setCurrentPage('intro');
+                setCurrentQuestion(0);
+                setAnswers({});
+              }}
+              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+            >
+              重新测试
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // 根据当前页面渲染不同内容
+  switch (currentPage) {
+    case 'intro':
+      return renderIntro();
+    case 'test':
+      return renderTest();
+    case 'result':
+      return renderResult();
+    default:
+      return renderIntro();
+  }
+};
+
+export default SCL90Assessment;
