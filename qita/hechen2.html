@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级图像合成工具</title>
+    <style>
+        /* 基础重置和字体 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow: hidden;
+        }
+
+        /* 主容器布局 */
+        .container {
+            display: flex;
+            height: 100vh;
+            background: white;
+            margin: 10px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 300px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #343a40;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #495057;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #212529;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 画布尺寸设置 */
+        .canvas-size-presets {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .preset-btn {
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: #e9ecef;
+            border-color: #007bff;
+        }
+
+        .custom-size {
+            margin-bottom: 15px;
+        }
+
+        .size-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .size-input-group input {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .size-input-group button {
+            padding: 6px 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .canvas-bg-color {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .canvas-bg-color input[type="color"] {
+            width: 40px;
+            height: 30px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* 图层管理 */
+        .layer-controls {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .layer-btn {
+            padding: 6px 10px;
+            font-size: 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .layer-btn:hover {
+            background: #e9ecef;
+            border-color: #007bff;
+        }
+
+        .layers-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .layer-item {
+            padding: 10px;
+            border-bottom: 1px solid #f1f3f4;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+            font-size: 12px;
+        }
+
+        .layer-item:last-child {
+            border-bottom: none;
+        }
+
+        .layer-item:hover {
+            background: #f8f9fa;
+        }
+
+        .layer-item.selected {
+            background: #e7f3ff;
+            border-color: #007bff;
+        }
+
+        .layer-item .layer-type {
+            font-size: 10px;
+            color: #6c757d;
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .no-layers {
+            text-align: center;
+            color: #6c757d;
+            padding: 20px;
+            font-size: 12px;
+        }
+
+        /* 属性面板 */
+        .properties-panel {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .no-selection {
+            text-align: center;
+            color: #6c757d;
+            padding: 20px;
+            font-size: 12px;
+        }
+
+        .property-group {
+            margin-bottom: 15px;
+        }
+
+        .property-label {
+            display: block;
+            font-size: 11px;
+            color: #6c757d;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .property-input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .property-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .property-row input {
+            flex: 1;
+        }
+
+        .property-row label {
+            font-size: 11px;
+            color: #6c757d;
+            min-width: 40px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 工具栏 */
+        .toolbar {
+            height: 50px;
+            background: #343a40;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .toolbar-btn {
+            padding: 6px 12px;
+            background: #495057;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+            min-width: 35px;
+            text-align: center;
+        }
+
+        .toolbar-btn:hover {
+            background: #6c757d;
+        }
+
+        .toolbar-btn.active {
+            background: #007bff;
+        }
+
+        .toolbar-separator {
+            width: 1px;
+            height: 30px;
+            background: #6c757d;
+            margin: 0 5px;
+        }
+
+        .toolbar-spacer {
+            flex: 1;
+        }
+
+        .zoom-info {
+            color: white;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+
+        /* 工作区 */
+        .workspace {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background: 
+                radial-gradient(circle, #ddd 1px, transparent 1px),
+                radial-gradient(circle, #ddd 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+
+        /* 标尺 */
+        .ruler {
+            position: absolute;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            z-index: 100;
+            display: none;
+        }
+
+        .ruler.show {
+            display: block;
+        }
+
+        .ruler-horizontal {
+            top: 0;
+            left: 30px;
+            right: 0;
+            height: 30px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .ruler-vertical {
+            top: 30px;
+            left: 0;
+            bottom: 0;
+            width: 30px;
+            border-right: 2px solid #007bff;
+        }
+
+        /* 画布包装器 */
+        .canvas-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid #6c757d;
+            background: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform-origin: center;
+        }
+
+        .canvas {
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            background: white;
+            overflow: visible; /* 修复：允许子元素超出边界 */
+            cursor: crosshair;
+        }
+
+        /* 网格 */
+        .grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            pointer-events: none;
+            background-image: 
+                linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            transition: opacity 0.2s;
+        }
+
+        .grid.show {
+            opacity: 1;
+        }
+
+        /* 选择框 */
+        .selection-box {
+            position: absolute;
+            border: 2px dashed #007bff;
+            background: rgba(0, 123, 255, 0.1);
+            pointer-events: none;
+            display: none;
+        }
+
+        /* 元素样式 */
+        .element {
+            position: absolute;
+            border: 2px solid transparent;
+            cursor: move;
+            user-select: none;
+            outline: none;
+            pointer-events: auto; /* 修复：确保元素可以接收鼠标事件 */
+        }
+
+        .element.selected {
+            border-color: #007bff;
+        }
+
+        .element.multi-selected {
+            border-color: #28a745;
+        }
+
+        .element img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            display: block; /* 修复：确保图片正确显示 */
+        }
+
+        .element .text-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-wrap: break-word;
+            overflow: hidden;
+            padding: 5px;
+            outline: none;
+            border: none;
+            background: transparent;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .element .text-content:focus {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px dashed #007bff;
+        }
+
+        /* 控制手柄 */
+        .resize-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #007bff;
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            pointer-events: auto; /* 修复：确保手柄可以接收鼠标事件 */
+        }
+
+        .resize-handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+        .resize-handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+        .resize-handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+        .resize-handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+        .resize-handle.n { top: -6px; left: 50%; transform: translateX(-50%); cursor: n-resize; }
+        .resize-handle.s { bottom: -6px; left: 50%; transform: translateX(-50%); cursor: s-resize; }
+        .resize-handle.w { top: 50%; left: -6px; transform: translateY(-50%); cursor: w-resize; }
+        .resize-handle.e { top: 50%; right: -6px; transform: translateY(-50%); cursor: e-resize; }
+
+        .rotate-handle {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: #28a745;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            pointer-events: auto; /* 修复：确保手柄可以接收鼠标事件 */
+        }
+
+        .rotate-handle:active {
+            cursor: grabbing;
+        }
+
+        /* 结果面板 */
+        .results-panel {
+            width: 280px;
+            background: #f8f9fa;
+            border-left: 1px solid #e9ecef;
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .foreground-preview {
+            margin-bottom: 20px;
+        }
+
+        .foreground-preview h4 {
+            font-size: 13px;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .foreground-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .foreground-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-bottom: 1px solid #f1f3f4;
+            font-size: 11px;
+        }
+
+        .foreground-item:last-child {
+            border-bottom: none;
+        }
+
+        .foreground-thumbnail {
+            width: 30px;
+            height: 30px;
+            border-radius: 3px;
+            object-fit: cover;
+            border: 1px solid #dee2e6;
+        }
+
+        .foreground-name {
+            flex: 1;
+            color: #495057;
+        }
+
+        .foreground-remove {
+            padding: 2px 6px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .no-foregrounds {
+            text-align: center;
+            color: #6c757d;
+            padding: 20px;
+            font-size: 12px;
+        }
+
+        .composition-controls {
+            margin-bottom: 20px;
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #495057;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .results-container h4 {
+            font-size: 13px;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .results-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+            margin-bottom: 10px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-thumbnail {
+            width: 40px;
+            height: 30px;
+            border-radius: 3px;
+            object-fit: cover;
+            border: 1px solid #dee2e6;
+        }
+
+        .result-info {
+            flex: 1;
+        }
+
+        .result-name {
+            font-size: 11px;
+            color: #495057;
+            margin-bottom: 2px;
+        }
+
+        .result-size {
+            font-size: 10px;
+            color: #6c757d;
+        }
+
+        .result-download {
+            padding: 4px 8px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #6c757d;
+            padding: 20px;
+            font-size: 12px;
+        }
+
+        .batch-download {
+            text-align: center;
+        }
+
+        /* 提示消息 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: #28a745;
+            color: white;
+            border-radius: 6px;
+            z-index: 1001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #dc3545;
+        }
+
+        .toast.warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        /* 隐藏的文件输入 */
+        input[type="file"] {
+            display: none;
+        }
+
+        /* 拖拽高亮 */
+        .drag-over {
+            background: rgba(0, 123, 255, 0.1);
+            border: 2px dashed #007bff;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .layer-item,
+        .result-item,
+        .foreground-item {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 左侧边栏 -->
+        <div class="sidebar">
+            <h1 class="title">高级图像合成工具</h1>
+            
+            <!-- 操作区 -->
+            <div class="section">
+                <h3 class="section-title">📁 操作区</h3>
+                <button class="btn btn-primary" onclick="importBackground()">
+                    🖼️ 导入背景图
+                </button>
+                <button class="btn btn-success" onclick="addImage()">
+                    🎨 添加图片
+                </button>
+                <button class="btn btn-warning" onclick="addText()">
+                    📝 添加文字
+                </button>
+                <button class="btn btn-secondary" onclick="importForegrounds()">
+                    🎭 导入前景图
+                </button>
+            </div>
+
+            <!-- 画布设置 -->
+            <div class="section">
+                <h3 class="section-title">📐 画布设置</h3>
+                <div class="canvas-size-presets">
+                    <button class="preset-btn" onclick="setCanvasSize(1920, 1080)">1920×1080</button>
+                    <button class="preset-btn" onclick="setCanvasSize(1080, 1080)">1080×1080</button>
+                    <button class="preset-btn" onclick="setCanvasSize(1242, 1660)">1242×1660</button>
+                </div>
+                <div class="custom-size">
+                    <div class="size-input-group">
+                        <input type="number" id="canvasWidth" placeholder="宽度" value="1920">
+                        <span>×</span>
+                        <input type="number" id="canvasHeight" placeholder="高度" value="1080">
+                        <button onclick="applyCustomSize()">应用</button>
+                    </div>
+                </div>
+                <div class="canvas-bg-color">
+                    <label>背景色：</label>
+                    <input type="color" id="canvasBgColor" value="#ffffff" onchange="updateCanvasBackground()">
+                </div>
+            </div>
+
+            <!-- 图层管理 -->
+            <div class="section">
+                <h3 class="section-title">📊 图层管理</h3>
+                <div class="layer-controls">
+                    <button class="layer-btn" onclick="moveLayerUp()" title="上移图层">↑</button>
+                    <button class="layer-btn" onclick="moveLayerDown()" title="下移图层">↓</button>
+                    <button class="layer-btn" onclick="deleteSelectedElements()" title="删除选中">🗑️</button>
+                    <button class="layer-btn" onclick="copySelectedElements()" title="复制">📋</button>
+                    <button class="layer-btn" onclick="pasteElements()" title="粘贴">📄</button>
+                </div>
+                <div class="layers-list" id="layersList">
+                    <div class="no-layers">暂无图层</div>
+                </div>
+            </div>
+
+            <!-- 属性设置 -->
+            <div class="section">
+                <h3 class="section-title">🎛️ 属性设置</h3>
+                <div class="properties-panel" id="propertiesPanel">
+                    <div class="no-selection">请选择一个图层进行编辑</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 工具栏 -->
+            <div class="toolbar">
+                <button class="toolbar-btn active" onclick="selectTool()" title="选择工具" id="selectBtn">🖱️</button>
+                <button class="toolbar-btn" onclick="toggleGrid()" title="网格" id="gridBtn">⊞</button>
+                <button class="toolbar-btn" onclick="toggleRuler()" title="标尺" id="rulerBtn">📏</button>
+                <button class="toolbar-btn" onclick="toggleSnap()" title="磁性对齐" id="snapBtn">🧲</button>
+                <div class="toolbar-separator"></div>
+                <button class="toolbar-btn" onclick="clearCanvas()" title="清空画布">🗑️</button>
+                <div class="toolbar-spacer"></div>
+                <span class="zoom-info">缩放: <span id="zoomLevel">100%</span></span>
+                <button class="toolbar-btn" onclick="zoomOut()">-</button>
+                <button class="toolbar-btn" onclick="resetZoom()">100%</button>
+                <button class="toolbar-btn" onclick="zoomIn()">+</button>
+            </div>
+
+            <!-- 工作区 -->
+            <div class="workspace">
+                <div class="canvas-container" id="canvasContainer">
+                    <!-- 标尺 -->
+                    <div class="ruler ruler-horizontal" id="rulerHorizontal"></div>
+                    <div class="ruler ruler-vertical" id="rulerVertical"></div>
+                    
+                    <!-- 画布包装器 -->
+                    <div class="canvas-wrapper" id="canvasWrapper">
+                        <div class="canvas" id="canvas">
+                            <div class="grid" id="grid"></div>
+                            <div class="selection-box" id="selectionBox"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧结果面板 -->
+        <div class="results-panel">
+            <h3 class="section-title">🎯 合成结果</h3>
+            
+            <!-- 前景图预览 -->
+            <div class="foreground-preview">
+                <h4>前景图列表 (<span id="foregroundCount">0</span>张)</h4>
+                <div class="foreground-list" id="foregroundList">
+                    <div class="no-foregrounds">暂无前景图</div>
+                </div>
+            </div>
+
+            <!-- 合成控制 -->
+            <div class="composition-controls">
+                <button class="btn btn-warning" onclick="startComposition()" id="composeBtn">
+                    🚀 开始合成
+                </button>
+                <button class="btn btn-danger" onclick="stopComposition()" id="stopBtn" disabled>
+                    ⏹️ 停止合成
+                </button>
+            </div>
+
+            <!-- 进度显示 -->
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-info">
+                    <span id="progressText">准备中...</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <!-- 合成结果 -->
+            <div class="results-container">
+                <h4>合成结果 (<span id="resultCount">0</span>张)</h4>
+                <div class="results-list" id="resultsList">
+                    <div class="no-results">点击"开始合成"生成结果</div>
+                </div>
+                <div class="batch-download">
+                    <button class="btn btn-success" onclick="downloadAllResults()" id="downloadAllBtn" disabled>
+                        📥 批量下载
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 隐藏的文件输入 -->
+    <input type="file" id="backgroundInput" accept="image/jpeg,image/jpg,image/png,image/gif" onchange="handleBackgroundUpload(event)">
+    <input type="file" id="imageInput" accept="image/jpeg,image/jpg,image/png,image/gif" onchange="handleImageUpload(event)">
+    <input type="file" id="foregroundInput" accept="image/jpeg,image/jpg,image/png,image/gif" multiple onchange="handleForegroundUpload(event)">
+
+    <!-- 提示消息 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 全局变量
+        let elements = [];
+        let selectedElements = [];
+        let foregroundImages = [];
+        let elementCounter = 0;
+        let currentTool = 'select';
+        let zoom = 1;
+        let canvasWidth = 1920;
+        let canvasHeight = 1080;
+
+        // 状态管理
+        let isDragging = false;
+        let isResizing = false;
+        let isRotating = false;
+        let isSelecting = false;
+        let showGrid = false;
+        let showRuler = false;
+        let snapToGrid = false;
+
+        // 拖拽和选择相关变量
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let selectionStartX = 0;
+        let selectionStartY = 0;
+        let currentResizeHandle = null;
+
+        // 元素类型常量
+        const ElementType = {
+            BACKGROUND: 'background',
+            IMAGE: 'image',
+            TEXT: 'text'
+        };
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            setupEventListeners();
+            updateUI();
+            console.log('高级图像合成工具已初始化');
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            const canvas = document.getElementById('canvas');
+            
+            // 画布事件
+            canvas.addEventListener('mousedown', onCanvasMouseDown);
+            canvas.addEventListener('mousemove', onCanvasMouseMove);
+            canvas.addEventListener('mouseup', onCanvasMouseUp);
+            canvas.addEventListener('dblclick', onCanvasDoubleClick);
+            
+            // 拖拽导入
+            canvas.addEventListener('dragover', onDragOver);
+            canvas.addEventListener('drop', onDrop);
+            
+            // 全局事件
+            document.addEventListener('mousemove', onGlobalMouseMove);
+            document.addEventListener('mouseup', onGlobalMouseUp);
+            document.addEventListener('keydown', onKeyDown);
+            
+            // 防止默认的选择行为
+            canvas.addEventListener('selectstart', e => e.preventDefault());
+        }
+
+        // 画布鼠标按下事件
+        function onCanvasMouseDown(e) {
+            e.preventDefault();
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / zoom;
+            const y = (e.clientY - rect.top) / zoom;
+            
+            dragStartX = x;
+            dragStartY = y;
+            
+            if (currentTool === 'select') {
+                handleSelectMouseDown(e, x, y);
+            }
+        }
+
+        // 处理选择工具鼠标按下
+        function handleSelectMouseDown(e, x, y) {
+            const clickedElement = getElementAt(x, y);
+            const handle = clickedElement ? getResizeHandle(x, y, clickedElement) : null;
+            
+            if (handle === 'rotate') {
+                startRotating(clickedElement, x, y);
+            } else if (handle) {
+                startResizing(clickedElement, handle, x, y);
+            } else if (clickedElement) {
+                if (!e.ctrlKey && !selectedElements.includes(clickedElement)) {
+                    clearSelection();
+                }
+                selectElement(clickedElement, e.ctrlKey);
+                startDragging(x, y);
+            } else {
+                if (!e.ctrlKey) {
+                    clearSelection();
+                }
+                startSelecting(x, y);
+            }
+        }
+
+        // 画布鼠标移动事件
+        function onCanvasMouseMove(e) {
+            if (!isDragging && !isResizing && !isRotating && !isSelecting) return;
+            
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / zoom;
+            const y = (e.clientY - rect.top) / zoom;
+            
+            if (isDragging) {
+                handleDragging(x, y);
+            } else if (isResizing) {
+                handleResizing(x, y);
+            } else if (isRotating) {
+                handleRotating(x, y);
+            } else if (isSelecting) {
+                handleSelecting(x, y);
+            }
+        }
+
+        // 画布鼠标抬起事件
+        function onCanvasMouseUp(e) {
+            finishOperation();
+        }
+
+        // 全局鼠标移动事件
+        function onGlobalMouseMove(e) {
+            if (isDragging || isResizing || isRotating) {
+                const canvas = document.getElementById('canvas');
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / zoom;
+                const y = (e.clientY - rect.top) / zoom;
+                
+                if (isDragging) {
+                    handleDragging(x, y);
+                } else if (isResizing) {
+                    handleResizing(x, y);
+                } else if (isRotating) {
+                    handleRotating(x, y);
+                }
+            }
+        }
+
+        // 全局鼠标抬起事件
+        function onGlobalMouseUp(e) {
+            finishOperation();
+        }
+
+        // 画布双击事件
+        function onCanvasDoubleClick(e) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / zoom;
+            const y = (e.clientY - rect.top) / zoom;
+            
+            const element = getElementAt(x, y);
+            if (element && element.type === ElementType.TEXT) {
+                startTextEditing(element);
+            }
+        }
+
+        // 键盘事件
+        function onKeyDown(e) {
+            if (document.activeElement.contentEditable === 'true') {
+                return;
+            }
+            
+            switch (e.key) {
+                case 'Delete':
+                    deleteSelectedElements();
+                    break;
+                case 'Escape':
+                    clearSelection();
+                    break;
+            }
+        }
+
+        // 拖拽导入事件
+        function onDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            
+            const canvas = document.getElementById('canvas');
+            canvas.classList.add('drag-over');
+        }
+
+        function onDrop(e) {
+            e.preventDefault();
+            
+            const canvas = document.getElementById('canvas');
+            canvas.classList.remove('drag-over');
+            
+            const files = Array.from(e.dataTransfer.files);
+            const imageFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (imageFiles.length > 0) {
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / zoom;
+                const y = (e.clientY - rect.top) / zoom;
+                
+                imageFiles.forEach((file, index) => {
+                    createImageElement(file, x + index * 20, y + index * 20);
+                });
+            }
+        }
+
+        // 获取指定位置的元素
+        function getElementAt(x, y) {
+            for (let i = elements.length - 1; i >= 0; i--) {
+                const element = elements[i];
+                if (isPointInElement(x, y, element)) {
+                    return element;
+                }
+            }
+            return null;
+        }
+
+        // 检查点是否在元素内
+        function isPointInElement(x, y, element) {
+            return x >= element.x && x <= element.x + element.width &&
+                   y >= element.y && y <= element.y + element.height;
+        }
+
+        // 获取调整手柄
+        function getResizeHandle(x, y, element) {
+            if (!selectedElements.includes(element)) return null;
+            
+            const handles = [
+                { name: 'nw', x: element.x - 6, y: element.y - 6 },
+                { name: 'ne', x: element.x + element.width - 6, y: element.y - 6 },
+                { name: 'sw', x: element.x - 6, y: element.y + element.height - 6 },
+                { name: 'se', x: element.x + element.width - 6, y: element.y + element.height - 6 },
+                { name: 'n', x: element.x + element.width / 2 - 6, y: element.y - 6 },
+                { name: 's', x: element.x + element.width / 2 - 6, y: element.y + element.height - 6 },
+                { name: 'w', x: element.x - 6, y: element.y + element.height / 2 - 6 },
+                { name: 'e', x: element.x + element.width - 6, y: element.y + element.height / 2 - 6 },
+                { name: 'rotate', x: element.x + element.width / 2 - 8, y: element.y - 25 }
+            ];
+            
+            for (const handle of handles) {
+                if (x >= handle.x && x <= handle.x + 16 && y >= handle.y && y <= handle.y + 16) {
+                    return handle.name;
+                }
+            }
+            
+            return null;
+        }
+
+        // 开始拖拽
+        function startDragging(x, y) {
+            isDragging = true;
+            
+            selectedElements.forEach(element => {
+                element.dragOffsetX = x - element.x;
+                element.dragOffsetY = y - element.y;
+            });
+        }
+
+        // 处理拖拽
+        function handleDragging(x, y) {
+            selectedElements.forEach(element => {
+                const newX = x - element.dragOffsetX;
+                const newY = y - element.dragOffsetY;
+                
+                if (snapToGrid) {
+                    element.x = Math.round(newX / 20) * 20;
+                    element.y = Math.round(newY / 20) * 20;
+                } else {
+                    element.x = newX;
+                    element.y = newY;
+                }
+                
+                updateElementPosition(element);
+            });
+        }
+
+        // 开始调整大小
+        function startResizing(element, handle, x, y) {
+            isResizing = true;
+            currentResizeHandle = handle;
+            
+            if (!selectedElements.includes(element)) {
+                clearSelection();
+                selectElement(element);
+            }
+        }
+
+        // 处理调整大小
+        function handleResizing(x, y) {
+            if (selectedElements.length === 0) return;
+            
+            const element = selectedElements[0];
+            const handle = currentResizeHandle;
+            const minSize = 20;
+            
+            switch (handle) {
+                case 'se':
+                    element.width = Math.max(minSize, x - element.x);
+                    element.height = Math.max(minSize, y - element.y);
+                    break;
+                case 'nw':
+                    const newWidthNW = Math.max(minSize, element.width + (element.x - x));
+                    const newHeightNW = Math.max(minSize, element.height + (element.y - y));
+                    element.x = element.x + element.width - newWidthNW;
+                    element.y = element.y + element.height - newHeightNW;
+                    element.width = newWidthNW;
+                    element.height = newHeightNW;
+                    break;
+                case 'ne':
+                    element.width = Math.max(minSize, x - element.x);
+                    const newHeightNE = Math.max(minSize, element.height + (element.y - y));
+                    element.y = element.y + element.height - newHeightNE;
+                    element.height = newHeightNE;
+                    break;
+                case 'sw':
+                    const newWidthSW = Math.max(minSize, element.width + (element.x - x));
+                    element.x = element.x + element.width - newWidthSW;
+                    element.width = newWidthSW;
+                    element.height = Math.max(minSize, y - element.y);
+                    break;
+            }
+            
+            updateElementPosition(element);
+        }
+
+        // 开始旋转
+        function startRotating(element, x, y) {
+            isRotating = true;
+            
+            if (!selectedElements.includes(element)) {
+                clearSelection();
+                selectElement(element);
+            }
+        }
+
+        // 处理旋转
+        function handleRotating(x, y) {
+            if (selectedElements.length === 0) return;
+            
+            const element = selectedElements[0];
+            const centerX = element.x + element.width / 2;
+            const centerY = element.y + element.height / 2;
+            
+            const angle = Math.atan2(y - centerY, x - centerX) * 180 / Math.PI + 90;
+            element.rotation = angle;
+            
+            updateElementPosition(element);
+        }
+
+        // 开始框选
+        function startSelecting(x, y) {
+            isSelecting = true;
+            selectionStartX = x;
+            selectionStartY = y;
+            
+            const selectionBox = document.getElementById('selectionBox');
+            selectionBox.style.display = 'block';
+            selectionBox.style.left = x + 'px';
+            selectionBox.style.top = y + 'px';
+            selectionBox.style.width = '0px';
+            selectionBox.style.height = '0px';
+        }
+
+        // 处理框选
+        function handleSelecting(x, y) {
+            const selectionBox = document.getElementById('selectionBox');
+            const left = Math.min(selectionStartX, x);
+            const top = Math.min(selectionStartY, y);
+            const width = Math.abs(x - selectionStartX);
+            const height = Math.abs(y - selectionStartY);
+            
+            selectionBox.style.left = left + 'px';
+            selectionBox.style.top = top + 'px';
+            selectionBox.style.width = width + 'px';
+            selectionBox.style.height = height + 'px';
+            
+            const selectedInBox = elements.filter(element => {
+                return element.x < left + width && element.x + element.width > left &&
+                       element.y < top + height && element.y + element.height > top;
+            });
+            
+            clearSelection();
+            selectedInBox.forEach(element => selectElement(element, true));
+        }
+
+        // 完成操作
+        function finishOperation() {
+            isDragging = false;
+            isResizing = false;
+            isRotating = false;
+            isSelecting = false;
+            currentResizeHandle = null;
+            
+            const selectionBox = document.getElementById('selectionBox');
+            selectionBox.style.display = 'none';
+        }
+
+        // 选择元素
+        function selectElement(element, multiple = false) {
+            if (!multiple) {
+                clearSelection();
+            }
+            
+            if (!selectedElements.includes(element)) {
+                selectedElements.push(element);
+                updateElementAppearance(element);
+                updatePropertiesPanel();
+                updateLayersList();
+            }
+        }
+
+        // 清除选择
+        function clearSelection() {
+            selectedElements.forEach(element => {
+                updateElementAppearance(element);
+            });
+            selectedElements = [];
+            updatePropertiesPanel();
+            updateLayersList();
+        }
+
+        // 创建元素
+        function createElement(type, options = {}) {
+            const element = {
+                id: `element_${++elementCounter}`,
+                type: type,
+                x: options.x || canvasWidth / 2 - 100,
+                y: options.y || canvasHeight / 2 - 75,
+                width: options.width || 200,
+                height: options.height || 150,
+                rotation: options.rotation || 0,
+                opacity: options.opacity || 1,
+                zIndex: elements.length,
+                ...options
+            };
+            
+            elements.push(element);
+            createDOMElement(element);
+            updateLayersList();
+            
+            return element;
+        }
+
+        // 创建DOM元素
+        function createDOMElement(element) {
+            const canvas = document.getElementById('canvas');
+            const domElement = document.createElement('div');
+            domElement.id = element.id;
+            domElement.className = 'element';
+            
+            updateElementPosition(element);
+            
+            if (element.type === ElementType.IMAGE || element.type === ElementType.BACKGROUND) {
+                const img = document.createElement('img');
+                img.src = element.src;
+                img.draggable = false;
+                domElement.appendChild(img);
+            } else if (element.type === ElementType.TEXT) {
+                const textDiv = document.createElement('div');
+                textDiv.className = 'text-content';
+                textDiv.textContent = element.text || '';
+                textDiv.style.fontSize = (element.fontSize || 16) + 'px';
+                textDiv.style.color = element.color || '#000000';
+                textDiv.style.fontFamily = element.fontFamily || 'Microsoft YaHei';
+                domElement.appendChild(textDiv);
+            }
+            
+            canvas.appendChild(domElement);
+        }
+
+        // 更新元素位置和样式
+        function updateElementPosition(element) {
+            const domElement = document.getElementById(element.id);
+            if (!domElement) return;
+            
+            domElement.style.left = element.x + 'px';
+            domElement.style.top = element.y + 'px';
+            domElement.style.width = element.width + 'px';
+            domElement.style.height = element.height + 'px';
+            domElement.style.transform = `rotate(${element.rotation || 0}deg)`;
+            domElement.style.opacity = element.opacity || 1;
+            domElement.style.zIndex = element.zIndex || 0;
+            
+            updateElementAppearance(element);
+        }
+
+        // 更新元素外观
+        function updateElementAppearance(element) {
+            const domElement = document.getElementById(element.id);
+            if (!domElement) return;
+            
+            domElement.querySelectorAll('.resize-handle, .rotate-handle').forEach(handle => handle.remove());
+            
+            if (selectedElements.includes(element)) {
+                domElement.classList.add('selected');
+                
+                if (selectedElements.length === 1) {
+                    addControlHandles(domElement);
+                }
+            } else {
+                domElement.classList.remove('selected');
+            }
+            
+            if (selectedElements.length > 1 && selectedElements.includes(element)) {
+                domElement.classList.add('multi-selected');
+            } else {
+                domElement.classList.remove('multi-selected');
+            }
+        }
+
+        // 添加控制手柄
+        function addControlHandles(domElement) {
+            const handles = ['nw', 'ne', 'sw', 'se', 'n', 's', 'w', 'e'];
+            
+            handles.forEach(handle => {
+                const handleEl = document.createElement('div');
+                handleEl.className = `resize-handle ${handle}`;
+                domElement.appendChild(handleEl);
+            });
+            
+            const rotateHandle = document.createElement('div');
+            rotateHandle.className = 'rotate-handle';
+            domElement.appendChild(rotateHandle);
+        }
+
+        // 导入背景图
+        function importBackground() {
+            document.getElementById('backgroundInput').click();
+        }
+
+        function handleBackgroundUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!isValidImageFile(file)) {
+                showToast('不支持的文件格式，请选择 JPG、PNG 或 GIF 文件', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const existingBg = elements.find(el => el.type === ElementType.BACKGROUND);
+                if (existingBg) {
+                    deleteElement(existingBg);
+                }
+                
+                const img = new Image();
+                img.onload = function() {
+                    // 计算居中位置
+                    const x = (canvasWidth - img.width) / 2;
+                    const y = (canvasHeight - img.height) / 2;
+                    
+                    const element = createElement(ElementType.BACKGROUND, {
+                        src: e.target.result,
+                        x: x,
+                        y: y,
+                        width: img.width,
+                        height: img.height,
+                        zIndex: -1,
+                        originalWidth: img.width,
+                        originalHeight: img.height,
+                        filename: file.name
+                    });
+                    
+                    selectElement(element);
+                    showToast('背景图导入成功');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 添加图片
+        function addImage() {
+            document.getElementById('imageInput').click();
+        }
+
+        function handleImageUpload(event) {
+            const files = Array.from(event.target.files);
+            
+            files.forEach(file => {
+                if (!isValidImageFile(file)) {
+                    showToast(`文件 ${file.name} 格式不支持`, 'error');
+                    return;
+                }
+                
+                createImageElement(file);
+            });
+        }
+
+        function createImageElement(file, x, y) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // 计算居中位置
+                    const centerX = x || (canvasWidth - img.width) / 2;
+                    const centerY = y || (canvasHeight - img.height) / 2;
+                    
+                    const element = createElement(ElementType.IMAGE, {
+                        src: e.target.result,
+                        x: centerX,
+                        y: centerY,
+                        width: img.width,
+                        height: img.height,
+                        originalWidth: img.width,
+                        originalHeight: img.height,
+                        filename: file.name
+                    });
+                    
+                    selectElement(element);
+                    showToast('图片添加成功');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 添加文字
+        function addText() {
+            const text = prompt('请输入文字内容：', '示例文字');
+            if (!text) return;
+            
+            const element = createElement(ElementType.TEXT, {
+                text: text,
+                fontSize: 24,
+                color: '#000000',
+                fontFamily: 'Microsoft YaHei',
+                width: 200,
+                height: 60
+            });
+            
+            selectElement(element);
+            showToast('文字添加成功');
+        }
+
+        // 导入前景图
+        function importForegrounds() {
+            document.getElementById('foregroundInput').click();
+        }
+
+        function handleForegroundUpload(event) {
+            const files = Array.from(event.target.files);
+            
+            files.forEach(file => {
+                if (!isValidImageFile(file)) {
+                    showToast(`文件 ${file.name} 格式不支持`, 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        foregroundImages.push({
+                            id: Date.now() + Math.random(),
+                            name: file.name,
+                            src: e.target.result,
+                            width: img.width,
+                            height: img.height
+                        });
+                        
+                        updateForegroundList();
+                        showToast(`前景图 ${file.name} 添加成功`);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // 更新前景图列表
+        function updateForegroundList() {
+            const list = document.getElementById('foregroundList');
+            const count = document.getElementById('foregroundCount');
+            
+            count.textContent = foregroundImages.length;
+            
+            if (foregroundImages.length === 0) {
+                list.innerHTML = '<div class="no-foregrounds">暂无前景图</div>';
+                return;
+            }
+            
+            list.innerHTML = foregroundImages.map(img => `
+                <div class="foreground-item">
+                    <img src="${img.src}" alt="${img.name}" class="foreground-thumbnail">
+                    <span class="foreground-name">${img.name}</span>
+                    <button class="foreground-remove" onclick="removeForegroundImage('${img.id}')">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeForegroundImage(id) {
+            foregroundImages = foregroundImages.filter(img => img.id != id);
+            updateForegroundList();
+            showToast('前景图已删除');
+        }
+
+        // 开始文字编辑
+        function startTextEditing(element) {
+            const domElement = document.getElementById(element.id);
+            const textDiv = domElement.querySelector('.text-content');
+            
+            textDiv.contentEditable = true;
+            textDiv.focus();
+            
+            const range = document.createRange();
+            range.selectNodeContents(textDiv);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            
+            textDiv.addEventListener('blur', function() {
+                textDiv.contentEditable = false;
+                element.text = textDiv.textContent;
+            }, { once: true });
+            
+            textDiv.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    textDiv.blur();
+                }
+            });
+        }
+
+        // 删除选中元素
+        function deleteSelectedElements() {
+            if (selectedElements.length === 0) return;
+            
+            const count = selectedElements.length;
+            selectedElements.forEach(element => deleteElement(element));
+            clearSelection();
+            showToast(`已删除 ${count} 个元素`);
+        }
+
+        function deleteElement(element) {
+            const index = elements.indexOf(element);
+            if (index > -1) {
+                elements.splice(index, 1);
+                
+                const domElement = document.getElementById(element.id);
+                if (domElement) {
+                    domElement.remove();
+                }
+                
+                const selectedIndex = selectedElements.indexOf(element);
+                if (selectedIndex > -1) {
+                    selectedElements.splice(selectedIndex, 1);
+                }
+            }
+            
+            updateLayersList();
+        }
+
+        // 复制选中元素
+        function copySelectedElements() {
+            if (selectedElements.length === 0) return;
+            showToast(`已复制 ${selectedElements.length} 个元素`);
+        }
+
+        // 粘贴元素
+        function pasteElements() {
+            showToast('粘贴功能开发中');
+        }
+
+        // 图层操作
+        function moveLayerUp() {
+            if (selectedElements.length !== 1) return;
+            
+            const element = selectedElements[0];
+            const index = elements.indexOf(element);
+            
+            if (index < elements.length - 1) {
+                [elements[index], elements[index + 1]] = [elements[index + 1], elements[index]];
+                
+                elements.forEach((el, i) => {
+                    el.zIndex = i;
+                    updateElementPosition(el);
+                });
+                
+                updateLayersList();
+            }
+        }
+
+        function moveLayerDown() {
+            if (selectedElements.length !== 1) return;
+            
+            const element = selectedElements[0];
+            const index = elements.indexOf(element);
+            
+            if (index > 0) {
+                [elements[index], elements[index - 1]] = [elements[index - 1], elements[index]];
+                
+                elements.forEach((el, i) => {
+                    el.zIndex = i;
+                    updateElementPosition(el);
+                });
+                
+                updateLayersList();
+            }
+        }
+
+        // 画布设置
+        function setCanvasSize(width, height) {
+            canvasWidth = width;
+            canvasHeight = height;
+            applyCanvasSize();
+        }
+
+        function applyCustomSize() {
+            const width = parseInt(document.getElementById('canvasWidth').value);
+            const height = parseInt(document.getElementById('canvasHeight').value);
+            
+            if (width > 0 && height > 0) {
+                setCanvasSize(width, height);
+            } else {
+                showToast('请输入有效的画布尺寸', 'warning');
+            }
+        }
+
+        function applyCanvasSize() {
+            const canvas = document.getElementById('canvas');
+            canvas.style.width = canvasWidth + 'px';
+            canvas.style.height = canvasHeight + 'px';
+            
+            updateUI();
+        }
+
+        function updateCanvasBackground() {
+            const color = document.getElementById('canvasBgColor').value;
+            const canvas = document.getElementById('canvas');
+            canvas.style.backgroundColor = color;
+        }
+
+        // 工具选择
+        function selectTool() {
+            currentTool = 'select';
+            updateToolButtons();
+        }
+
+        function updateToolButtons() {
+            document.querySelectorAll('.toolbar-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (currentTool === 'select') {
+                document.getElementById('selectBtn').classList.add('active');
+            }
+        }
+
+        // 网格控制
+        function toggleGrid() {
+            showGrid = !showGrid;
+            const grid = document.getElementById('grid');
+            const btn = document.getElementById('gridBtn');
+            
+            if (showGrid) {
+                grid.classList.add('show');
+                btn.classList.add('active');
+            } else {
+                grid.classList.remove('show');
+                btn.classList.remove('active');
+            }
+        }
+
+        // 标尺控制
+        function toggleRuler() {
+            showRuler = !showRuler;
+            const rulerH = document.getElementById('rulerHorizontal');
+            const rulerV = document.getElementById('rulerVertical');
+            const btn = document.getElementById('rulerBtn');
+            
+            if (showRuler) {
+                rulerH.classList.add('show');
+                rulerV.classList.add('show');
+                btn.classList.add('active');
+            } else {
+                rulerH.classList.remove('show');
+                rulerV.classList.remove('show');
+                btn.classList.remove('active');
+            }
+        }
+
+        // 磁性对齐控制
+        function toggleSnap() {
+            snapToGrid = !snapToGrid;
+            const btn = document.getElementById('snapBtn');
+            
+            if (snapToGrid) {
+                btn.classList.add('active');
+                showToast('磁性对齐已开启');
+            } else {
+                btn.classList.remove('active');
+                showToast('磁性对齐已关闭');
+            }
+        }
+
+        // 缩放控制
+        function zoomIn() {
+            zoom = Math.min(zoom * 1.2, 3);
+            applyZoom();
+        }
+
+        function zoomOut() {
+            zoom = Math.max(zoom / 1.2, 0.1);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            zoom = 1;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const wrapper = document.getElementById('canvasWrapper');
+            wrapper.style.transform = `translate(-50%, -50%) scale(${zoom})`;
+            
+            document.getElementById('zoomLevel').textContent = Math.round(zoom * 100) + '%';
+        }
+
+        // 清空画布
+        function clearCanvas() {
+            if (elements.length > 0 && confirm('确定要清空画布吗？此操作不可撤销。')) {
+                elements.forEach(element => {
+                    const domElement = document.getElementById(element.id);
+                    if (domElement) {
+                        domElement.remove();
+                    }
+                });
+                
+                elements = [];
+                selectedElements = [];
+                foregroundImages = [];
+                
+                updateUI();
+                showToast('画布已清空');
+            }
+        }
+
+        // 开始合成
+        function startComposition() {
+            showToast('合成功能开发中');
+        }
+
+        function stopComposition() {
+            showToast('停止合成');
+        }
+
+        function downloadAllResults() {
+            showToast('批量下载功能开发中');
+        }
+
+        // UI更新函数
+        function updateUI() {
+            updateLayersList();
+            updatePropertiesPanel();
+            updateForegroundList();
+        }
+
+        function updateLayersList() {
+            const list = document.getElementById('layersList');
+            
+            if (elements.length === 0) {
+                list.innerHTML = '<div class="no-layers">暂无图层</div>';
+                return;
+            }
+            
+            const sortedElements = [...elements].sort((a, b) => (b.zIndex || 0) - (a.zIndex || 0));
+            
+            list.innerHTML = sortedElements.map(element => {
+                const isSelected = selectedElements.includes(element);
+                const typeText = {
+                    [ElementType.BACKGROUND]: '背景',
+                    [ElementType.IMAGE]: '图片',
+                    [ElementType.TEXT]: '文字'
+                }[element.type];
+                
+                const displayName = element.type === ElementType.TEXT 
+                    ? (element.text || '文字') 
+                    : (element.filename || typeText);
+                
+                return `
+                    <div class="layer-item ${isSelected ? 'selected' : ''}" onclick="selectElementById('${element.id}')">
+                        <span>${displayName}</span>
+                        <span class="layer-type">${typeText}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectElementById(id) {
+            const element = elements.find(el => el.id === id);
+            if (element) {
+                clearSelection();
+                selectElement(element);
+            }
+        }
+
+        function updatePropertiesPanel() {
+            const panel = document.getElementById('propertiesPanel');
+            
+            if (selectedElements.length === 0) {
+                panel.innerHTML = '<div class="no-selection">请选择一个图层进行编辑</div>';
+                return;
+            }
+            
+            if (selectedElements.length > 1) {
+                panel.innerHTML = `<div class="no-selection">已选中 ${selectedElements.length} 个图层</div>`;
+                return;
+            }
+            
+            const element = selectedElements[0];
+            
+            let html = `
+                <div class="property-group">
+                    <label class="property-label">位置和大小</label>
+                    <div class="property-row">
+                        <label>X:</label>
+                        <input type="number" value="${Math.round(element.x)}" onchange="updateElementProperty('${element.id}', 'x', parseFloat(this.value))">
+                    </div>
+                    <div class="property-row">
+                        <label>Y:</label>
+                        <input type="number" value="${Math.round(element.y)}" onchange="updateElementProperty('${element.id}', 'y', parseFloat(this.value))">
+                    </div>
+                    <div class="property-row">
+                        <label>宽:</label>
+                        <input type="number" value="${Math.round(element.width)}" onchange="updateElementProperty('${element.id}', 'width', parseFloat(this.value))">
+                    </div>
+                    <div class="property-row">
+                        <label>高:</label>
+                        <input type="number" value="${Math.round(element.height)}" onchange="updateElementProperty('${element.id}', 'height', parseFloat(this.value))">
+                    </div>
+                </div>
+                
+                <div class="property-group">
+                    <label class="property-label">变换</label>
+                    <div class="property-row">
+                        <label>旋转:</label>
+                        <input type="number" value="${Math.round(element.rotation || 0)}" onchange="updateElementProperty('${element.id}', 'rotation', parseFloat(this.value))">
+                        <span>°</span>
+                    </div>
+                    <div class="property-row">
+                        <label>透明度:</label>
+                        <input type="range" min="0" max="1" step="0.1" value="${element.opacity || 1}" onchange="updateElementProperty('${element.id}', 'opacity', parseFloat(this.value))">
+                        <span>${Math.round((element.opacity || 1) * 100)}%</span>
+                    </div>
+                </div>
+            `;
+            
+            if (element.type === ElementType.TEXT) {
+                html += `
+                    <div class="property-group">
+                        <label class="property-label">文字内容</label>
+                        <textarea class="property-input" onchange="updateElementProperty('${element.id}', 'text', this.value)">${element.text || ''}</textarea>
+                    </div>
+                    
+                    <div class="property-group">
+                        <label class="property-label">字体样式</label>
+                        <div class="property-row">
+                            <label>大小:</label>
+                            <input type="number" value="${element.fontSize || 16}" min="8" max="200" onchange="updateElementProperty('${element.id}', 'fontSize', parseInt(this.value))">
+                            <span>px</span>
+                        </div>
+                        <div class="property-row">
+                            <label>颜色:</label>
+                            <input type="color" value="${element.color || '#000000'}" onchange="updateElementProperty('${element.id}', 'color', this.value)">
+                        </div>
+                    </div>
+                `;
+            }
+            
+            panel.innerHTML = html;
+        }
+
+        function updateElementProperty(id, property, value) {
+            const element = elements.find(el => el.id === id);
+            if (!element) return;
+            
+            element[property] = value;
+            
+            if (element.type === ElementType.TEXT) {
+                updateTextElementStyle(element);
+            }
+            
+            updateElementPosition(element);
+        }
+
+        function updateTextElementStyle(element) {
+            const domElement = document.getElementById(element.id);
+            const textDiv = domElement.querySelector('.text-content');
+            
+            if (!textDiv) return;
+            
+            textDiv.textContent = element.text || '';
+            textDiv.style.fontSize = (element.fontSize || 16) + 'px';
+            textDiv.style.color = element.color || '#000000';
+            textDiv.style.fontFamily = element.fontFamily || 'Microsoft YaHei';
+        }
+
+        // 工具函数
+        function isValidImageFile(file) {
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            return validTypes.includes(file.type);
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

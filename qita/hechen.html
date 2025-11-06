@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级图像合成工具</title>
+    <style>
+        /* Element Plus CSS Variables */
+        :root {
+            --el-color-white: #ffffff;
+            --el-color-black: #000000;
+            --el-color-primary-rgb: 64, 158, 255;
+            --el-color-success-rgb: 103, 194, 58;
+            --el-color-warning-rgb: 230, 162, 60;
+            --el-color-danger-rgb: 245, 108, 108;
+            --el-color-error-rgb: 245, 108, 108;
+            --el-color-info-rgb: 144, 147, 153;
+            
+            --el-color-primary: #409eff;
+            --el-color-primary-light-3: rgb(121.3, 187.1, 255);
+            --el-color-primary-light-5: rgb(159.5, 206.5, 255);
+            --el-color-primary-light-7: rgb(197.7, 225.9, 255);
+            --el-color-primary-light-8: rgb(216.8, 235.6, 255);
+            --el-color-primary-light-9: rgb(235.9, 245.3, 255);
+            --el-color-primary-dark-2: rgb(51.2, 126.4, 204);
+            
+            --el-color-success: #67c23a;
+            --el-color-warning: #e6a23c;
+            --el-color-danger: #f56c6c;
+            --el-color-error: #f56c6c;
+            --el-color-info: #909399;
+            
+            --el-bg-color: #ffffff;
+            --el-bg-color-page: #f2f3f5;
+            --el-bg-color-overlay: #ffffff;
+            
+            --el-text-color-primary: #303133;
+            --el-text-color-regular: #606266;
+            --el-text-color-secondary: #909399;
+            --el-text-color-placeholder: #a8abb2;
+            --el-text-color-disabled: #c0c4cc;
+            
+            --el-border-color: #dcdfe6;
+            --el-border-color-light: #e4e7ed;
+            --el-border-color-lighter: #ebeef5;
+            --el-border-color-extra-light: #f2f6fc;
+            --el-border-color-dark: #d4d7de;
+            --el-border-color-darker: #cdd0d6;
+            
+            --el-fill-color: #f0f2f5;
+            --el-fill-color-light: #f5f7fa;
+            --el-fill-color-lighter: #fafafa;
+            --el-fill-color-extra-light: #fafcff;
+            --el-fill-color-dark: #ebedf0;
+            --el-fill-color-darker: #e6e8eb;
+            --el-fill-color-blank: #ffffff;
+            
+            --el-border-radius-base: 4px;
+            --el-border-radius-small: 2px;
+            --el-border-radius-round: 20px;
+            --el-border-radius-circle: 100%;
+            
+            --el-font-size-extra-large: 20px;
+            --el-font-size-large: 18px;
+            --el-font-size-medium: 16px;
+            --el-font-size-base: 14px;
+            --el-font-size-small: 13px;
+            --el-font-size-extra-small: 12px;
+            
+            --el-box-shadow: 0px 12px 32px 4px rgba(0, 0, 0, 0.04), 0px 8px 20px rgba(0, 0, 0, 0.08);
+            --el-box-shadow-light: 0px 0px 12px rgba(0, 0, 0, 0.12);
+            --el-box-shadow-lighter: 0px 0px 6px rgba(0, 0, 0, 0.12);
+            --el-box-shadow-dark: 0px 16px 48px 16px rgba(0, 0, 0, 0.08), 0px 12px 32px rgba(0, 0, 0, 0.12), 0px 8px 16px -8px rgba(0, 0, 0, 0.16);
+            
+            --el-transition-duration: 0.3s;
+            --el-transition-duration-fast: 0.2s;
+            
+            --el-component-size: 32px;
+            --el-component-size-large: 40px;
+            --el-component-size-small: 24px;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+            color: var(--el-text-color-primary);
+            background-color: var(--el-bg-color-page);
+            font-size: var(--el-font-size-base);
+            line-height: 1.5;
+        }
+
+        /* Input Styles */
+        .el-input {
+            width: 100%;
+            height: var(--el-component-size);
+            padding: 0 12px;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-base);
+            font-size: var(--el-font-size-base);
+            color: var(--el-text-color-primary);
+            background-color: var(--el-fill-color-blank);
+            transition: border-color var(--el-transition-duration);
+        }
+
+        .el-input:focus {
+            border-color: var(--el-color-primary);
+            outline: none;
+        }
+
+        .el-input--small {
+            height: var(--el-component-size-small);
+            padding: 0 8px;
+            font-size: var(--el-font-size-small);
+        }
+
+        .el-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-base);
+            font-size: var(--el-font-size-base);
+            color: var(--el-text-color-primary);
+            background-color: var(--el-fill-color-blank);
+            resize: vertical;
+            transition: border-color var(--el-transition-duration);
+        }
+
+        .el-textarea:focus {
+            border-color: var(--el-color-primary);
+            outline: none;
+        }
+
+        .el-select {
+            width: 100%;
+            height: var(--el-component-size);
+            padding: 0 12px;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-base);
+            font-size: var(--el-font-size-base);
+            color: var(--el-text-color-primary);
+            background-color: var(--el-fill-color-blank);
+            cursor: pointer;
+        }
+
+        .el-select:focus {
+            border-color: var(--el-color-primary);
+            outline: none;
+        }
+
+        .el-slider {
+            width: 100%;
+            height: 6px;
+            background-color: var(--el-border-color-lighter);
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .el-slider__runway {
+            width: 100%;
+            height: 100%;
+            background-color: var(--el-color-primary);
+            border-radius: 3px;
+        }
+
+        .el-slider__button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background-color: var(--el-color-primary);
+            border: 2px solid var(--el-color-white);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--el-box-shadow-light);
+        }
+
+        /* Button Styles */
+        .el-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1;
+            height: var(--el-component-size);
+            white-space: nowrap;
+            cursor: pointer;
+            color: var(--el-text-color-regular);
+            text-align: center;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.1s;
+            user-select: none;
+            vertical-align: middle;
+            appearance: none;
+            background-color: var(--el-fill-color-blank);
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-base);
+            padding: 8px 15px;
+            font-size: var(--el-font-size-base);
+            font-weight: 500;
+            margin: 0 4px 8px 0;
+        }
+
+        .el-button:hover {
+            color: var(--el-color-primary);
+            border-color: var(--el-color-primary-light-7);
+            background-color: var(--el-color-primary-light-9);
+        }
+
+        .el-button:active {
+            color: var(--el-color-primary-dark-2);
+            border-color: var(--el-color-primary-dark-2);
+            background-color: var(--el-color-primary-light-9);
+        }
+
+        .el-button--primary {
+            color: var(--el-color-white);
+            background-color: var(--el-color-primary);
+            border-color: var(--el-color-primary);
+        }
+
+        .el-button--primary:hover {
+            background-color: var(--el-color-primary-light-3);
+            border-color: var(--el-color-primary-light-3);
+            color: var(--el-color-white);
+        }
+
+        .el-button--success {
+            color: var(--el-color-white);
+            background-color: var(--el-color-success);
+            border-color: var(--el-color-success);
+        }
+
+        .el-button--success:hover {
+            background-color: #85ce61;
+            border-color: #85ce61;
+            color: var(--el-color-white);
+        }
+
+        .el-button--warning {
+            color: var(--el-color-white);
+            background-color: var(--el-color-warning);
+            border-color: var(--el-color-warning);
+        }
+
+        .el-button--danger {
+            color: var(--el-color-white);
+            background-color: var(--el-color-danger);
+            border-color: var(--el-color-danger);
+        }
+
+        .el-button--large {
+            height: var(--el-component-size-large);
+            padding: 12px 19px;
+            font-size: var(--el-font-size-base);
+        }
+
+        .el-button--small {
+            height: var(--el-component-size-small);
+            padding: 5px 11px;
+            font-size: 12px;
+        }
+
+        .el-button.is-disabled {
+            color: var(--el-text-color-disabled);
+            cursor: not-allowed;
+            background-image: none;
+            background-color: var(--el-fill-color-blank);
+            border-color: var(--el-border-color-light);
+        }
+
+        .el-button.is-active {
+            background-color: var(--el-color-primary);
+            color: var(--el-color-white);
+            border-color: var(--el-color-primary);
+        }
+
+        /* Card Styles */
+        .el-card {
+            background-color: var(--el-fill-color-blank);
+            border: 1px solid var(--el-border-color-light);
+            border-radius: var(--el-border-radius-base);
+            overflow: hidden;
+            color: var(--el-text-color-primary);
+            transition: var(--el-transition-duration);
+        }
+
+        .el-card.is-always-shadow,
+        .el-card.is-hover-shadow:hover,
+        .el-card.is-hover-shadow:focus {
+            box-shadow: var(--el-box-shadow-light);
+        }
+
+        .el-card__body {
+            padding: 20px;
+        }
+
+        /* Main Application Styles */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            padding: 20px 0;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--el-border-color-lighter);
+        }
+
+        header h1 {
+            color: var(--el-color-primary);
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* Image Composer Styles */
+        .image-composer {
+            display: flex;
+            width: 100%;
+            min-height: 80vh;
+            gap: 20px;
+        }
+
+        .left-panel {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-section {
+            background-color: var(--el-fill-color-blank);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--el-box-shadow-lighter);
+        }
+
+        .panel-section h3 {
+            color: var(--el-text-color-primary);
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--el-border-color-lighter);
+            padding-bottom: 10px;
+        }
+
+        .operation-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .operation-buttons .el-button {
+            margin: 0;
+            width: 100%;
+        }
+
+        .layers-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .layer-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border: 1px solid var(--el-border-color-lighter);
+            border-radius: var(--el-border-radius-base);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all var(--el-transition-duration);
+        }
+
+        .layer-item:hover {
+            background-color: var(--el-fill-color-light);
+            border-color: var(--el-color-primary-light-7);
+        }
+
+        .layer-item.active {
+            background-color: var(--el-color-primary-light-9);
+            border-color: var(--el-color-primary);
+        }
+
+        .layer-preview {
+            width: 40px;
+            height: 30px;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-small);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .layer-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .layer-text-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--el-text-color-secondary);
+            background-color: var(--el-fill-color-light);
+        }
+
+        .layer-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .layer-name {
+            font-size: var(--el-font-size-small);
+            color: var(--el-text-color-primary);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .layer-type {
+            font-size: 11px;
+            color: var(--el-text-color-secondary);
+        }
+
+        .layer-controls {
+            display: flex;
+            gap: 4px;
+        }
+
+        .layer-control-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--el-text-color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border-radius: var(--el-border-radius-small);
+            transition: all var(--el-transition-duration);
+        }
+
+        .layer-control-btn:hover {
+            background-color: var(--el-fill-color-light);
+            color: var(--el-text-color-primary);
+        }
+
+        .properties-panel {
+            display: none;
+        }
+
+        .properties-panel.active {
+            display: block;
+        }
+
+        .property-group {
+            margin-bottom: 16px;
+        }
+
+        .property-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: var(--el-font-size-small);
+            color: var(--el-text-color-secondary);
+            font-weight: 500;
+        }
+
+        .property-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .property-input {
+            flex: 1;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .preview-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-shadow: var(--el-box-shadow-lighter);
+            min-height: 500px;
+            color: var(--el-text-color-placeholder);
+            font-size: 16px;
+            background-color: var(--el-fill-color-lighter);
+            border-radius: var(--el-border-radius-base);
+            border: 2px dashed var(--el-border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-area.has-content {
+            border: 1px solid var(--el-border-color-light);
+            background-color: var(--el-fill-color-blank);
+        }
+
+        .canvas-container {
+            position: relative;
+            border: 1px solid var(--el-border-color-light);
+            border-radius: var(--el-border-radius-base);
+            box-shadow: var(--el-box-shadow-light);
+            background-color: var(--el-color-white);
+        }
+
+        .element-wrapper {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+        }
+
+        .element-wrapper.selected {
+            outline: 2px solid var(--el-color-primary);
+            outline-offset: 2px;
+        }
+
+        .element-wrapper.foreground {
+            border: 2px dashed var(--el-color-warning);
+            background-color: rgba(230, 162, 60, 0.1);
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: var(--el-color-primary);
+            border: 1px solid var(--el-color-white);
+            border-radius: 50%;
+            cursor: nw-resize;
+        }
+
+        .resize-handle.nw { top: -4px; left: -4px; cursor: nw-resize; }
+        .resize-handle.ne { top: -4px; right: -4px; cursor: ne-resize; }
+        .resize-handle.sw { bottom: -4px; left: -4px; cursor: sw-resize; }
+        .resize-handle.se { bottom: -4px; right: -4px; cursor: se-resize; }
+        .resize-handle.n { top: -4px; left: 50%; transform: translateX(-50%); cursor: n-resize; }
+        .resize-handle.s { bottom: -4px; left: 50%; transform: translateX(-50%); cursor: s-resize; }
+        .resize-handle.w { top: 50%; left: -4px; transform: translateY(-50%); cursor: w-resize; }
+        .resize-handle.e { top: 50%; right: -4px; transform: translateY(-50%); cursor: e-resize; }
+
+        .text-element {
+            font-family: inherit;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .image-element {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .result-area {
+            background-color: var(--el-fill-color-blank);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--el-box-shadow-lighter);
+        }
+
+        .result-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .result-image {
+            width: 200px;
+            height: 150px;
+            overflow: hidden;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-base);
+            cursor: pointer;
+            position: relative;
+            transition: all var(--el-transition-duration);
+        }
+
+        .result-image:hover {
+            border-color: var(--el-color-primary);
+            box-shadow: var(--el-box-shadow-light);
+            transform: translateY(-2px);
+        }
+
+        .result-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-overlay {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            opacity: 0;
+            transition: opacity var(--el-transition-duration) ease;
+            z-index: 1;
+        }
+
+        .result-image:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            color: var(--el-text-color-secondary);
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--el-border-color-light);
+            border-top: 3px solid var(--el-color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--el-text-color-placeholder);
+            font-size: var(--el-font-size-base);
+        }
+
+        .file-upload {
+            display: none;
+        }
+
+        .color-picker {
+            width: 40px;
+            height: 32px;
+            border: 1px solid var(--el-border-color);
+            border-radius: var(--el-border-radius-base);
+            cursor: pointer;
+            padding: 0;
+            background: none;
+        }
+
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            margin-right: 6px;
+            font-size: 16px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .app-container {
+                padding: 16px;
+            }
+            
+            .image-composer {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .left-panel {
+                width: 100%;
+            }
+            
+            .right-panel {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 12px;
+            }
+            
+            .result-images {
+                gap: 8px;
+            }
+            
+            .result-image {
+                width: calc(50% - 4px);
+                height: 120px;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .mb-0 { margin-bottom: 0; }
+        .mb-1 { margin-bottom: 8px; }
+        .mb-2 { margin-bottom: 16px; }
+        .mb-3 { margin-bottom: 24px; }
+        .mt-0 { margin-top: 0; }
+        .mt-1 { margin-top: 8px; }
+        .mt-2 { margin-top: 16px; }
+        .mt-3 { margin-top: 24px; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .gap-2 { gap: 8px; }
+        .gap-3 { gap: 12px; }
+        .gap-4 { gap: 16px; }
+        .rounded { border-radius: var(--el-border-radius-base); }
+        .shadow { box-shadow: var(--el-box-shadow-light); }
+        .cursor-pointer { cursor: pointer; }
+        .select-none { user-select: none; }
+        .transition-all { transition: all var(--el-transition-duration); }
+
+        footer {
+            margin-top: 40px;
+            padding: 20px 0;
+            text-align: center;
+            color: var(--el-text-color-secondary);
+            font-size: var(--el-font-size-small);
+            border-top: 1px solid var(--el-border-color-lighter);
+        }
+
+        /* Message Styles */
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 1; transform: translateX(-50%) translateY(0); }
+            to { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>高级图像合成工具</h1>
+        </header>
+
+        <main>
+            <div class="image-composer">
+                <!-- 左侧控制面板 -->
+                <div class="left-panel">
+                    <!-- 操作区 -->
+                    <div class="panel-section">
+                        <h3>操作区</h3>
+                        <div class="operation-buttons">
+                            <button class="el-button el-button--primary" onclick="importBackground()">
+                                <span class="icon">🏞️</span>
+                                导入背景图
+                            </button>
+                            
+                            <button class="el-button el-button--success" onclick="importImages()">
+                                <span class="icon">🖼️</span>
+                                添加图片
+                            </button>
+                            
+                            <button class="el-button el-button--warning" onclick="addText()">
+                                <span class="icon">📝</span>
+                                添加文字
+                            </button>
+                            
+                            <button class="el-button" onclick="importForegrounds()">
+                                <span class="icon">🎭</span>
+                                导入前景图
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 图层管理 -->
+                    <div class="panel-section">
+                        <h3>图层管理</h3>
+                        <div class="layers-panel" id="layersPanel">
+                            <!-- 图层列表将在这里动态生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 属性面板 -->
+                    <div class="panel-section">
+                        <h3>属性设置</h3>
+                        <div id="propertiesPanel">
+                            <div class="empty-state">
+                                请选择一个图层进行编辑
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 合成设置 -->
+                    <div class="panel-section">
+                        <h3>合成设置</h3>
+                        <div class="operation-buttons">
+                            <button class="el-button el-button--warning" onclick="composeImages()">
+                                <span class="icon">✨</span>
+                                开始合成
+                            </button>
+                            
+                            <button class="el-button" onclick="downloadResults()">
+                                <span class="icon">💾</span>
+                                下载结果
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧主工作区 -->
+                <div class="right-panel">
+                    <!-- 预览区域 -->
+                    <div class="el-card is-hover-shadow">
+                        <div class="el-card__body">
+                            <div class="preview-area" id="previewArea">
+                                <div class="empty-state">
+                                    <div>拖拽文件到此处或使用左侧按钮添加内容</div>
+                                    <div style="margin-top: 8px; font-size: 12px; color: var(--el-text-color-placeholder);">
+                                        支持 JPG、PNG、GIF 格式，可添加文字和多层内容
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 合成结果区域 -->
+                    <div class="result-area">
+                        <h2>合成结果</h2>
+                        <div class="result-images" id="resultImages">
+                            <!-- 合成结果将在这里显示 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 高级图像合成工具. 支持多图层编辑、文字添加、前景图批量合成等高级功能。</p>
+        </footer>
+    </div>
+
+    <!-- 隐藏的文件输入 -->
+    <input type="file" id="backgroundInput" class="file-upload" accept="image/*" onchange="handleBackgroundUpload(event)">
+    <input type="file" id="imageInput" class="file-upload" accept="image/*" multiple onchange="handleImageUpload(event)">
+    <input type="file" id="foregroundInput" class="file-upload" accept="image/*" multiple onchange="handleForegroundUpload(event)">
+
+    <script>
+        // 全局变量
+        let canvas = null;
+        let ctx = null;
+        let canvasContainer = null;
+        let backgroundImage = null;
+        let layers = [];
+        let foregroundImages = [];
+        let selectedLayerId = null;
+        let composedResults = [];
+        let layerIdCounter = 0;
+        let isDragging = false;
+        let isResizing = false;
+        let dragOffset = { x: 0, y: 0 };
+        let resizeHandle = null;
+        let initialMousePos = { x: 0, y: 0 };
+        let initialElementPos = { x: 0, y: 0, width: 0, height: 0 };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCanvas();
+            initializeDragAndDrop();
+            updateLayersPanel();
+            console.log('高级图像合成工具已加载');
+        });
+
+        // 初始化画布
+        function initializeCanvas() {
+            const previewArea = document.getElementById('previewArea');
+            
+            canvas = document.createElement('canvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = 800;
+            canvas.height = 600;
+            canvas.style.display = 'none';
+            
+            canvasContainer = document.createElement('div');
+            canvasContainer.className = 'canvas-container';
+            canvasContainer.style.width = canvas.width + 'px';
+            canvasContainer.style.height = canvas.height + 'px';
+            canvasContainer.style.position = 'relative';
+            canvasContainer.style.display = 'none';
+            
+            previewArea.appendChild(canvasContainer);
+            previewArea.appendChild(canvas);
+        }
+
+        // 初始化拖拽功能
+        function initializeDragAndDrop() {
+            const previewArea = document.getElementById('previewArea');
+            
+            previewArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                previewArea.style.borderColor = 'var(--el-color-primary)';
+                previewArea.style.backgroundColor = 'var(--el-color-primary-light-9)';
+            });
+
+            previewArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                previewArea.style.borderColor = 'var(--el-border-color)';
+                previewArea.style.backgroundColor = 'var(--el-fill-color-lighter)';
+            });
+
+            previewArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                previewArea.style.borderColor = 'var(--el-border-color)';
+                previewArea.style.backgroundColor = 'var(--el-fill-color-lighter)';
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    Array.from(files).forEach(file => {
+                        if (file.type.startsWith('image/')) {
+                            if (!backgroundImage) {
+                                handleFileUpload(file, 'background');
+                            } else {
+                                handleFileUpload(file, 'image');
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        // 导入背景图
+        function importBackground() {
+            document.getElementById('backgroundInput').click();
+        }
+
+        // 导入图片
+        function importImages() {
+            document.getElementById('imageInput').click();
+        }
+
+        // 导入前景图
+        function importForegrounds() {
+            document.getElementById('foregroundInput').click();
+        }
+
+        // 添加文字
+        function addText() {
+            const text = prompt('请输入文字内容:', '示例文字');
+            if (text) {
+                const textLayer = {
+                    id: ++layerIdCounter,
+                    type: 'text',
+                    name: `文字 ${layerIdCounter}`,
+                    content: text,
+                    x: 100,
+                    y: 100,
+                    width: 200,
+                    height: 40,
+                    fontSize: 24,
+                    fontFamily: 'Arial',
+                    color: '#000000',
+                    fontWeight: 'normal',
+                    textAlign: 'left',
+                    zIndex: layers.length
+                };
+                
+                layers.push(textLayer);
+                showCanvas(); // 显示画布
+                updateCanvas();
+                updateLayersPanel();
+                selectLayer(textLayer.id);
+                showMessage('文字已添加', 'success');
+            }
+        }
+
+        // 处理背景图上传
+        function handleBackgroundUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFileUpload(file, 'background');
+            }
+        }
+
+        // 处理图片上传
+        function handleImageUpload(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                handleFileUpload(file, 'image');
+            });
+        }
+
+        // 处理前景图上传
+        function handleForegroundUpload(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                handleFileUpload(file, 'foreground');
+            });
+        }
+
+        // 处理文件上传
+        function handleFileUpload(file, type) {
+            if (!file.type.startsWith('image/')) {
+                showMessage('请选择有效的图片文件', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    if (type === 'background') {
+                        backgroundImage = {
+                            src: e.target.result,
+                            name: file.name,
+                            element: img,
+                            width: img.naturalWidth,
+                            height: img.naturalHeight
+                        };
+                        initializeBackground();
+                        showMessage('背景图已导入', 'success');
+                    } else if (type === 'foreground') {
+                        const foregroundData = {
+                            src: e.target.result,
+                            name: file.name,
+                            element: img,
+                            width: img.naturalWidth,
+                            height: img.naturalHeight
+                        };
+                        foregroundImages.push(foregroundData);
+                        showMessage(`前景图 ${foregroundData.name} 已添加`, 'success');
+                    } else {
+                        const imageLayer = {
+                            id: ++layerIdCounter,
+                            type: 'image',
+                            name: file.name,
+                            src: e.target.result,
+                            element: img,
+                            x: 50,
+                            y: 50,
+                            width: Math.min(200, img.naturalWidth),
+                            height: Math.min(150, img.naturalHeight),
+                            originalWidth: img.naturalWidth,
+                            originalHeight: img.naturalHeight,
+                            zIndex: layers.length
+                        };
+                        
+                        layers.push(imageLayer);
+                        showCanvas(); // 显示画布
+                        updateCanvas();
+                        updateLayersPanel();
+                        selectLayer(imageLayer.id);
+                        showMessage('图片已添加', 'success');
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 初始化背景
+        function initializeBackground() {
+            if (!backgroundImage) return;
+            
+            const previewArea = document.getElementById('previewArea');
+            const emptyState = previewArea.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+            
+            // 调整画布尺寸以适应背景图
+            const maxWidth = 800;
+            const maxHeight = 600;
+            const imgRatio = backgroundImage.width / backgroundImage.height;
+            const maxRatio = maxWidth / maxHeight;
+            
+            if (imgRatio > maxRatio) {
+                canvas.width = maxWidth;
+                canvas.height = maxWidth / imgRatio;
+            } else {
+                canvas.width = maxHeight * imgRatio;
+                canvas.height = maxHeight;
+            }
+            
+            canvasContainer.style.width = canvas.width + 'px';
+            canvasContainer.style.height = canvas.height + 'px';
+            canvasContainer.style.display = 'block';
+            
+            previewArea.classList.add('has-content');
+            updateCanvas();
+        }
+
+        // 当没有背景图时也要显示画布
+        function showCanvas() {
+            if (layers.length > 0) {
+                const previewArea = document.getElementById('previewArea');
+                const emptyState = previewArea.querySelector('.empty-state');
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                
+                // 设置默认画布尺寸
+                if (!backgroundImage) {
+                    canvas.width = 800;
+                    canvas.height = 600;
+                    canvasContainer.style.width = canvas.width + 'px';
+                    canvasContainer.style.height = canvas.height + 'px';
+                }
+                
+                canvasContainer.style.display = 'block';
+                previewArea.classList.add('has-content');
+                updateCanvas();
+            }
+        }
+
+        // 更新画布
+        function updateCanvas() {
+            if (!canvas || !ctx) return;
+            
+            // 清空画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制背景图（如果有）
+            if (backgroundImage) {
+                ctx.drawImage(backgroundImage.element, 0, 0, canvas.width, canvas.height);
+            } else {
+                // 如果没有背景图，绘制白色背景
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            // 按z-index排序绘制图层
+            const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
+            
+            sortedLayers.forEach(layer => {
+                ctx.save();
+                
+                if (layer.type === 'text') {
+                    drawText(layer);
+                } else if (layer.type === 'image') {
+                    drawImage(layer);
+                }
+                
+                ctx.restore();
+            });
+            
+            // 显示画布
+            canvas.style.display = 'block';
+            canvas.style.position = 'absolute';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.zIndex = '1';
+            
+            updateLayerElements();
+        }
+
+        // 绘制文字
+        function drawText(layer) {
+            ctx.font = `${layer.fontWeight} ${layer.fontSize}px ${layer.fontFamily}`;
+            ctx.fillStyle = layer.color;
+            ctx.textAlign = layer.textAlign;
+            ctx.textBaseline = 'top';
+            
+            const lines = layer.content.split('\n');
+            lines.forEach((line, index) => {
+                const y = layer.y + (index * layer.fontSize * 1.2);
+                ctx.fillText(line, layer.x, y);
+            });
+        }
+
+        // 绘制图片
+        function drawImage(layer) {
+            ctx.drawImage(layer.element, layer.x, layer.y, layer.width, layer.height);
+        }
+
+        // 更新图层元素
+        function updateLayerElements() {
+            // 清空现有元素
+            canvasContainer.querySelectorAll('.element-wrapper').forEach(el => el.remove());
+            
+            // 为每个图层创建可交互元素
+            layers.forEach(layer => {
+                createLayerElement(layer);
+            });
+        }
+
+        // 创建图层元素
+        function createLayerElement(layer) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'element-wrapper';
+            wrapper.dataset.layerId = layer.id;
+            wrapper.style.left = layer.x + 'px';
+            wrapper.style.top = layer.y + 'px';
+            wrapper.style.width = layer.width + 'px';
+            wrapper.style.height = layer.height + 'px';
+            wrapper.style.zIndex = layer.zIndex + 100;
+            wrapper.style.pointerEvents = 'auto';
+            
+            // 添加可视化内容
+            if (layer.type === 'text') {
+                const textEl = document.createElement('div');
+                textEl.className = 'text-element';
+                textEl.style.cssText = `
+                    font-size: ${layer.fontSize}px;
+                    font-family: ${layer.fontFamily};
+                    font-weight: ${layer.fontWeight};
+                    color: ${layer.color};
+                    text-align: ${layer.textAlign};
+                    white-space: pre-wrap;
+                    width: 100%;
+                    height: 100%;
+                    overflow: hidden;
+                    pointer-events: none;
+                `;
+                textEl.textContent = layer.content;
+                wrapper.appendChild(textEl);
+            } else if (layer.type === 'image') {
+                const imgEl = document.createElement('img');
+                imgEl.className = 'image-element';
+                imgEl.src = layer.src;
+                imgEl.style.cssText = `
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                    pointer-events: none;
+                `;
+                wrapper.appendChild(imgEl);
+            }
+            
+            if (selectedLayerId === layer.id) {
+                wrapper.classList.add('selected');
+                addResizeHandles(wrapper);
+            }
+            
+            // 添加事件监听
+            wrapper.addEventListener('mousedown', (e) => startDragElement(e, layer.id));
+            wrapper.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectLayer(layer.id);
+            });
+            
+            canvasContainer.appendChild(wrapper);
+        }
+
+        // 添加调整大小手柄
+        function addResizeHandles(wrapper) {
+            const handles = ['nw', 'ne', 'sw', 'se', 'n', 's', 'w', 'e'];
+            
+            handles.forEach(handle => {
+                const handleEl = document.createElement('div');
+                handleEl.className = `resize-handle ${handle}`;
+                handleEl.dataset.handle = handle;
+                handleEl.addEventListener('mousedown', (e) => startResizeElement(e, handle));
+                wrapper.appendChild(handleEl);
+            });
+        }
+
+        // 开始拖拽元素
+        function startDragElement(e, layerId) {
+            if (e.target.classList.contains('resize-handle')) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            selectLayer(layerId);
+            isDragging = true;
+            
+            const layer = layers.find(l => l.id === layerId);
+            const rect = canvasContainer.getBoundingClientRect();
+            
+            dragOffset.x = e.clientX - rect.left - layer.x;
+            dragOffset.y = e.clientY - rect.top - layer.y;
+            
+            document.addEventListener('mousemove', dragElement);
+            document.addEventListener('mouseup', stopDragElement);
+        }
+
+        // 拖拽元素
+        function dragElement(e) {
+            if (!isDragging || !selectedLayerId) return;
+            
+            const layer = layers.find(l => l.id === selectedLayerId);
+            const rect = canvasContainer.getBoundingClientRect();
+            
+            const newX = e.clientX - rect.left - dragOffset.x;
+            const newY = e.clientY - rect.top - dragOffset.y;
+            
+            // 限制在画布内
+            layer.x = Math.max(0, Math.min(canvas.width - layer.width, newX));
+            layer.y = Math.max(0, Math.min(canvas.height - layer.height, newY));
+            
+            updateCanvas();
+            updatePropertiesPanel();
+        }
+
+        // 停止拖拽元素
+        function stopDragElement() {
+            isDragging = false;
+            document.removeEventListener('mousemove', dragElement);
+            document.removeEventListener('mouseup', stopDragElement);
+        }
+
+        // 开始调整大小
+        function startResizeElement(e, handle) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (!selectedLayerId) return;
+            
+            isResizing = true;
+            resizeHandle = handle;
+            
+            const layer = layers.find(l => l.id === selectedLayerId);
+            initialMousePos.x = e.clientX;
+            initialMousePos.y = e.clientY;
+            initialElementPos.x = layer.x;
+            initialElementPos.y = layer.y;
+            initialElementPos.width = layer.width;
+            initialElementPos.height = layer.height;
+            
+            document.addEventListener('mousemove', resizeElement);
+            document.addEventListener('mouseup', stopResizeElement);
+        }
+
+        // 调整元素大小
+        function resizeElement(e) {
+            if (!isResizing || !selectedLayerId) return;
+            
+            const layer = layers.find(l => l.id === selectedLayerId);
+            const deltaX = e.clientX - initialMousePos.x;
+            const deltaY = e.clientY - initialMousePos.y;
+            
+            let newX = initialElementPos.x;
+            let newY = initialElementPos.y;
+            let newWidth = initialElementPos.width;
+            let newHeight = initialElementPos.height;
+            
+            switch (resizeHandle) {
+                case 'se':
+                    newWidth = Math.max(20, initialElementPos.width + deltaX);
+                    newHeight = Math.max(20, initialElementPos.height + deltaY);
+                    break;
+                case 'sw':
+                    newX = Math.min(initialElementPos.x + deltaX, initialElementPos.x + initialElementPos.width - 20);
+                    newWidth = Math.max(20, initialElementPos.width - deltaX);
+                    newHeight = Math.max(20, initialElementPos.height + deltaY);
+                    break;
+                case 'ne':
+                    newY = Math.min(initialElementPos.y + deltaY, initialElementPos.y + initialElementPos.height - 20);
+                    newWidth = Math.max(20, initialElementPos.width + deltaX);
+                    newHeight = Math.max(20, initialElementPos.height - deltaY);
+                    break;
+                case 'nw':
+                    newX = Math.min(initialElementPos.x + deltaX, initialElementPos.x + initialElementPos.width - 20);
+                    newY = Math.min(initialElementPos.y + deltaY, initialElementPos.y + initialElementPos.height - 20);
+                    newWidth = Math.max(20, initialElementPos.width - deltaX);
+                    newHeight = Math.max(20, initialElementPos.height - deltaY);
+                    break;
+                case 'n':
+                    newY = Math.min(initialElementPos.y + deltaY, initialElementPos.y + initialElementPos.height - 20);
+                    newHeight = Math.max(20, initialElementPos.height - deltaY);
+                    break;
+                case 's':
+                    newHeight = Math.max(20, initialElementPos.height + deltaY);
+                    break;
+                case 'w':
+                    newX = Math.min(initialElementPos.x + deltaX, initialElementPos.x + initialElementPos.width - 20);
+                    newWidth = Math.max(20, initialElementPos.width - deltaX);
+                    break;
+                case 'e':
+                    newWidth = Math.max(20, initialElementPos.width + deltaX);
+                    break;
+            }
+            
+            // 限制在画布内
+            newX = Math.max(0, Math.min(canvas.width - newWidth, newX));
+            newY = Math.max(0, Math.min(canvas.height - newHeight, newY));
+            
+            layer.x = newX;
+            layer.y = newY;
+            layer.width = newWidth;
+            layer.height = newHeight;
+            
+            updateCanvas();
+            updatePropertiesPanel();
+        }
+
+        // 停止调整大小
+        function stopResizeElement() {
+            isResizing = false;
+            resizeHandle = null;
+            document.removeEventListener('mousemove', resizeElement);
+            document.removeEventListener('mouseup', stopResizeElement);
+        }
+
+        // 选择图层
+        function selectLayer(layerId) {
+            selectedLayerId = layerId;
+            updateCanvas();
+            updateLayersPanel();
+            updatePropertiesPanel();
+        }
+
+        // 更新图层面板
+        function updateLayersPanel() {
+            const layersPanel = document.getElementById('layersPanel');
+            layersPanel.innerHTML = '';
+            
+            if (layers.length === 0) {
+                layersPanel.innerHTML = '<div class="empty-state">暂无图层</div>';
+                return;
+            }
+            
+            // 按z-index倒序显示（顶层在上）
+            const sortedLayers = [...layers].sort((a, b) => b.zIndex - a.zIndex);
+            
+            sortedLayers.forEach(layer => {
+                const layerItem = document.createElement('div');
+                layerItem.className = 'layer-item';
+                layerItem.dataset.layerId = layer.id;
+                
+                if (selectedLayerId === layer.id) {
+                    layerItem.classList.add('active');
+                }
+                
+                layerItem.innerHTML = `
+                    <div class="layer-preview">
+                        ${layer.type === 'text' 
+                            ? `<div class="layer-text-preview">文</div>` 
+                            : `<img src="${layer.src}" alt="${layer.name}">`
+                        }
+                    </div>
+                    <div class="layer-info">
+                        <div class="layer-name">${layer.name}</div>
+                        <div class="layer-type">${layer.type === 'text' ? '文字' : '图片'}</div>
+                    </div>
+                    <div class="layer-controls">
+                        <button class="layer-control-btn" onclick="moveLayerUp(${layer.id})" title="上移">↑</button>
+                        <button class="layer-control-btn" onclick="moveLayerDown(${layer.id})" title="下移">↓</button>
+                        <button class="layer-control-btn" onclick="deleteLayer(${layer.id})" title="删除">×</button>
+                    </div>
+                `;
+                
+                layerItem.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('layer-control-btn')) {
+                        selectLayer(layer.id);
+                    }
+                });
+                
+                layersPanel.appendChild(layerItem);
+            });
+        }
+
+        // 移动图层层级
+        function moveLayerUp(layerId) {
+            const layer = layers.find(l => l.id === layerId);
+            const maxZ = Math.max(...layers.map(l => l.zIndex));
+            if (layer.zIndex < maxZ) {
+                const upperLayer = layers.find(l => l.zIndex === layer.zIndex + 1);
+                if (upperLayer) {
+                    upperLayer.zIndex--;
+                    layer.zIndex++;
+                    updateCanvas();
+                    updateLayersPanel();
+                }
+            }
+        }
+
+        function moveLayerDown(layerId) {
+            const layer = layers.find(l => l.id === layerId);
+            const minZ = Math.min(...layers.map(l => l.zIndex));
+            if (layer.zIndex > minZ) {
+                const lowerLayer = layers.find(l => l.zIndex === layer.zIndex - 1);
+                if (lowerLayer) {
+                    lowerLayer.zIndex++;
+                    layer.zIndex--;
+                    updateCanvas();
+                    updateLayersPanel();
+                }
+            }
+        }
+
+        // 删除图层
+        function deleteLayer(layerId) {
+            if (confirm('确定要删除这个图层吗？')) {
+                layers = layers.filter(l => l.id !== layerId);
+                if (selectedLayerId === layerId) {
+                    selectedLayerId = null;
+                }
+                updateCanvas();
+                updateLayersPanel();
+                updatePropertiesPanel();
+                showMessage('图层已删除', 'success');
+            }
+        }
+
+        // 更新属性面板
+        function updatePropertiesPanel() {
+            const propertiesPanel = document.getElementById('propertiesPanel');
+            
+            if (!selectedLayerId) {
+                propertiesPanel.innerHTML = '<div class="empty-state">请选择一个图层进行编辑</div>';
+                return;
+            }
+            
+            const layer = layers.find(l => l.id === selectedLayerId);
+            if (!layer) return;
+            
+            if (layer.type === 'text') {
+                propertiesPanel.innerHTML = createTextPropertiesPanel(layer);
+            } else if (layer.type === 'image') {
+                propertiesPanel.innerHTML = createImagePropertiesPanel(layer);
+            }
+            
+            // 绑定事件
+            bindPropertyEvents(layer);
+        }
+
+        // 创建文字属性面板
+        function createTextPropertiesPanel(layer) {
+            return `
+                <div class="property-group">
+                    <label class="property-label">文字内容</label>
+                    <textarea class="el-textarea" id="textContent" rows="3">${layer.content}</textarea>
+                </div>
+                
+                <div class="property-group">
+                    <label class="property-label">位置和大小</label>
+                    <div class="property-row">
+                        <input type="number" class="el-input property-input" id="textX" value="${Math.round(layer.x)}" placeholder="X">
+                        <input type="number" class="el-input property-input" id="textY" value="${Math.round(layer.y)}" placeholder="Y">
+                    </div>
+                    <div class="property-row">
+                        <input type="number" class="el-input property-input" id="textWidth" value="${Math.round(layer.width)}" placeholder="宽度">
+                        <input type="number" class="el-input property-input" id="textHeight" value="${Math.round(layer.height)}" placeholder="高度">
+                    </div>
+                </div>
+                
+                <div class="property-group">
+                    <label class="property-label">字体设置</label>
+                    <div class="property-row">
+                        <input type="number" class="el-input property-input" id="fontSize" value="${layer.fontSize}" placeholder="字号" min="8" max="200">
+                        <select class="el-select property-input" id="fontFamily">
+                            <option value="Arial" ${layer.fontFamily === 'Arial' ? 'selected' : ''}>Arial</option>
+                            <option value="SimSun" ${layer.fontFamily === 'SimSun' ? 'selected' : ''}>宋体</option>
+                            <option value="Microsoft YaHei" ${layer.fontFamily === 'Microsoft YaHei' ? 'selected' : ''}>微软雅黑</option>
+                            <option value="SimHei" ${layer.fontFamily === 'SimHei' ? 'selected' : ''}>黑体</option>
+                        </select>
+                    </div>
+                    <div class="property-row">
+                        <select class="el-select property-input" id="fontWeight">
+                            <option value="normal" ${layer.fontWeight === 'normal' ? 'selected' : ''}>正常</option>
+                            <option value="bold" ${layer.fontWeight === 'bold' ? 'selected' : ''}>粗体</option>
+                        </select>
+                        <select class="el-select property-input" id="textAlign">
+                            <option value="left" ${layer.textAlign === 'left' ? 'selected' : ''}>左对齐</option>
+                            <option value="center" ${layer.textAlign === 'center' ? 'selected' : ''}>居中</option>
+                            <option value="right" ${layer.textAlign === 'right' ? 'selected' : ''}>右对齐</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="property-group">
+                    <label class="property-label">文字颜色</label>
+                    <input type="color" class="color-picker" id="textColor" value="${layer.color}">
+                </div>
+            `;
+        }
+
+        // 创建图片属性面板
+        function createImagePropertiesPanel(layer) {
+            return `
+                <div class="property-group">
+                    <label class="property-label">图片名称</label>
+                    <input type="text" class="el-input" id="imageName" value="${layer.name}">
+                </div>
+                
+                <div class="property-group">
+                    <label class="property-label">位置和大小</label>
+                    <div class="property-row">
+                        <input type="number" class="el-input property-input" id="imageX" value="${Math.round(layer.x)}" placeholder="X">
+                        <input type="number" class="el-input property-input" id="imageY" value="${Math.round(layer.y)}" placeholder="Y">
+                    </div>
+                    <div class="property-row">
+                        <input type="number" class="el-input property-input" id="imageWidth" value="${Math.round(layer.width)}" placeholder="宽度">
+                        <input type="number" class="el-input property-input" id="imageHeight" value="${Math.round(layer.height)}" placeholder="高度">
+                    </div>
+                </div>
+                
+                <div class="property-group">
+                    <label class="property-label">快速操作</label>
+                    <div class="property-row">
+                        <button class="el-button el-button--small" onclick="resetImageSize(${layer.id})">重置尺寸</button>
+                        <button class="el-button el-button--small" onclick="maintainAspectRatio(${layer.id})">保持比例</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 绑定属性事件
+        function bindPropertyEvents(layer) {
+            if (layer.type === 'text') {
+                // 文字内容
+                const textContent = document.getElementById('textContent');
+                if (textContent) {
+                    textContent.addEventListener('input', (e) => {
+                        layer.content = e.target.value;
+                        updateCanvas();
+                    });
+                }
+                
+                // 位置和大小
+                ['textX', 'textY', 'textWidth', 'textHeight'].forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.addEventListener('input', (e) => {
+                            const value = parseFloat(e.target.value) || 0;
+                            if (id === 'textX') layer.x = value;
+                            else if (id === 'textY') layer.y = value;
+                            else if (id === 'textWidth') layer.width = value;
+                            else if (id === 'textHeight') layer.height = value;
+                            updateCanvas();
+                        });
+                    }
+                });
+                
+                // 字体设置
+                const fontSize = document.getElementById('fontSize');
+                if (fontSize) {
+                    fontSize.addEventListener('input', (e) => {
+                        layer.fontSize = parseInt(e.target.value) || 12;
+                        updateCanvas();
+                    });
+                }
+                
+                const fontFamily = document.getElementById('fontFamily');
+                if (fontFamily) {
+                    fontFamily.addEventListener('change', (e) => {
+                        layer.fontFamily = e.target.value;
+                        updateCanvas();
+                    });
+                }
+                
+                const fontWeight = document.getElementById('fontWeight');
+                if (fontWeight) {
+                    fontWeight.addEventListener('change', (e) => {
+                        layer.fontWeight = e.target.value;
+                        updateCanvas();
+                    });
+                }
+                
+                const textAlign = document.getElementById('textAlign');
+                if (textAlign) {
+                    textAlign.addEventListener('change', (e) => {
+                        layer.textAlign = e.target.value;
+                        updateCanvas();
+                    });
+                }
+                
+                const textColor = document.getElementById('textColor');
+                if (textColor) {
+                    textColor.addEventListener('change', (e) => {
+                        layer.color = e.target.value;
+                        updateCanvas();
+                    });
+                }
+            } else if (layer.type === 'image') {
+                // 图片名称
+                const imageName = document.getElementById('imageName');
+                if (imageName) {
+                    imageName.addEventListener('input', (e) => {
+                        layer.name = e.target.value;
+                        updateLayersPanel();
+                    });
+                }
+                
+                // 位置和大小
+                ['imageX', 'imageY', 'imageWidth', 'imageHeight'].forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.addEventListener('input', (e) => {
+                            const value = parseFloat(e.target.value) || 0;
+                            if (id === 'imageX') layer.x = value;
+                            else if (id === 'imageY') layer.y = value;
+                            else if (id === 'imageWidth') layer.width = value;
+                            else if (id === 'imageHeight') layer.height = value;
+                            updateCanvas();
+                        });
+                    }
+                });
+            }
+        }
+
+        // 重置图片尺寸
+        function resetImageSize(layerId) {
+            const layer = layers.find(l => l.id === layerId);
+            if (layer && layer.type === 'image') {
+                layer.width = layer.originalWidth;
+                layer.height = layer.originalHeight;
+                updateCanvas();
+                updatePropertiesPanel();
+                showMessage('图片尺寸已重置', 'success');
+            }
+        }
+
+        // 保持宽高比
+        function maintainAspectRatio(layerId) {
+            const layer = layers.find(l => l.id === layerId);
+            if (layer && layer.type === 'image') {
+                const aspectRatio = layer.originalWidth / layer.originalHeight;
+                layer.height = layer.width / aspectRatio;
+                updateCanvas();
+                updatePropertiesPanel();
+                showMessage('已调整为原始宽高比', 'success');
+            }
+        }
+
+        // 执行图像合成
+        function composeImages() {
+            if (!backgroundImage) {
+                showMessage('请先导入背景图', 'warning');
+                return;
+            }
+
+            if (foregroundImages.length === 0) {
+                showMessage('请先导入前景图', 'warning');
+                return;
+            }
+
+            showLoadingState();
+            
+            // 模拟合成过程
+            setTimeout(() => {
+                generateCompositeResults();
+                hideLoadingState();
+                showMessage(`成功生成 ${foregroundImages.length} 个合成结果！`, 'success');
+            }, 2000);
+        }
+
+        // 生成合成结果
+        function generateCompositeResults() {
+            const resultContainer = document.getElementById('resultImages');
+            resultContainer.innerHTML = '';
+            composedResults = [];
+
+            foregroundImages.forEach((fg, index) => {
+                // 创建合成画布
+                const compositeCanvas = document.createElement('canvas');
+                const compositeCtx = compositeCanvas.getContext('2d');
+                
+                // 设置输出尺寸
+                compositeCanvas.width = canvas.width;
+                compositeCanvas.height = canvas.height;
+                
+                // 绘制背景图
+                compositeCtx.drawImage(backgroundImage.element, 0, 0, compositeCanvas.width, compositeCanvas.height);
+                
+                // 绘制固定图层（按z-index排序）
+                const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
+                sortedLayers.forEach(layer => {
+                    compositeCtx.save();
+                    
+                    if (layer.type === 'text') {
+                        drawTextOnCanvas(compositeCtx, layer);
+                    } else if (layer.type === 'image') {
+                        drawImageOnCanvas(compositeCtx, layer);
+                    }
+                    
+                    compositeCtx.restore();
+                });
+                
+                // 绘制当前前景图（作为可变元素）
+                compositeCtx.save();
+                
+                // 前景图默认放置在画布中心，可以根据需要调整
+                const fgX = (compositeCanvas.width - fg.width * 0.3) / 2;
+                const fgY = (compositeCanvas.height - fg.height * 0.3) / 2;
+                const fgWidth = fg.width * 0.3;
+                const fgHeight = fg.height * 0.3;
+                
+                // 添加前景图标识效果
+                compositeCtx.globalAlpha = 0.95;
+                compositeCtx.drawImage(fg.element, fgX, fgY, fgWidth, fgHeight);
+                
+                compositeCtx.restore();
+                
+                // 创建结果卡片
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-image';
+                
+                const resultImg = document.createElement('img');
+                resultImg.src = compositeCanvas.toDataURL('image/png');
+                resultImg.alt = `合成结果 ${index + 1}`;
+                resultImg.onclick = () => previewComposedImage(resultImg.src);
+                
+                const overlay = document.createElement('div');
+                overlay.className = 'image-overlay';
+                overlay.innerHTML = `
+                    <button class="el-button el-button--small el-button--primary" onclick="downloadComposedImage('${compositeCanvas.toDataURL('image/png')}', '合成结果_${index + 1}.png')">
+                        <span class="icon">⬇️</span>
+                    </button>
+                `;
+                
+                resultItem.appendChild(resultImg);
+                resultItem.appendChild(overlay);
+                resultContainer.appendChild(resultItem);
+                
+                // 保存结果
+                composedResults.push({
+                    canvas: compositeCanvas,
+                    dataUrl: compositeCanvas.toDataURL('image/png'),
+                    name: `合成结果_${fg.name}_${index + 1}.png`
+                });
+            });
+        }
+
+        // 在画布上绘制文字
+        function drawTextOnCanvas(ctx, layer) {
+            ctx.font = `${layer.fontWeight} ${layer.fontSize}px ${layer.fontFamily}`;
+            ctx.fillStyle = layer.color;
+            ctx.textAlign = layer.textAlign;
+            ctx.textBaseline = 'top';
+            
+            const lines = layer.content.split('\n');
+            lines.forEach((line, index) => {
+                const y = layer.y + (index * layer.fontSize * 1.2);
+                let x = layer.x;
+                
+                if (layer.textAlign === 'center') {
+                    x = layer.x + layer.width / 2;
+                } else if (layer.textAlign === 'right') {
+                    x = layer.x + layer.width;
+                }
+                
+                ctx.fillText(line, x, y);
+            });
+        }
+
+        // 在画布上绘制图片
+        function drawImageOnCanvas(ctx, layer) {
+            ctx.drawImage(layer.element, layer.x, layer.y, layer.width, layer.height);
+        }
+
+        // 预览合成图像
+        function previewComposedImage(src) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0, 0, 0, 0.8); display: flex;
+                align-items: center; justify-content: center; z-index: 9999;
+                cursor: pointer;
+            `;
+            
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.cssText = `
+                max-width: 90%; max-height: 90%; 
+                border-radius: var(--el-border-radius-base);
+                box-shadow: var(--el-box-shadow-dark);
+            `;
+            
+            modal.appendChild(img);
+            modal.onclick = () => document.body.removeChild(modal);
+            document.body.appendChild(modal);
+        }
+
+        // 下载合成图像
+        function downloadComposedImage(dataUrl, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = dataUrl;
+            link.click();
+        }
+
+        // 下载所有结果
+        function downloadResults() {
+            if (composedResults.length === 0) {
+                showMessage('没有可下载的合成结果', 'warning');
+                return;
+            }
+
+            composedResults.forEach((result, index) => {
+                setTimeout(() => {
+                    downloadComposedImage(result.dataUrl, result.name);
+                }, index * 500);
+            });
+            
+            showMessage(`开始下载 ${composedResults.length} 个文件`, 'success');
+        }
+
+        // 显示加载状态
+        function showLoadingState() {
+            const resultContainer = document.getElementById('resultImages');
+            resultContainer.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <div>正在生成合成结果...</div>
+                </div>
+            `;
+        }
+
+        // 隐藏加载状态
+        function hideLoadingState() {
+            // 加载状态会被新的结果替换
+        }
+
+        // 显示消息提示
+        function showMessage(message, type = 'info') {
+            const messageEl = document.createElement('div');
+            messageEl.style.cssText = `
+                position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+                padding: 12px 20px; border-radius: var(--el-border-radius-base);
+                color: white; font-size: var(--el-font-size-base);
+                z-index: 9999; animation: slideDown 0.3s ease;
+                max-width: 400px; text-align: center;
+            `;
+            
+            switch (type) {
+                case 'success':
+                    messageEl.style.backgroundColor = 'var(--el-color-success)';
+                    break;
+                case 'warning':
+                    messageEl.style.backgroundColor = 'var(--el-color-warning)';
+                    break;
+                case 'error':
+                    messageEl.style.backgroundColor = 'var(--el-color-danger)';
+                    break;
+                default:
+                    messageEl.style.backgroundColor = 'var(--el-color-info)';
+            }
+            
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.animation = 'slideUp 0.3s ease forwards';
+                setTimeout(() => {
+                    if (messageEl.parentNode) {
+                        messageEl.parentNode.removeChild(messageEl);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 点击画布空白区域取消选择
+        document.addEventListener('click', (e) => {
+            if (e.target === canvasContainer || e.target === canvas) {
+                selectedLayerId = null;
+                updateCanvas();
+                updateLayersPanel();
+                updatePropertiesPanel();
+            }
+        });
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            if (selectedLayerId) {
+                const layer = layers.find(l => l.id === selectedLayerId);
+                if (!layer) return;
+                
+                switch (e.key) {
+                    case 'Delete':
+                    case 'Backspace':
+                        deleteLayer(selectedLayerId);
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        layer.y = Math.max(0, layer.y - (e.shiftKey ? 10 : 1));
+                        updateCanvas();
+                        updatePropertiesPanel();
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        layer.y = Math.min(canvas.height - layer.height, layer.y + (e.shiftKey ? 10 : 1));
+                        updateCanvas();
+                        updatePropertiesPanel();
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        layer.x = Math.max(0, layer.x - (e.shiftKey ? 10 : 1));
+                        updateCanvas();
+                        updatePropertiesPanel();
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        layer.x = Math.min(canvas.width - layer.width, layer.x + (e.shiftKey ? 10 : 1));
+                        updateCanvas();
+                        updatePropertiesPanel();
+                        break;
+                }
+            }
+            
+            // 全局快捷键
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 't':
+                        e.preventDefault();
+                        addText();
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        importImages();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        if (composedResults.length > 0) {
+                            downloadResults();
+                        }
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
