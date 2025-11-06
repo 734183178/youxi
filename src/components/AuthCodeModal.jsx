@@ -18,7 +18,7 @@ function AuthCodeModal({ isOpen, onClose, onSuccess }) {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/verify-code', {
+      const response = await fetch('https://backend-og7jw9vwf-734183178s-projects.vercel.app/api/verify-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
