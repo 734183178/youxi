@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPI恋爱占有欲测试</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .tips {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .tips h3 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        .tips p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        .code-list {
+            background: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 RPI恋爱占有欲测试</h1>
+        <p class="subtitle">专业的恋爱关系评估工具</p>
+
+        <div class="input-group">
+            <label for="authCode">请输入授权码:</label>
+            <input
+                type="text"
+                id="authCode"
+                placeholder="请输入8位授权码"
+                maxlength="8"
+                autocomplete="off"
+            >
+        </div>
+
+        <button id="verifyBtn" onclick="verifyCode()">开始测试 →</button>
+
+        <div id="message" class="message"></div>
+
+        <div class="tips">
+            <h3>💡 获取授权码</h3>
+            <p>测试授权码可以在以下平台获取:</p>
+            <p>📦 闲鱼店铺: 搜索"恋爱测试"</p>
+            <p>📕 小红书店铺: 搜索"RPI测试"</p>
+
+            <div class="code-list">
+                测试授权码: LOVE2025, TEST1234, DEMO5678
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://backend-hphwqcyq3-734183178s-projects.vercel.app/api/verify-code';
+
+        async function verifyCode() {
+            const input = document.getElementById('authCode');
+            const code = input.value.trim().toUpperCase();
+            const btn = document.getElementById('verifyBtn');
+            const message = document.getElementById('message');
+
+            // 验证输入
+            if (!code) {
+                showMessage('请输入授权码', 'error');
+                return;
+            }
+
+            // 禁用按钮
+            btn.disabled = true;
+            btn.textContent = '验证中...';
+            message.style.display = 'none';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code: code })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('✓ 授权码验证成功!正在跳转...', 'success');
+
+                    // 保存授权信息
+                    sessionStorage.setItem('authCode', code);
+                    sessionStorage.setItem('authValidUntil', data.data.validUntil);
+
+                    // 跳转到测试页面(这里可以改为你的实际测试页面)
+                    setTimeout(() => {
+                        alert('授权成功!\\n授权码: ' + code + '\\n有效期至: ' + new Date(data.data.validUntil).toLocaleString());
+                        // window.location.href = '/test.html'; // 取消注释并修改为实际测试页面
+                    }, 1000);
+                } else {
+                    showMessage('✗ ' + data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('✗ 网络错误,请检查连接后重试', 'error');
+                console.error('Error:', error);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '开始测试 →';
+            }
+        }
+
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = 'message ' + type;
+            message.style.display = 'block';
+        }
+
+        // 回车键提交
+        document.getElementById('authCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyCode();
+            }
+        });
+
+        // 自动转大写
+        document.getElementById('authCode').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+</body>
+</html>
