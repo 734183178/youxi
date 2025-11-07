@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "src": "/youxi/xinlitest.html",
+      "dest": "/xinlitest.html"
+    },
+    {
+      "src": "/youxi/index.html",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/youxi/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}
