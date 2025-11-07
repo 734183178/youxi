@@ -1,16 +1,20 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/youxi/xinlitest.html",
-      "dest": "/xinlitest.html"
+      "source": "/youxi/assets/:path*",
+      "destination": "/assets/:path*"
     },
     {
-      "src": "/youxi/index.html",
-      "dest": "/index.html"
+      "source": "/youxi/xinlitest.html",
+      "destination": "/xinlitest.html"
     },
     {
-      "src": "/youxi/(.*)",
-      "dest": "/$1"
+      "source": "/youxi/index.html",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/youxi/:path*",
+      "destination": "/:path*"
     }
   ]
 }
