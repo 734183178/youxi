@@ -1,0 +1,16 @@
+{
+  "name": "scl-90-assessment",
+  "version": "1.0.0",
+  "description": "SCL-90心理健康评估工具",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "node build.js",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@vercel/kv": "^1.0.1"
+  },
+  "devDependencies": {
+    "terser": "^5.26.0"
+  }
+}
