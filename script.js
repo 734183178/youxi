@@ -204,7 +204,7 @@ const SCL90Assessment = () => {
       }
       const codesData = await codesResponse.json();
 
-      // 查找兑换码
+      // 查找兑换码（检查状态和是否可用）
       const codeInfo = codesData.codes.find(c =>
         c.code.toUpperCase() === normalizedCode && c.status === 'available'
       );
@@ -213,20 +213,7 @@ const SCL90Assessment = () => {
         return { success: false, message: '兑换码不存在或已使用' };
       }
 
-      // 读取已使用记录
-      let usedCodesData;
-      try {
-        const usedResponse = await fetch('./used-codes.json?' + Date.now());
-        if (usedResponse.ok) {
-          usedCodesData = await usedResponse.json();
-        } else {
-          usedCodesData = { usedCodes: [] };
-        }
-      } catch (error) {
-        usedCodesData = { usedCodes: [] };
-      }
-
-      // 读取本地存储的已使用记录
+      // 读取本地存储的已使用记录（主要验证方式）
       let localUsedCodes = [];
       try {
         const stored = localStorage.getItem('usedCodes');
@@ -235,21 +222,39 @@ const SCL90Assessment = () => {
         }
       } catch (error) {
         console.warn('无法读取本地存储:', error);
+        localUsedCodes = [];
       }
 
-      // 合并服务器和本地的已使用记录
-      const allUsedCodes = [
-        ...usedCodesData.usedCodes,
-        ...localUsedCodes
-      ];
-
-      // 检查是否已经在已使用列表中
-      const isAlreadyUsed = allUsedCodes.some(usedRecord =>
+      // 检查是否已经在本地已使用列表中
+      const isAlreadyUsed = localUsedCodes.some(usedRecord =>
         usedRecord.code === normalizedCode
       );
 
       if (isAlreadyUsed) {
-        return { success: false, message: '兑换码已使用' };
+        return { success: false, message: '兑换码已使用，请使用新的兑换码' };
+      }
+
+      // 读取服务器上的已使用记录（作为备用验证）
+      try {
+        const usedResponse = await fetch('./used-codes.json?' + Date.now());
+        if (usedResponse.ok) {
+          const serverUsedData = await usedResponse.json();
+          const isServerUsed = serverUsedData.usedCodes && serverUsedData.usedCodes.some(record =>
+            record.code === normalizedCode
+          );
+
+          if (isServerUsed) {
+            // 如果服务器显示已使用，同步到本地
+            if (!localUsedCodes.some(record => record.code === normalizedCode)) {
+              const serverRecord = serverUsedData.usedCodes.find(record => record.code === normalizedCode);
+              localUsedCodes.push(serverRecord);
+              localStorage.setItem('usedCodes', JSON.stringify(localUsedCodes));
+            }
+            return { success: false, message: '兑换码已使用，请使用新的兑换码' };
+          }
+        }
+      } catch (error) {
+        console.warn('无法读取服务器使用记录:', error);
       }
 
       // 创建使用记录
@@ -260,25 +265,12 @@ const SCL90Assessment = () => {
         userAgent: navigator.userAgent
       };
 
-      // 添加到服务器记录（注意：前端无法直接更新服务器文件）
-      usedCodesData.usedCodes.push(usageRecord);
+      // 保存到本地存储（主要存储方式）
+      localUsedCodes.push(usageRecord);
+      localStorage.setItem('usedCodes', JSON.stringify(localUsedCodes));
 
-      // 更新本地存储
-      try {
-        let localUsedCodes = [];
-        const stored = localStorage.getItem('usedCodes');
-        if (stored) {
-          localUsedCodes = JSON.parse(stored);
-        }
-
-        // 避免重复添加
-        if (!localUsedCodes.some(record => record.code === normalizedCode)) {
-          localUsedCodes.push(usageRecord);
-          localStorage.setItem('usedCodes', JSON.stringify(localUsedCodes));
-        }
-      } catch (error) {
-        console.warn('无法保存到本地存储:', error);
-      }
+      // 尝试同步到管理工具（如果有GitHub Token）
+      tryToSyncUsageRecord(usageRecord);
 
       return {
         success: true,
@@ -295,6 +287,76 @@ const SCL90Assessment = () => {
         success: false,
         message: '验证服务暂时不可用，请稍后重试'
       };
+    }
+  };
+
+  // 尝试同步使用记录到管理工具
+  const tryToSyncUsageRecord = async (usageRecord) => {
+    try {
+      // 检查是否有保存的GitHub设置（来自管理工具）
+      const githubSettings = localStorage.getItem('githubSettings');
+      if (!githubSettings) return;
+
+      const settings = JSON.parse(githubSettings);
+      if (!settings.username || !settings.repo || !settings.token) return;
+
+      // 获取当前used-codes.json内容
+      const url = `https://api.github.com/repos/${settings.username}/${settings.repo}/contents/used-codes.json`;
+      let sha = '';
+      let currentData = { usedCodes: [] };
+
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'Authorization': `token ${settings.token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          currentData = JSON.parse(atob(data.content));
+          sha = data.sha;
+        }
+      } catch (error) {
+        console.warn('获取当前使用记录失败:', error);
+      }
+
+      // 添加新的使用记录
+      if (!currentData.usedCodes) {
+        currentData.usedCodes = [];
+      }
+
+      // 避免重复添加
+      if (!currentData.usedCodes.some(record => record.code === usageRecord.code)) {
+        currentData.usedCodes.push(usageRecord);
+        currentData.lastUpdated = new Date().toISOString();
+
+        // 上传到GitHub
+        const content = btoa(JSON.stringify(currentData, null, 2));
+        const uploadData = {
+          message: `记录兑换码使用: ${usageRecord.code}`,
+          content: content
+        };
+
+        if (sha) {
+          uploadData.sha = sha;
+        }
+
+        await fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${settings.token}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(uploadData)
+        });
+
+        console.log('使用记录已同步到GitHub');
+      }
+    } catch (error) {
+      console.warn('同步使用记录到GitHub失败:', error);
     }
   };
 
