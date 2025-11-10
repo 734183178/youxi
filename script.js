@@ -10,6 +10,7 @@ const SCL90Assessment = () => {
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [exchangeCode, setExchangeCode] = useState('');
   const [codeError, setCodeError] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
 
   // SCL-90题目数据
   const questions = [
@@ -191,17 +192,68 @@ const SCL90Assessment = () => {
     setCodeError('');
   };
 
+  // GitHub Issues 验证函数（简化版本 - 只验证，不修改）
+  const verifyGitHubIssue = async (code) => {
+    try {
+      // 查找带有 available 标签的 open issues
+      const response = await fetch(
+        `https://api.github.com/repos/734183178/youxi/issues?state=open&labels=available`
+      );
+
+      if (!response.ok) {
+        throw new Error('GitHub API 访问失败');
+      }
+
+      const issues = await response.json();
+      const validIssue = issues.find(issue =>
+        issue.title.trim().toUpperCase() === code.trim().toUpperCase()
+      );
+
+      if (!validIssue) {
+        return { success: false, message: '兑换码不存在或已使用' };
+      }
+
+      // 简化版本：只验证存在，不修改状态
+      // TODO: 后续可以添加GitHub Token来实现完整功能
+      return { success: true, message: '验证成功', issueNumber: validIssue.number };
+
+    } catch (error) {
+      console.error('GitHub API Error:', error);
+      return {
+        success: false,
+        message: '验证服务暂时不可用，请稍后重试'
+      };
+    }
+  };
+
   // 验证兑换码
-  const handleCodeVerify = () => {
-    if (exchangeCode.trim().toUpperCase() === 'LVOE123') {
-      setShowCodeModal(false);
-      setCurrentPage('test');
-      setCurrentQuestion(0);
-      setAnswers({});
-      setCodeError('');
-    } else {
-      setCodeError('兑换码不正确，请重试');
-      setExchangeCode('');
+  const handleCodeVerify = async () => {
+    if (!exchangeCode.trim()) {
+      setCodeError('请输入兑换码');
+      return;
+    }
+
+    setIsVerifying(true);
+    setCodeError('');
+
+    try {
+      const result = await verifyGitHubIssue(exchangeCode.trim());
+
+      if (result.success) {
+        setShowCodeModal(false);
+        setCurrentPage('test');
+        setCurrentQuestion(0);
+        setAnswers({});
+        setCodeError('');
+        setExchangeCode('');
+      } else {
+        setCodeError(result.message);
+        setExchangeCode('');
+      }
+    } catch (error) {
+      setCodeError('验证失败，请重试');
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -446,9 +498,10 @@ const SCL90Assessment = () => {
               type="text"
               value={exchangeCode}
               onChange={(e) => setExchangeCode(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleCodeVerify()}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
-              placeholder="请输入兑换码"
+              onKeyPress={(e) => e.key === 'Enter' && !isVerifying && handleCodeVerify()}
+              disabled={isVerifying}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base disabled:bg-gray-100 disabled:cursor-not-allowed"
+              placeholder={isVerifying ? "正在验证..." : "请输入兑换码"}
               autoFocus
             />
           </div>
@@ -459,20 +512,45 @@ const SCL90Assessment = () => {
             </div>
           )}
 
+          {isVerifying && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                <p className="text-blue-600 text-sm">正在验证兑换码...</p>
+              </div>
+            </div>
+          )}
+
           <div className="flex space-x-3 sm:space-x-4">
             <button
               onClick={handleCodeVerify}
-              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm sm:text-base"
+              disabled={isVerifying || !exchangeCode.trim()}
+              className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-all duration-200 text-sm sm:text-base ${
+                isVerifying || !exchangeCode.trim()
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+              }`}
             >
-              验证
+              {isVerifying ? '验证中...' : '验证'}
             </button>
             <button
               onClick={handleCodeCancel}
-              className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm sm:text-base"
+              disabled={isVerifying}
+              className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-all duration-200 text-sm sm:text-base ${
+                isVerifying
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+              }`}
             >
               取消
             </button>
           </div>
+        </div>
+
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <p className="text-xs text-gray-500 text-center">
+            💡 请输入您获得的兑换码进行验证
+          </p>
         </div>
       </div>
     </div>
