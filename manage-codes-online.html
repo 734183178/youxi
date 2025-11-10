@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCL-90 兑换码管理工具 - 线上版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 sm:p-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <h3 class="text-red-800 font-semibold mb-2">🚨 线上版管理说明</h3>
+            <div class="text-red-700 text-sm space-y-1">
+                <p>• GitHub Pages不支持动态写入文件，无法直接在线添加兑换码</p>
+                <p>• 请使用下方工具生成新兑换码，然后手动更新GitHub仓库中的文件</p>
+                <p>• 操作步骤：生成代码 → 复制JSON → 在GitHub仓库中更新codes.json文件</p>
+            </div>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">SCL-90 兑换码管理工具 (线上版)</h1>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <!-- 生成兑换码 -->
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+                <h2 class="text-lg sm:text-xl font-semibold mb-4">批量生成兑换码</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">数量</label>
+                        <input
+                            type="number"
+                            id="generateCount"
+                            class="w-full p-2 border rounded"
+                            value="10"
+                            min="1"
+                            max="100"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">前缀</label>
+                        <input
+                            type="text"
+                            id="generatePrefix"
+                            class="w-full p-2 border rounded"
+                            value="SCL"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">批次</label>
+                        <input
+                            type="text"
+                            id="batchName"
+                            class="w-full p-2 border rounded"
+                            value="batch2024"
+                        />
+                    </div>
+                    <button
+                        onclick="generateCodes()"
+                        class="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors"
+                    >
+                        生成兑换码
+                    </button>
+                </div>
+            </div>
+
+            <!-- 手动添加兑换码 -->
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+                <h2 class="text-lg sm:text-xl font-semibold mb-4">手动添加兑换码</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">兑换码（每行一个）</label>
+                        <textarea
+                            id="newCodes"
+                            class="w-full p-2 border rounded h-24 sm:h-32"
+                            placeholder="LVOE123&#10;TEST456&#10;SCL789"
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">批次</label>
+                        <input
+                            type="text"
+                            id="manualBatchName"
+                            class="w-full p-2 border rounded"
+                            value="manual"
+                        />
+                    </div>
+                    <button
+                        onclick="addManualCodes()"
+                        class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+                    >
+                        添加到列表
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 当前兑换码列表 -->
+        <div class="mt-6 sm:mt-8 bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                <h2 class="text-lg sm:text-xl font-semibold">当前兑换码列表</h2>
+                <div class="flex gap-2">
+                    <button
+                        onclick="loadCurrentCodes()"
+                        class="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 transition-colors"
+                    >
+                        从GitHub加载
+                    </button>
+                    <button
+                        onclick="clearAllCodes()"
+                        class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition-colors"
+                    >
+                        清空列表
+                    </button>
+                </div>
+            </div>
+            <div class="mb-4 text-sm text-gray-600">
+                总计：<span id="totalCodes" class="font-semibold">0</span> 个兑换码 |
+                可用：<span id="availableCodes" class="font-semibold text-green-600">0</span> 个 |
+                已用：<span id="usedCodes" class="font-semibold text-red-600">0</span> 个
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto text-sm">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-2 sm:px-4 py-2 text-left">兑换码</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">状态</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">批次</th>
+                            <th class="px-2 sm:px-4 py-2 text-left hidden sm:table-cell">创建时间</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="codesTable">
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-gray-500">
+                                点击"从GitHub加载"或生成新兑换码
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 生成更新代码 -->
+        <div class="mt-6 sm:mt-8 bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <h2 class="text-lg sm:text-xl font-semibold mb-4">生成GitHub更新代码</h2>
+            <div class="mb-4">
+                <div class="bg-yellow-50 border border-yellow-200 rounded p-3 mb-4">
+                    <p class="text-yellow-800 text-sm">
+                        <strong>操作步骤：</strong><br>
+                        1. 点击"生成JSON代码"<br>
+                        2. 复制生成的JSON内容<br>
+                        3. 在GitHub仓库中编辑codes.json文件<br>
+                        4. 粘贴新内容并提交更改
+                    </p>
+                </div>
+                <button
+                    onclick="generateUpdateCode()"
+                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors mb-3"
+                >
+                    生成JSON代码
+                </button>
+                <div id="updateCodeSection" class="hidden">
+                    <p class="text-sm text-gray-600 mb-2">复制以下内容，更新GitHub仓库中的codes.json文件：</p>
+                    <textarea
+                        id="generatedJson"
+                        class="w-full h-48 sm:h-64 p-2 border rounded font-mono text-xs"
+                        readonly
+                    ></textarea>
+                    <div class="mt-3 flex gap-2">
+                        <button
+                            onclick="copyToClipboard()"
+                            class="bg-blue-500 text-white py-1 px-3 rounded text-sm hover:bg-blue-600 transition-colors"
+                        >
+                            复制到剪贴板
+                        </button>
+                        <button
+                            onclick="downloadJsonFile()"
+                            class="bg-green-500 text-white py-1 px-3 rounded text-sm hover:bg-green-600 transition-colors"
+                        >
+                            下载JSON文件
+                        </button>
+                        <span class="ml-2 text-sm text-green-600" id="copySuccess" style="display:none;">已复制！</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果显示 -->
+        <div id="result" class="mt-6 p-4 border rounded-lg hidden">
+            <h3 class="font-semibold mb-2">操作结果：</h3>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // 当前兑换码列表（在内存中）
+        let currentCodes = [];
+        let loadedCodes = [];
+
+        // 生成唯一兑换码
+        function generateUniqueCode(prefix, index) {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).substring(2, 6);
+            return `${prefix}${timestamp}${random}`.toUpperCase();
+        }
+
+        // 生成兑换码
+        function generateCodes() {
+            const count = parseInt(document.getElementById('generateCount').value);
+            const prefix = document.getElementById('generatePrefix').value.toUpperCase();
+            const batch = document.getElementById('batchName').value.trim();
+
+            if (count < 1 || count > 100) {
+                showResult('error', '数量必须在1-100之间');
+                return;
+            }
+
+            const codes = [];
+            for (let i = 0; i < count; i++) {
+                codes.push(generateUniqueCode(prefix, i));
+            }
+
+            // 添加到当前列表
+            const newCodes = codes.map(code => ({
+                code: code,
+                status: 'available',
+                createdAt: new Date().toISOString(),
+                batch: batch
+            }));
+
+            currentCodes = [...currentCodes, ...newCodes];
+            displayCodes();
+            showResult('success', `已生成 ${count} 个兑换码`);
+        }
+
+        // 手动添加兑换码
+        function addManualCodes() {
+            const codesText = document.getElementById('newCodes').value.trim();
+            const batch = document.getElementById('manualBatchName').value.trim();
+
+            if (!codesText) {
+                showResult('error', '请输入兑换码');
+                return;
+            }
+
+            const codes = codesText.split('\n')
+                .map(code => code.trim().toUpperCase())
+                .filter(code => code.length > 0);
+
+            if (codes.length === 0) {
+                showResult('error', '没有有效的兑换码');
+                return;
+            }
+
+            // 检查重复
+            const duplicates = codes.filter(code =>
+                currentCodes.some(existing => existing.code === code) ||
+                loadedCodes.some(existing => existing.code === code)
+            );
+
+            if (duplicates.length > 0) {
+                showResult('error', `以下兑换码已存在：${duplicates.join(', ')}`);
+                return;
+            }
+
+            // 添加到当前列表
+            const newCodes = codes.map(code => ({
+                code: code,
+                status: 'available',
+                createdAt: new Date().toISOString(),
+                batch: batch
+            }));
+
+            currentCodes = [...currentCodes, ...newCodes];
+            displayCodes();
+            showResult('success', `成功添加 ${codes.length} 个兑换码`);
+            document.getElementById('newCodes').value = '';
+        }
+
+        // 从GitHub加载当前兑换码
+        async function loadCurrentCodes() {
+            try {
+                const response = await fetch('./codes.json?' + Date.now());
+                if (!response.ok) {
+                    throw new Error('无法加载GitHub上的codes.json文件');
+                }
+
+                const data = await response.json();
+                loadedCodes = data.codes || [];
+                currentCodes = [...loadedCodes];
+                displayCodes();
+                showResult('success', `已从GitHub加载 ${loadedCodes.length} 个兑换码`);
+            } catch (error) {
+                showResult('error', `加载失败：${error.message}`);
+            }
+        }
+
+        // 显示兑换码表格
+        function displayCodes() {
+            const table = document.getElementById('codesTable');
+            const allCodes = [...loadedCodes, ...currentCodes];
+
+            // 统计信息
+            const totalCount = allCodes.length;
+            const availableCount = allCodes.filter(c => c.status === 'available').length;
+            const usedCount = allCodes.filter(c => c.status === 'used').length;
+
+            document.getElementById('totalCodes').textContent = totalCount;
+            document.getElementById('availableCodes').textContent = availableCount;
+            document.getElementById('usedCodes').textContent = usedCount;
+
+            if (allCodes.length > 0) {
+                table.innerHTML = allCodes.map((code, index) => `
+                    <tr class="border-b">
+                        <td class="px-2 sm:px-4 py-2 font-mono text-xs sm:text-sm">${code.code}</td>
+                        <td class="px-2 sm:px-4 py-2">
+                            <span class="px-2 py-1 rounded text-xs ${
+                                code.status === 'available'
+                                    ? 'bg-green-100 text-green-700'
+                                    : 'bg-red-100 text-red-700'
+                            }">
+                                ${code.status === 'available' ? '可用' : '已用'}
+                            </span>
+                        </td>
+                        <td class="px-2 sm:px-4 py-2 text-xs sm:text-sm">${code.batch}</td>
+                        <td class="px-2 sm:px-4 py-2 text-xs sm:text-sm hidden sm:table-cell">
+                            ${new Date(code.createdAt).toLocaleDateString()}
+                        </td>
+                        <td class="px-2 sm:px-4 py-2">
+                            <button
+                                onclick="removeCode(${index})"
+                                class="text-red-500 hover:text-red-700 text-xs sm:text-sm"
+                            >
+                                删除
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                table.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">暂无兑换码</td></tr>';
+            }
+        }
+
+        // 删除兑换码
+        function removeCode(index) {
+            const allCodes = [...loadedCodes, ...currentCodes];
+            const removedCode = allCodes[index];
+
+            // 从currentCodes中移除（如果是新添加的）
+            currentCodes = currentCodes.filter(c => c.code !== removedCode.code);
+
+            displayCodes();
+            showResult('success', `已删除兑换码：${removedCode.code}`);
+        }
+
+        // 清空所有兑换码
+        function clearAllCodes() {
+            if (confirm('确定要清空所有兑换码吗？这将只保留GitHub中已存在的兑换码。')) {
+                currentCodes = [];
+                displayCodes();
+                showResult('success', '已清空本地兑换码列表');
+            }
+        }
+
+        // 生成更新代码
+        function generateUpdateCode() {
+            const allCodes = [...loadedCodes, ...currentCodes];
+
+            const updateData = {
+                codes: allCodes,
+                lastUpdated: new Date().toISOString(),
+                version: "1.0"
+            };
+
+            const jsonContent = JSON.stringify(updateData, null, 2);
+            document.getElementById('generatedJson').value = jsonContent;
+            document.getElementById('updateCodeSection').classList.remove('hidden');
+
+            showResult('success', 'JSON代码已生成，请复制到GitHub仓库中');
+        }
+
+        // 复制到剪贴板
+        function copyToClipboard() {
+            const textarea = document.getElementById('generatedJson');
+            textarea.select();
+            document.execCommand('copy');
+
+            const successMsg = document.getElementById('copySuccess');
+            successMsg.style.display = 'block';
+
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        // 下载JSON文件
+        function downloadJsonFile() {
+            const textarea = document.getElementById('generatedJson');
+            const blob = new Blob([textarea.value], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'codes.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showResult('success', 'JSON文件已下载');
+        }
+
+        // 显示结果
+        function showResult(type, message) {
+            const resultDiv = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+
+            resultDiv.classList.remove('hidden');
+            resultContent.innerHTML = `
+                <div class="p-3 rounded ${
+                    type === 'success'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-700'
+                }">
+                    ${message}
+                </div>
+            `;
+
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                resultDiv.classList.add('hidden');
+            }, 3000);
+        }
+
+        // 页面加载时自动加载
+        window.addEventListener('load', () => {
+            loadCurrentCodes();
+        });
+    </script>
+</body>
+</html>

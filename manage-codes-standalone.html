@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCL-90 兑换码管理工具 - 独立版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">SCL-90 兑换码管理工具</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 添加兑换码 -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">添加新兑换码</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">兑换码（每行一个）</label>
+                        <textarea
+                            id="newCodes"
+                            class="w-full p-2 border rounded h-32"
+                            placeholder="LVOE123&#10;TEST456&#10;SCL789"
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">批次</label>
+                        <input
+                            type="text"
+                            id="batchName"
+                            class="w-full p-2 border rounded"
+                            value="test"
+                        />
+                    </div>
+                    <button
+                        onclick="addCodes()"
+                        class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                    >
+                        添加兑换码
+                    </button>
+                </div>
+            </div>
+
+            <!-- 生成兑换码 -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">批量生成兑换码</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">数量</label>
+                        <input
+                            type="number"
+                            id="generateCount"
+                            class="w-full p-2 border rounded"
+                            value="10"
+                            min="1"
+                            max="100"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">前缀</label>
+                        <input
+                            type="text"
+                            id="generatePrefix"
+                            class="w-full p-2 border rounded"
+                            value="SCL"
+                        />
+                    </div>
+                    <button
+                        onclick="generateCodes()"
+                        class="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+                    >
+                        生成兑换码
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 当前兑换码列表 -->
+        <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">当前兑换码列表</h2>
+            <div class="mb-4">
+                <button
+                    onclick="loadCurrentCodes()"
+                    class="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600"
+                >
+                    刷新列表
+                </button>
+                <span class="ml-4 text-sm text-gray-600">最后更新：<span id="lastUpdated">-</span></span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left">兑换码</th>
+                            <th class="px-4 py-2 text-left">状态</th>
+                            <th class="px-4 py-2 text-left">批次</th>
+                            <th class="px-4 py-2 text-left">创建时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="codesTable">
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-gray-500">
+                                点击"刷新列表"加载兑换码
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 使用记录 -->
+        <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">最近使用记录</h2>
+            <div class="mb-4">
+                <button
+                    onclick="loadUsedCodes()"
+                    class="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600"
+                >
+                    刷新记录
+                </button>
+                <button
+                    onclick="clearLocalData()"
+                    class="ml-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                >
+                    清除本地数据
+                </button>
+            </div>
+            <div id="usedRecords" class="space-y-2">
+                <p class="text-gray-500 text-center">点击"刷新记录"加载使用记录</p>
+            </div>
+        </div>
+
+        <!-- 生成更新代码 -->
+        <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">生成更新代码</h2>
+            <div id="updateCodeSection" class="hidden">
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600 mb-2">复制以下内容，更新 codes.json 文件：</p>
+                    <textarea
+                        id="generatedJson"
+                        class="w-full h-64 p-2 border rounded font-mono text-xs"
+                        readonly
+                    ></textarea>
+                    <div class="mt-2">
+                        <button
+                            onclick="copyToClipboard()"
+                            class="bg-blue-500 text-white py-1 px-3 rounded text-sm"
+                        >
+                            复制到剪贴板
+                        </button>
+                        <span class="ml-2 text-sm text-green-600" id="copySuccess" style="display:none;">已复制！</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果显示 -->
+        <div id="result" class="mt-6 p-4 border rounded-lg hidden">
+            <h3 class="font-semibold mb-2">操作结果：</h3>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // 内置兑换码数据
+        let currentCodes = [
+            {
+                "code": "LVOE123",
+                "status": "available",
+                "createdAt": "2024-12-10T00:00:00Z",
+                "batch": "test"
+            },
+            {
+                "code": "TEST456",
+                "status": "available",
+                "createdAt": "2024-12-10T00:00:00Z",
+                "batch": "test"
+            },
+            {
+                "code": "SCL789",
+                "status": "available",
+                "createdAt": "2024-12-10T00:00:00Z",
+                "batch": "test"
+            },
+            {
+                "code": "DEMO001",
+                "status": "available",
+                "createdAt": "2024-12-10T00:00:00Z",
+                "batch": "demo"
+            },
+            {
+                "code": "SAMPLE2024",
+                "status": "available",
+                "createdAt": "2024-12-10T00:00:00Z",
+                "batch": "demo"
+            },
+            {
+                "code": "MENTAL123",
+                "status": "available",
+                "createdAt": "2024-12-10T00:00:00Z",
+                "batch": "official"
+            },
+            {
+                "code": "HEALTH456",
+                "status": "available",
+                "createdAt": "2024-12-10T00:00:00Z",
+                "batch": "official"
+            },
+            {
+                "code": "PSYCH789",
+                "status": "available",
+                "createdAt": "2024-12-10T00:00:00Z",
+                "batch": "official"
+            },
+            {
+                "code": "WELCOME001",
+                "status": "available",
+                "createdAt": "2024-12-10T00:00:00Z",
+                "batch": "welcome"
+            },
+            {
+                "code": "GUEST002",
+                "status": "available",
+                "createdAt": "2024-12-10T00:00:00Z",
+                "batch": "welcome"
+            }
+        ];
+
+        let usedCodes = [];
+
+        // 生成唯一兑换码
+        function generateUniqueCode(prefix, index) {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).substring(2, 6);
+            return `${prefix}${timestamp}${random}`.toUpperCase();
+        }
+
+        // 生成兑换码
+        function generateCodes() {
+            const count = parseInt(document.getElementById('generateCount').value);
+            const prefix = document.getElementById('generatePrefix').value.toUpperCase();
+
+            const codes = [];
+            for (let i = 0; i < count; i++) {
+                codes.push(generateUniqueCode(prefix, i));
+            }
+
+            document.getElementById('newCodes').value = codes.join('\n');
+            showResult('success', `已生成 ${count} 个兑换码`);
+        }
+
+        // 添加兑换码
+        function addCodes() {
+            const codesText = document.getElementById('newCodes').value.trim();
+            const batch = document.getElementById('batchName').value.trim();
+
+            if (!codesText) {
+                showResult('error', '请输入兑换码');
+                return;
+            }
+
+            const codes = codesText.split('\n')
+                .map(code => code.trim().toUpperCase())
+                .filter(code => code.length > 0);
+
+            if (codes.length === 0) {
+                showResult('error', '没有有效的兑换码');
+                return;
+            }
+
+            // 检查重复
+            const duplicates = codes.filter(code =>
+                currentCodes.some(existing => existing.code === code)
+            );
+
+            if (duplicates.length > 0) {
+                showResult('error', `以下兑换码已存在：${duplicates.join(', ')}`);
+                return;
+            }
+
+            // 添加到当前列表
+            const newCodes = codes.map(code => ({
+                code: code,
+                status: 'available',
+                createdAt: new Date().toISOString(),
+                batch: batch
+            }));
+
+            currentCodes = [...currentCodes, ...newCodes];
+
+            displayCodes({ codes: currentCodes, lastUpdated: new Date().toISOString() });
+            showResult('success', `成功添加 ${codes.length} 个兑换码到列表`);
+            document.getElementById('newCodes').value = '';
+
+            // 生成更新代码
+            generateUpdateCode();
+        }
+
+        // 生成更新代码
+        function generateUpdateCode() {
+            const updateData = {
+                codes: currentCodes,
+                lastUpdated: new Date().toISOString(),
+                version: "1.0"
+            };
+
+            const jsonContent = JSON.stringify(updateData, null, 2);
+            document.getElementById('generatedJson').value = jsonContent;
+            document.getElementById('updateCodeSection').classList.remove('hidden');
+        }
+
+        // 显示兑换码表格
+        function displayCodes(data) {
+            const table = document.getElementById('codesTable');
+            const lastUpdated = document.getElementById('lastUpdated');
+
+            if (data.codes && data.codes.length > 0) {
+                table.innerHTML = data.codes.map(code => `
+                    <tr class="border-b">
+                        <td class="px-4 py-2 font-mono">${code.code}</td>
+                        <td class="px-4 py-2">
+                            <span class="px-2 py-1 rounded text-xs ${
+                                code.status === 'available'
+                                    ? 'bg-green-100 text-green-700'
+                                    : 'bg-red-100 text-red-700'
+                            }">
+                                ${code.status === 'available' ? '可用' : '已用'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-2">${code.batch}</td>
+                        <td class="px-4 py-2 text-sm">${new Date(code.createdAt).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+
+                lastUpdated.textContent = new Date(data.lastUpdated).toLocaleString();
+            } else {
+                table.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-500">暂无兑换码</td></tr>';
+            }
+        }
+
+        // 加载当前兑换码（从本地存储）
+        function loadCurrentCodes() {
+            try {
+                const stored = localStorage.getItem('currentCodes');
+                if (stored) {
+                    currentCodes = JSON.parse(stored);
+                }
+            } catch (error) {
+                console.warn('无法读取本地存储:', error);
+            }
+
+            displayCodes({ codes: currentCodes, lastUpdated: new Date().toISOString() });
+        }
+
+        // 保存当前兑换码到本地存储
+        function saveCurrentCodes() {
+            try {
+                localStorage.setItem('currentCodes', JSON.stringify(currentCodes));
+            } catch (error) {
+                console.warn('无法保存到本地存储:', error);
+            }
+        }
+
+        // 加载使用记录
+        function loadUsedCodes() {
+            displayUsedRecords(usedCodes);
+        }
+
+        // 显示使用记录
+        function displayUsedRecords(records) {
+            const recordsDiv = document.getElementById('usedRecords');
+
+            if (records && records.length > 0) {
+                const recentCodes = records.slice(-10).reverse(); // 显示最近10条
+                recordsDiv.innerHTML = recentCodes.map(record => `
+                    <div class="bg-gray-50 p-3 rounded">
+                        <div class="flex justify-between items-center">
+                            <span class="font-mono font-semibold">${record.code}</span>
+                            <span class="text-sm text-gray-500">${new Date(record.usedAt).toLocaleString()}</span>
+                        </div>
+                        ${record.userAgent ? `<div class="text-xs text-gray-600 mt-1">${record.userAgent}</div>` : ''}
+                    </div>
+                `).join('');
+            } else {
+                recordsDiv.innerHTML = '<p class="text-gray-500 text-center">暂无使用记录</p>';
+            }
+        }
+
+        // 清除本地数据
+        function clearLocalData() {
+            if (confirm('确定要清除所有本地数据吗？这将清除所有兑换码和使用记录。')) {
+                localStorage.removeItem('currentCodes');
+                localStorage.removeItem('usedCodes');
+                currentCodes = [
+                    // 只保留几个基本兑换码
+                    {
+                        "code": "LVOE123",
+                        "status": "available",
+                        "createdAt": "2024-12-10T00:00:00Z",
+                        "batch": "default"
+                    },
+                    {
+                        "code": "TEST456",
+                        "status": "available",
+                        "显示代码": "2024-12-10T00:00:00Z",
+                        "batch": "default"
+                    }
+                ];
+                usedCodes = [];
+
+                displayCodes({ codes: currentCodes, lastUpdated: new Date().toISOString() });
+                displayUsedRecords(usedCodes);
+                saveCurrentCodes();
+
+                showResult('success', '本地数据已清除，只保留基本兑换码');
+            }
+        }
+
+        // 复制到剪贴板
+        function copyToClipboard() {
+            const textarea = document.getElementById('generatedJson');
+            textarea.select();
+            document.execCommand('copy');
+
+            const successMsg = document.getElementById('copySuccess');
+            successMsg.style.display = 'block';
+
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        // 显示结果
+        function showResult(type, message) {
+            const resultDiv = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+
+            resultDiv.classList.remove('hidden');
+            resultContent.innerHTML = `
+                <div class="p-3 rounded ${
+                    type === 'success'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-700'
+                }">
+                    ${message}
+                </div>
+            `;
+
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                resultDiv.classList.add('hidden');
+            }, 3000);
+        }
+
+        // 页面加载时自动加载
+        window.addEventListener('load', () => {
+            loadCurrentCodes();
+            loadUsedCodes();
+        });
+
+        // 监听存储变化（其他标签页面的更改）
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'currentCodes') {
+                loadCurrentCodes();
+            } else if (e.key === 'usedCodes') {
+                try {
+                    usedCodes = JSON.parse(e.newValue);
+                    displayUsedRecords(usedCodes);
+                } catch (error) {
+                    console.warn('无法解析使用记录:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
