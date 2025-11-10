@@ -6,6 +6,11 @@ const SCL90Assessment = () => {
   const [answers, setAnswers] = useState({});
   const chartRef = useRef(null);
 
+  // 兑换码相关状态
+  const [showCodeModal, setShowCodeModal] = useState(false);
+  const [exchangeCode, setExchangeCode] = useState('');
+  const [codeError, setCodeError] = useState('');
+
   // SCL-90题目数据
   const questions = [
     { id: 1, text: "头痛", factor: "躯体化" },
@@ -181,9 +186,30 @@ const SCL90Assessment = () => {
   });
 
   const handleStartTest = () => {
-    setCurrentPage('test');
-    setCurrentQuestion(0);
-    setAnswers({});
+    setShowCodeModal(true);
+    setExchangeCode('');
+    setCodeError('');
+  };
+
+  // 验证兑换码
+  const handleCodeVerify = () => {
+    if (exchangeCode.trim().toUpperCase() === 'LVOE123') {
+      setShowCodeModal(false);
+      setCurrentPage('test');
+      setCurrentQuestion(0);
+      setAnswers({});
+      setCodeError('');
+    } else {
+      setCodeError('兑换码不正确，请重试');
+      setExchangeCode('');
+    }
+  };
+
+  // 取消输入兑换码
+  const handleCodeCancel = () => {
+    setShowCodeModal(false);
+    setExchangeCode('');
+    setCodeError('');
   };
 
   const handleAnswer = (value) => {
@@ -397,6 +423,56 @@ const SCL90Assessment = () => {
           >
             开始测试 (90题)
           </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // 兑换码弹窗组件
+  const renderCodeModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 max-w-md w-full">
+        <div className="text-center mb-6">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">验证兑换码</h3>
+          <p className="text-sm sm:text-base text-gray-600">请输入兑换码以开始测试</p>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              兑换码
+            </label>
+            <input
+              type="text"
+              value={exchangeCode}
+              onChange={(e) => setExchangeCode(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleCodeVerify()}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+              placeholder="请输入兑换码"
+              autoFocus
+            />
+          </div>
+
+          {codeError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <p className="text-red-600 text-sm">{codeError}</p>
+            </div>
+          )}
+
+          <div className="flex space-x-3 sm:space-x-4">
+            <button
+              onClick={handleCodeVerify}
+              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm sm:text-base"
+            >
+              验证
+            </button>
+            <button
+              onClick={handleCodeCancel}
+              className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm sm:text-base"
+            >
+              取消
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -660,7 +736,12 @@ const SCL90Assessment = () => {
   // 根据当前页面渲染不同内容
   switch (currentPage) {
     case 'intro':
-      return renderIntro();
+      return (
+        <>
+          {renderIntro()}
+          {showCodeModal && renderCodeModal()}
+        </>
+      );
     case 'test':
       return renderTest();
     case 'result':
