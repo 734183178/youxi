@@ -1,5 +1,66 @@
 {
-  "codes": [],
-  "lastUpdated": "2025-11-10T09:52:11.774Z",
+  "codes": [
+    {
+      "code": "8KG5T7DUHA",
+      "status": "available",
+      "createdAt": "2025-11-10T09:52:21.156Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "ZDBZ34X8HF",
+      "status": "available",
+      "createdAt": "2025-11-10T09:52:21.156Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "A9GQBKMBPX",
+      "status": "available",
+      "createdAt": "2025-11-10T09:52:21.156Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "GFQQRD67WX",
+      "status": "available",
+      "createdAt": "2025-11-10T09:52:21.156Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "T35XF6GJ6F",
+      "status": "available",
+      "createdAt": "2025-11-10T09:52:21.156Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "RDN4T7K78Q",
+      "status": "available",
+      "createdAt": "2025-11-10T09:52:21.156Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "RUTLUSAZZV",
+      "status": "available",
+      "createdAt": "2025-11-10T09:52:21.156Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "Z8MER8KYCL",
+      "status": "available",
+      "createdAt": "2025-11-10T09:52:21.156Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "P7ALZ74RUH",
+      "status": "available",
+      "createdAt": "2025-11-10T09:52:21.156Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SGADAKZNH5",
+      "status": "available",
+      "createdAt": "2025-11-10T09:52:21.156Z",
+      "batch": "auto2024"
+    }
+  ],
+  "lastUpdated": "2025-11-10T09:52:21.158Z",
   "version": "1.0"
 }
