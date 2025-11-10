@@ -1,66 +1,66 @@
 {
   "codes": [
     {
-      "code": "8KG5T7DUHA",
+      "code": "LVOE123",
       "status": "available",
-      "createdAt": "2025-11-10T09:52:21.156Z",
-      "batch": "auto2024"
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "test"
     },
     {
-      "code": "ZDBZ34X8HF",
+      "code": "TEST456",
       "status": "available",
-      "createdAt": "2025-11-10T09:52:21.156Z",
-      "batch": "auto2024"
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "test"
     },
     {
-      "code": "A9GQBKMBPX",
+      "code": "SCL789",
       "status": "available",
-      "createdAt": "2025-11-10T09:52:21.156Z",
-      "batch": "auto2024"
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "test"
     },
     {
-      "code": "GFQQRD67WX",
+      "code": "DEMO001",
       "status": "available",
-      "createdAt": "2025-11-10T09:52:21.156Z",
-      "batch": "auto2024"
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "demo"
     },
     {
-      "code": "T35XF6GJ6F",
+      "code": "SAMPLE2024",
       "status": "available",
-      "createdAt": "2025-11-10T09:52:21.156Z",
-      "batch": "auto2024"
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "demo"
     },
     {
-      "code": "RDN4T7K78Q",
+      "code": "MENTAL123",
       "status": "available",
-      "createdAt": "2025-11-10T09:52:21.156Z",
-      "batch": "auto2024"
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "official"
     },
     {
-      "code": "RUTLUSAZZV",
+      "code": "HEALTH456",
       "status": "available",
-      "createdAt": "2025-11-10T09:52:21.156Z",
-      "batch": "auto2024"
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "official"
     },
     {
-      "code": "Z8MER8KYCL",
+      "code": "PSYCH789",
       "status": "available",
-      "createdAt": "2025-11-10T09:52:21.156Z",
-      "batch": "auto2024"
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "official"
     },
     {
-      "code": "P7ALZ74RUH",
+      "code": "WELCOME001",
       "status": "available",
-      "createdAt": "2025-11-10T09:52:21.156Z",
-      "batch": "auto2024"
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "welcome"
     },
     {
-      "code": "SGADAKZNH5",
+      "code": "GUEST002",
       "status": "available",
-      "createdAt": "2025-11-10T09:52:21.156Z",
-      "batch": "auto2024"
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "welcome"
     }
   ],
-  "lastUpdated": "2025-11-10T09:52:21.158Z",
+  "lastUpdated": "2024-12-10T00:00:00Z",
   "version": "1.0"
 }
