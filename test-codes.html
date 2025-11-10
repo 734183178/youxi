@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCL-90 兑换码管理工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-2xl font-bold mb-6">SCL-90 兑换码管理工具</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 添加兑换码 -->
+            <div class="border rounded-lg p-4">
+                <h2 class="text-xl font-semibold mb-4">添加测试兑换码</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">兑换码（每行一个）</label>
+                        <textarea
+                            id="codesInput"
+                            class="w-full p-2 border rounded h-32"
+                            placeholder="LVOE123&#10;TEST456&#10;SCL789"
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">批次名称</label>
+                        <input
+                            type="text"
+                            id="batchInput"
+                            class="w-full p-2 border rounded"
+                            value="test"
+                        />
+                    </div>
+                    <button
+                        onclick="addCodes()"
+                        class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                    >
+                        添加兑换码
+                    </button>
+                </div>
+            </div>
+
+            <!-- 生成兑换码 -->
+            <div class="border rounded-lg p-4">
+                <h2 class="text-xl font-semibold mb-4">批量生成兑换码</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">数量</label>
+                        <input
+                            type="number"
+                            id="quantityInput"
+                            class="w-full p-2 border rounded"
+                            value="10"
+                            min="1"
+                            max="100"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">前缀</label>
+                        <input
+                            type="text"
+                            id="prefixInput"
+                            class="w-full p-2 border rounded"
+                            value="TEST"
+                        />
+                    </div>
+                    <button
+                        onclick="generateCodes()"
+                        class="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+                    >
+                        生成兑换码
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果显示 -->
+        <div id="result" class="mt-6 p-4 border rounded-lg hidden">
+            <h3 class="font-semibold mb-2">结果：</h3>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // 生成唯一兑换码
+        function generateUniqueCode(prefix, index) {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).substring(2, 6);
+            return `${prefix}${timestamp}${random}`.toUpperCase();
+        }
+
+        // 生成兑换码
+        function generateCodes() {
+            const quantity = parseInt(document.getElementById('quantityInput').value);
+            const prefix = document.getElementById('prefixInput').value.toUpperCase();
+
+            const codes = [];
+            for (let i = 0; i < quantity; i++) {
+                codes.push(generateUniqueCode(prefix, i));
+            }
+
+            document.getElementById('codesInput').value = codes.join('\n');
+            showResult('success', `已生成 ${quantity} 个兑换码`);
+        }
+
+        // 添加兑换码
+        async function addCodes() {
+            const codesText = document.getElementById('codesInput').value.trim();
+            const batch = document.getElementById('batchInput').value.trim();
+
+            if (!codesText) {
+                showResult('error', '请输入兑换码');
+                return;
+            }
+
+            const codes = codesText.split('\n')
+                .map(code => code.trim())
+                .filter(code => code.length > 0);
+
+            if (codes.length === 0) {
+                showResult('error', '没有有效的兑换码');
+                return;
+            }
+
+            try {
+                // 注意：在实际使用时，需要设置正确的环境变量和认证
+                const response = await fetch('/api/add-codes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer your-admin-token-here' // 需要替换为实际的token
+                    },
+                    body: JSON.stringify({ codes, batch })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showResult('success', result.message);
+                    document.getElementById('codesInput').value = '';
+                } else {
+                    showResult('error', result.message);
+                }
+            } catch (error) {
+                showResult('error', '添加失败：' + error.message);
+            }
+        }
+
+        // 显示结果
+        function showResult(type, message) {
+            const resultDiv = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+
+            resultDiv.classList.remove('hidden');
+            resultContent.innerHTML = `
+                <div class="p-3 rounded ${
+                    type === 'success'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-700'
+                }">
+                    ${message}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

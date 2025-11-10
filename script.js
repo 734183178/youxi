@@ -192,33 +192,27 @@ const SCL90Assessment = () => {
     setCodeError('');
   };
 
-  // GitHub Issues 验证函数（简化版本 - 只验证，不修改）
-  const verifyGitHubIssue = async (code) => {
+  // Vercel KV 验证函数
+  const verifyVercelCode = async (code) => {
     try {
-      // 查找带有 available 标签的 open issues
-      const response = await fetch(
-        `https://api.github.com/repos/734183178/youxi/issues?state=open&labels=available`
-      );
+      // 调用 Vercel API 进行验证
+      const response = await fetch('/api/verify-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: code.trim() }),
+      });
 
       if (!response.ok) {
-        throw new Error('GitHub API 访问失败');
+        throw new Error('验证服务访问失败');
       }
 
-      const issues = await response.json();
-      const validIssue = issues.find(issue =>
-        issue.title.trim().toUpperCase() === code.trim().toUpperCase()
-      );
-
-      if (!validIssue) {
-        return { success: false, message: '兑换码不存在或已使用' };
-      }
-
-      // 简化版本：只验证存在，不修改状态
-      // TODO: 后续可以添加GitHub Token来实现完整功能
-      return { success: true, message: '验证成功', issueNumber: validIssue.number };
+      const result = await response.json();
+      return result;
 
     } catch (error) {
-      console.error('GitHub API Error:', error);
+      console.error('Vercel API Error:', error);
       return {
         success: false,
         message: '验证服务暂时不可用，请稍后重试'
@@ -237,7 +231,7 @@ const SCL90Assessment = () => {
     setCodeError('');
 
     try {
-      const result = await verifyGitHubIssue(exchangeCode.trim());
+      const result = await verifyVercelCode(exchangeCode.trim());
 
       if (result.success) {
         setShowCodeModal(false);
