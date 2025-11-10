@@ -59,8 +59,68 @@
       "status": "available",
       "createdAt": "2024-12-10T00:00:00Z",
       "batch": "welcome"
+    },
+    {
+      "code": "SCLMHSY12XKB379",
+      "status": "available",
+      "createdAt": "2025-11-10T09:32:00.152Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SCLMHSY12XKGTDU",
+      "status": "available",
+      "createdAt": "2025-11-10T09:32:00.152Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SCLMHSY12XK8D99",
+      "status": "available",
+      "createdAt": "2025-11-10T09:32:00.152Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SCLMHSY12XKKVO7",
+      "status": "available",
+      "createdAt": "2025-11-10T09:32:00.152Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SCLMHSY12XKK8G9",
+      "status": "available",
+      "createdAt": "2025-11-10T09:32:00.152Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SCLMHSY12XK3HE9",
+      "status": "available",
+      "createdAt": "2025-11-10T09:32:00.152Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SCLMHSY12XK0ITD",
+      "status": "available",
+      "createdAt": "2025-11-10T09:32:00.152Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SCLMHSY12XKLOPA",
+      "status": "available",
+      "createdAt": "2025-11-10T09:32:00.152Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SCLMHSY12XK0VB8",
+      "status": "available",
+      "createdAt": "2025-11-10T09:32:00.152Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SCLMHSY12XK7OOL",
+      "status": "available",
+      "createdAt": "2025-11-10T09:32:00.152Z",
+      "batch": "auto2024"
     }
   ],
-  "lastUpdated": "2024-12-10T00:00:00Z",
+  "lastUpdated": "2025-11-10T09:32:01.217Z",
   "version": "1.0"
 }
