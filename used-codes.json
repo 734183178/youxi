@@ -44,8 +44,14 @@
       "usedAt": "2025-11-10T10:06:39.695Z",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
       "ip": "test-local"
+    },
+    {
+      "code": "TEST406738",
+      "usedAt": "2025-11-10T10:10:06.738Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+      "ip": "test-local"
     }
   ],
-  "lastUpdated": "2025-11-10T10:06:42.875Z",
+  "lastUpdated": "2025-11-10T10:10:08.502Z",
   "version": "1.0"
 }
