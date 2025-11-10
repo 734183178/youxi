@@ -226,22 +226,56 @@ const SCL90Assessment = () => {
         usedCodesData = { usedCodes: [] };
       }
 
+      // 读取本地存储的已使用记录
+      let localUsedCodes = [];
+      try {
+        const stored = localStorage.getItem('usedCodes');
+        if (stored) {
+          localUsedCodes = JSON.parse(stored);
+        }
+      } catch (error) {
+        console.warn('无法读取本地存储:', error);
+      }
+
+      // 合并服务器和本地的已使用记录
+      const allUsedCodes = [
+        ...usedCodesData.usedCodes,
+        ...localUsedCodes
+      ];
+
       // 检查是否已经在已使用列表中
-      if (usedCodesData.usedCodes.includes(normalizedCode)) {
+      const isAlreadyUsed = allUsedCodes.some(usedRecord =>
+        usedRecord.code === normalizedCode
+      );
+
+      if (isAlreadyUsed) {
         return { success: false, message: '兑换码已使用' };
       }
 
-      // 添加到已使用列表（注意：这里只是在前端记录，实际使用时需要后端更新）
-      usedCodesData.usedCodes.push({
+      // 创建使用记录
+      const usageRecord = {
         code: normalizedCode,
         usedAt: new Date().toISOString(),
         ip: 'unknown', // 前端无法获取真实IP
         userAgent: navigator.userAgent
-      });
+      };
 
-      // 尝试更新本地存储
+      // 添加到服务器记录（注意：前端无法直接更新服务器文件）
+      usedCodesData.usedCodes.push(usageRecord);
+
+      // 更新本地存储
       try {
-        localStorage.setItem('usedCodes', JSON.stringify(usedCodesData.usedCodes));
+        let localUsedCodes = [];
+        const stored = localStorage.getItem('usedCodes');
+        if (stored) {
+          localUsedCodes = JSON.parse(stored);
+        }
+
+        // 避免重复添加
+        if (!localUsedCodes.some(record => record.code === normalizedCode)) {
+          localUsedCodes.push(usageRecord);
+          localStorage.setItem('usedCodes', JSON.stringify(localUsedCodes));
+        }
       } catch (error) {
         console.warn('无法保存到本地存储:', error);
       }
