@@ -1,5 +1,11 @@
 {
-  "usedCodes": [],
-  "lastUpdated": "2024-12-10T00:00:00Z",
+  "usedCodes": [
+    {
+      "code": "8KG5T7DUHA",
+      "usedAt": "2025-11-10T09:57:29.756Z",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+    }
+  ],
+  "lastUpdated": "2025-11-10T09:58:04.258Z",
   "version": "1.0"
 }
