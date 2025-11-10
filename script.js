@@ -192,27 +192,71 @@ const SCL90Assessment = () => {
     setCodeError('');
   };
 
-  // Vercel KV 验证函数
-  const verifyVercelCode = async (code) => {
+  // GitHub JSON文件验证函数
+  const verifyGitHubJson = async (code) => {
     try {
-      // 调用 Vercel API 进行验证
-      const response = await fetch('/api/verify-code', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ code: code.trim() }),
-      });
+      const normalizedCode = code.trim().toUpperCase();
 
-      if (!response.ok) {
-        throw new Error('验证服务访问失败');
+      // 读取兑换码列表
+      const codesResponse = await fetch('./codes.json?' + Date.now());
+      if (!codesResponse.ok) {
+        throw new Error('无法读取兑换码列表');
+      }
+      const codesData = await codesResponse.json();
+
+      // 查找兑换码
+      const codeInfo = codesData.codes.find(c =>
+        c.code.toUpperCase() === normalizedCode && c.status === 'available'
+      );
+
+      if (!codeInfo) {
+        return { success: false, message: '兑换码不存在或已使用' };
       }
 
-      const result = await response.json();
-      return result;
+      // 读取已使用记录
+      let usedCodesData;
+      try {
+        const usedResponse = await fetch('./used-codes.json?' + Date.now());
+        if (usedResponse.ok) {
+          usedCodesData = await usedResponse.json();
+        } else {
+          usedCodesData = { usedCodes: [] };
+        }
+      } catch (error) {
+        usedCodesData = { usedCodes: [] };
+      }
+
+      // 检查是否已经在已使用列表中
+      if (usedCodesData.usedCodes.includes(normalizedCode)) {
+        return { success: false, message: '兑换码已使用' };
+      }
+
+      // 添加到已使用列表（注意：这里只是在前端记录，实际使用时需要后端更新）
+      usedCodesData.usedCodes.push({
+        code: normalizedCode,
+        usedAt: new Date().toISOString(),
+        ip: 'unknown', // 前端无法获取真实IP
+        userAgent: navigator.userAgent
+      });
+
+      // 尝试更新本地存储
+      try {
+        localStorage.setItem('usedCodes', JSON.stringify(usedCodesData.usedCodes));
+      } catch (error) {
+        console.warn('无法保存到本地存储:', error);
+      }
+
+      return {
+        success: true,
+        message: '验证成功',
+        codeInfo: {
+          createdAt: codeInfo.createdAt,
+          batch: codeInfo.batch
+        }
+      };
 
     } catch (error) {
-      console.error('Vercel API Error:', error);
+      console.error('GitHub JSON Error:', error);
       return {
         success: false,
         message: '验证服务暂时不可用，请稍后重试'
@@ -231,7 +275,7 @@ const SCL90Assessment = () => {
     setCodeError('');
 
     try {
-      const result = await verifyVercelCode(exchangeCode.trim());
+      const result = await verifyGitHubJson(exchangeCode.trim());
 
       if (result.success) {
         setShowCodeModal(false);

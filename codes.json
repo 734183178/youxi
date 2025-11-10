@@ -1,0 +1,66 @@
+{
+  "codes": [
+    {
+      "code": "LVOE123",
+      "status": "available",
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "test"
+    },
+    {
+      "code": "TEST456",
+      "status": "available",
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "test"
+    },
+    {
+      "code": "SCL789",
+      "status": "available",
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "test"
+    },
+    {
+      "code": "DEMO001",
+      "status": "available",
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "demo"
+    },
+    {
+      "code": "SAMPLE2024",
+      "status": "available",
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "demo"
+    },
+    {
+      "code": "MENTAL123",
+      "status": "available",
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "official"
+    },
+    {
+      "code": "HEALTH456",
+      "status": "available",
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "official"
+    },
+    {
+      "code": "PSYCH789",
+      "status": "available",
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "official"
+    },
+    {
+      "code": "WELCOME001",
+      "status": "available",
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "welcome"
+    },
+    {
+      "code": "GUEST002",
+      "status": "available",
+      "createdAt": "2024-12-10T00:00:00Z",
+      "batch": "welcome"
+    }
+  ],
+  "lastUpdated": "2024-12-10T00:00:00Z",
+  "version": "1.0"
+}
