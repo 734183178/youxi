@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百福飘香 - 温柔祝福</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blessing {
+            position: absolute;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            opacity: 0.85;
+            user-select: none;
+            animation: gentleFloat 8s infinite ease-in-out;
+        }
+
+        .blessing:hover {
+            opacity: 1;
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        .blessing.size-xs { font-size: 12px; }
+        .blessing.size-sm { font-size: 14px; }
+        .blessing.size-md { font-size: 18px; }
+        .blessing.size-lg { font-size: 24px; }
+        .blessing.size-xl { font-size: 32px; }
+
+        .blessing.color-1 { color: #6b73ff; }
+        .blessing.color-2 { color: #9c88ff; }
+        .blessing.color-3 { color: #ffecd2; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .blessing.color-4 { color: #fcb69f; }
+        .blessing.color-5 { color: #a8edea; }
+        .blessing.color-6 { color: #fed6e3; }
+        .blessing.color-7 { color: #d299c2; }
+        .blessing.color-8 { color: #ffd89b; }
+        .blessing.color-9 { color: #19547b; }
+        .blessing.color-10 { color: #667eea; }
+
+        .blessing.rotate-1 { transform: rotate(-5deg); }
+        .blessing.rotate-2 { transform: rotate(8deg); }
+        .blessing.rotate-3 { transform: rotate(-12deg); }
+        .blessing.rotate-4 { transform: rotate(15deg); }
+        .blessing.rotate-5 { transform: rotate(-8deg); }
+        .blessing.rotate-6 { transform: rotate(10deg); }
+
+        .title {
+            position: fixed;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            font-weight: 200;
+            color: #4a5568;
+            text-align: center;
+            z-index: 100;
+            opacity: 0.9;
+            letter-spacing: 1px;
+            line-height: 1.4;
+        }
+
+        .floating-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #fff 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 0.6; }
+            90% { opacity: 0.3; }
+        }
+
+        @keyframes gentleFloat {
+            0% { transform: translateX(0) translateY(0) rotate(0deg); }
+            25% { transform: translateX(10px) translateY(-8px) rotate(1deg); }
+            50% { transform: translateX(-5px) translateY(12px) rotate(-1deg); }
+            75% { transform: translateX(8px) translateY(-5px) rotate(0.5deg); }
+            100% { transform: translateX(0) translateY(0) rotate(0deg); }
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 30px;
+            right: 50px;
+            font-size: 14px;
+            color: #a0aec0;
+            opacity: 0.7;
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 18px; top: 20px; }
+            .blessing.size-xl { font-size: 24px; }
+            .blessing.size-lg { font-size: 18px; }
+            .blessing.size-md { font-size: 14px; }
+            .footer { right: 20px; bottom: 20px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles"></div>
+    
+    <div class="title">
+        其实把每个今天过好<br>就是很好的一生
+    </div>
+
+    <div class="container" id="blessings-container">
+        <!-- 祝福语将通过JavaScript动态生成 -->
+    </div>
+
+    <div class="footer">
+        温柔祝福，愿君安好
+    </div>
+
+    <script>
+        const blessings = [
+            "岁岁常欢愉，万事皆胜意", "凡所有相，皆是虚妄", "既见君子，云胡不喜", "让心中无事，如清水长流",
+            "花开半夏，如诗如画", "各自努力，顶峰相见", "人间忽晚，山河已秋", "以梦为马，不负韶华",
+            "心有猛虎，细嗅蔷薇", "世人万千，再难遇我", "坠欢莫拾，酒痕在衣", "不辞青山，相随与共",
+            "一别两宽，各生欢喜", "你是沿途，有青山举杯", "平生若浮萍，漂泊无所定", "心有山海，静而无边",
+            "花店不开了，花继续开", "白日春不渡，黑夜万梦星", "祝眉目舒展，顺问冬安", "今晚月色真美，风也温柔",
+            "不念过往，不畏将来", "偷得浮生半日闲", "慧极必伤，情深不寿", "岁月失语，惟石能言",
+            "一个人，必须有太阳", "不求不妄，苦乐自当", "夕阳已去，皎月方来", "得之我幸，失之我命",
+            "高山仰止，景行行止", "南风知我意，吹梦到西洲", "青青子衿，悠悠我心", "清明有力，温柔慈悲",
+            "玻璃晴朗，橘子辉煌", "蕙风如薰，甘露如醴", "念念不忘，必有回响", "闺中风暖，陌上草薰",
+            "雾失楼台，月迷津渡", "灯与河川，二月人间", "日子平淡，好在我喜欢", "花看半开，酒饮微醺",
+            "寒来暑往，秋收冬藏", "南风未起，念你成疾", "山中无甲子，世事都如烟", "迷途漫漫，终有一归",
+            "温一壶月光烫酒", "今天的风啊，甚是喧嚣", "人间枝头，各自乘流", "心中有丘壑，眉目作山河",
+            "家人闲坐，灯火可亲", "凛冬散尽，星河长明", "静思往事，如在目底", "凡是过往，皆为序章",
+            "如鱼饮水，冷暖自知", "双木非林，田下有心", "温柔半两，从容一生", "你如约而至，我美梦成真",
+            "吹灭读书灯，一身都是月", "盈月光饮，载风雪归", "掬水月在手，弄花香满衣", "春有百花秋有月",
+            "愿", "安好", "如意", "喜乐", "温柔", "静好", "清欢", "自在", "随心", "无恙",
+            "山高水长，愿君安康", "细水长流，岁月静好", "愿所有美好如约而至", "愿你永远年轻永远热泪盈眶",
+            "愿你走出半生，归来仍是少年", "愿时光不老，友谊不散", "愿你三冬暖，愿你春不寒",
+            "愿有人陪你颠沛流离", "愿你眼中总有光芒", "愿你永远善良勇敢", "愿岁月可回首，且以深情共白头",
+            "星河滚烫，你是人间理想", "生活明朗，万物可爱", "你是人间四月天", "半山腰太拥挤了，要去山顶看看",
+            "愿你如阳光，明媚不忧伤", "愿你被这个世界温柔以待", "愿你历尽千帆，归来仍是少年",
+            "愿你三九严寒，有人为你驱除寒冷", "愿你前程似锦，未来可期", "愿你所得皆所愿",
+            "愿你心中有丘壑，眉目作山河", "愿你一生努力，一生被爱", "愿你想要的都拥有，得不到的都释怀",
+            "愿你永远年轻，永远热泪盈眶", "愿你眼里有星辰，心中有山海", "愿你此生明朗，赤诚善良",
+            "愿你生活常温暖，日子总是温柔又闪光", "愿你永远善良，清澈明朗", "愿你一世无忧，一生平安",
+            "愿你眼中有山有海，心中有花有树", "愿你的生活常温暖，日子总是温柔又闪光"
+        ];
+
+        function getRandomPosition() {
+            const container = document.getElementById('blessings-container');
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            
+            return {
+                x: Math.random() * (containerWidth - 200),
+                y: 120 + Math.random() * (containerHeight - 200)
+            };
+        }
+
+        function getRandomSize() {
+            const sizes = ['xs', 'sm', 'md', 'lg', 'xl'];
+            const weights = [0.15, 0.25, 0.3, 0.2, 0.1];
+            const random = Math.random();
+            let cumWeight = 0;
+            
+            for (let i = 0; i < sizes.length; i++) {
+                cumWeight += weights[i];
+                if (random <= cumWeight) {
+                    return sizes[i];
+                }
+            }
+            return 'md';
+        }
+
+        function getRandomColor() {
+            return Math.floor(Math.random() * 10) + 1;
+        }
+
+        function getRandomRotation() {
+            const rotations = ['', 'rotate-1', 'rotate-2', 'rotate-3', 'rotate-4', 'rotate-5', 'rotate-6'];
+            return rotations[Math.floor(Math.random() * rotations.length)];
+        }
+
+        function createBlessings() {
+            const container = document.getElementById('blessings-container');
+            const positions = new Set();
+            
+            blessings.forEach((blessing, index) => {
+                const element = document.createElement('div');
+                element.className = 'blessing';
+                element.textContent = blessing;
+                
+                let position;
+                let attempts = 0;
+                do {
+                    position = getRandomPosition();
+                    attempts++;
+                } while (positions.has(`${Math.floor(position.x/50)}-${Math.floor(position.y/30)}`) && attempts < 10);
+                
+                positions.add(`${Math.floor(position.x/50)}-${Math.floor(position.y/30)}`);
+                
+                element.style.left = position.x + 'px';
+                element.style.top = position.y + 'px';
+                
+                element.classList.add(`size-${getRandomSize()}`);
+                element.classList.add(`color-${getRandomColor()}`);
+                
+                const rotation = getRandomRotation();
+                if (rotation) {
+                    element.classList.add(rotation);
+                }
+                
+                element.style.animationDelay = (Math.random() * 8) + 's';
+                element.style.animationDuration = (6 + Math.random() * 4) + 's';
+                
+                container.appendChild(element);
+            });
+        }
+
+        function createFloatingParticles() {
+            const particlesContainer = document.querySelector('.floating-particles');
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (4 + Math.random() * 8) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function handleResize() {
+            const container = document.getElementById('blessings-container');
+            container.innerHTML = '';
+            createBlessings();
+        }
+
+        // 初始化
+        window.addEventListener('load', () => {
+            createBlessings();
+            createFloatingParticles();
+        });
+
+        window.addEventListener('resize', handleResize);
+
+        // 点击效果
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('blessing')) {
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.left = (e.clientX - 20) + 'px';
+                ripple.style.top = (e.clientY - 20) + 'px';
+                ripple.style.width = '40px';
+                ripple.style.height = '40px';
+                ripple.style.pointerEvents = 'none';
+                
+                document.body.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            }
+        });
+
+        // 添加涟漪动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
