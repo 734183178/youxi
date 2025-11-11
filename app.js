@@ -180,10 +180,22 @@ const SCL90Assessment = () => {
     }
   });
 
-  const handleStartTest = () => {
-    setCurrentPage('test');
-    setCurrentQuestion(0);
-    setAnswers({});
+const handleStartTest = () => {
+    // 检查是否有兑换码验证器
+    if (window.exchangeCodeVerifier) {
+      window.exchangeCodeVerifier.showCodeModal((success) => {
+        if (success) {
+          setCurrentPage('test');
+          setCurrentQuestion(0);
+          setAnswers({});
+        }
+      });
+    } else {
+      // 如果没有兑换码验证器，直接开始测试
+      setCurrentPage('test');
+      setCurrentQuestion(0);
+      setAnswers({});
+    }
   };
 
   const handleAnswer = (value) => {
