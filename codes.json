@@ -59,68 +59,8 @@
       "status": "available",
       "createdAt": "2024-12-10T00:00:00Z",
       "batch": "welcome"
-    },
-    {
-      "code": "JZMHLEVZQA",
-      "status": "available",
-      "createdAt": "2025-11-10T10:04:50.203Z",
-      "batch": "auto2024"
-    },
-    {
-      "code": "9CRT87PZBT",
-      "status": "available",
-      "createdAt": "2025-11-10T10:04:50.203Z",
-      "batch": "auto2024"
-    },
-    {
-      "code": "2GHQDDA9KC",
-      "status": "available",
-      "createdAt": "2025-11-10T10:04:50.203Z",
-      "batch": "auto2024"
-    },
-    {
-      "code": "ZQVKVDDRES",
-      "status": "available",
-      "createdAt": "2025-11-10T10:04:50.203Z",
-      "batch": "auto2024"
-    },
-    {
-      "code": "QFGUTZGVPW",
-      "status": "available",
-      "createdAt": "2025-11-10T10:04:50.203Z",
-      "batch": "auto2024"
-    },
-    {
-      "code": "F6PWPTD58J",
-      "status": "available",
-      "createdAt": "2025-11-10T10:04:50.203Z",
-      "batch": "auto2024"
-    },
-    {
-      "code": "XBR3KWFSGJ",
-      "status": "available",
-      "createdAt": "2025-11-10T10:04:50.203Z",
-      "batch": "auto2024"
-    },
-    {
-      "code": "CLKAZE2DU8",
-      "status": "available",
-      "createdAt": "2025-11-10T10:04:50.203Z",
-      "batch": "auto2024"
-    },
-    {
-      "code": "SAP7TM7Q6N",
-      "status": "available",
-      "createdAt": "2025-11-10T10:04:50.203Z",
-      "batch": "auto2024"
-    },
-    {
-      "code": "24T9KUJVQL",
-      "status": "available",
-      "createdAt": "2025-11-10T10:04:50.203Z",
-      "batch": "auto2024"
     }
   ],
-  "lastUpdated": "2025-11-10T10:04:50.204Z",
+  "lastUpdated": "2024-12-10T00:00:00Z",
   "version": "1.0"
 }
