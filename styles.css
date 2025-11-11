@@ -1,0 +1,27 @@
+/* SCL-90症状自评量表 - 从原始文件中提取的CSS样式 */
+
+/* 自定义滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* 移动端优化 */
+@media (max-width: 640px) {
+    .mobile-text-sm { font-size: 0.875rem; }
+    .mobile-text-base { font-size: 1rem; }
+    .mobile-text-lg { font-size: 1.125rem; }
+    .mobile-text-xl { font-size: 1.25rem; }
+    .mobile-text-2xl { font-size: 1.5rem; }
+    .mobile-text-3xl { font-size: 1.875rem; }
+}
