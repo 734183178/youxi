@@ -59,8 +59,68 @@
       "status": "available",
       "createdAt": "2024-12-10T00:00:00Z",
       "batch": "welcome"
+    },
+    {
+      "code": "4MGCXCTRVG",
+      "status": "available",
+      "createdAt": "2025-11-11T02:51:28.478Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SDUVRXCA6X",
+      "status": "available",
+      "createdAt": "2025-11-11T02:51:28.479Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "8YFVJBKTCA",
+      "status": "available",
+      "createdAt": "2025-11-11T02:51:28.479Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "X5BBKNMHCL",
+      "status": "available",
+      "createdAt": "2025-11-11T02:51:28.479Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "SJLDVHYF68",
+      "status": "available",
+      "createdAt": "2025-11-11T02:51:28.479Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "ETTTEUGHCP",
+      "status": "available",
+      "createdAt": "2025-11-11T02:51:28.479Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "EJZ6FJPL8R",
+      "status": "available",
+      "createdAt": "2025-11-11T02:51:28.479Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "NCF7XRAY3F",
+      "status": "available",
+      "createdAt": "2025-11-11T02:51:28.479Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "ZSYTF9NFPS",
+      "status": "available",
+      "createdAt": "2025-11-11T02:51:28.479Z",
+      "batch": "auto2024"
+    },
+    {
+      "code": "QDA6BYWDRK",
+      "status": "available",
+      "createdAt": "2025-11-11T02:51:28.479Z",
+      "batch": "auto2024"
     }
   ],
-  "lastUpdated": "2024-12-10T00:00:00Z",
+  "lastUpdated": "2025-11-11T02:51:28.480Z",
   "version": "1.0"
 }
