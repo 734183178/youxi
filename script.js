@@ -5,9 +5,8 @@ const SCL90Assessment = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const chartRef = useRef(null);
-  const [showStartModal, setShowStartModal] = useState(false);
   const [showRedeemModal, setShowRedeemModal] = useState(false);
-
+  
   // SCL-90题目数据
   const questions = [
     { id: 1, text: "头痛", factor: "躯体化" },
@@ -183,41 +182,20 @@ const SCL90Assessment = () => {
   });
 
   const handleStartTest = () => {
-    setShowStartModal(true);
+    setShowRedeemModal(true);
   };
 
-  const handleConfirmStart = () => {
-    setShowStartModal(false);
+  const handleRedeemSuccess = (redeemData) => {
+    console.log('兑换码验证成功:', redeemData);
+    setShowRedeemModal(false);
+    // 开始测试
     setCurrentPage('test');
     setCurrentQuestion(0);
     setAnswers({});
   };
 
-  const handleCancelStart = () => {
-    setShowStartModal(false);
-  };
-
-  const handleShowRedeemModal = () => {
-    setShowStartModal(false);
-    setShowRedeemModal(true);
-  };
-
   const handleCloseRedeemModal = () => {
     setShowRedeemModal(false);
-  };
-
-  const handleRedeemConfirm = (redeemCode, issueData) => {
-    console.log('兑换码验证成功:', redeemCode, issueData);
-    setShowRedeemModal(false);
-
-    // 验证成功后的处理
-    alert(`兑换码验证成功！\n兑换码：${redeemCode}\nIssue #${issueData.number}\n标题：${issueData.title}`);
-
-    // 可以设置专业版状态
-    // setIsProVersion(true);
-
-    // 开始测试
-    handleConfirmStart();
   };
 
   const handleAnswer = (value) => {
@@ -708,16 +686,10 @@ const SCL90Assessment = () => {
   return (
     <>
       {renderContent()}
-      <StartTestModal
-        isOpen={showStartModal}
-        onClose={handleCancelStart}
-        onConfirm={handleConfirmStart}
-        onShowRedeemModal={handleShowRedeemModal}
-      />
-      <RedeemCodeModal
+      <RedeemModal
         isOpen={showRedeemModal}
         onClose={handleCloseRedeemModal}
-        onConfirm={handleRedeemConfirm}
+        onConfirm={handleRedeemSuccess}
       />
     </>
   );
