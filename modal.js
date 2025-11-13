@@ -50,16 +50,75 @@ const StartTestModal = ({ isOpen, onClose, onConfirm, onShowRedeemModal }) => {
   );
 };
 
-// 弹窗2：兑换码输入弹窗 - 按照详细需求创建
+// GitHub Issues API 验证函数
+const verifyRedeemCode = async (code) => {
+  try {
+    // 使用您提供的GitHub仓库信息
+    const repoOwner = '734183178'; // GitHub用户名
+    const repoName = 'youxi';          // 仓库名
+
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/issues?state=open&per_page=100`, {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'SCL90-Redeem-System'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('GitHub API请求失败');
+    }
+
+    const issues = await response.json();
+
+    // 查找匹配的issue标题和可用状态
+    const matchingIssue = issues.find(issue =>
+      issue.title === code &&
+      issue.state === 'open' &&
+      (issue.labels || []).some(label => label.name.toLowerCase() === 'available')
+    );
+
+    return matchingIssue;
+
+  } catch (error) {
+    console.error('验证兑换码时出错:', error);
+    return null;
+  }
+};
+
+// 弹窗2：兑换码输入弹窗 - 添加GitHub验证
 const RedeemCodeModal = ({ isOpen, onClose, onConfirm }) => {
   const [redeemCode, setRedeemCode] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
-    if (redeemCode.trim()) {
-      onConfirm(redeemCode.trim());
-      setRedeemCode('');
+  const handleSubmit = async () => {
+    const trimmedCode = redeemCode.trim();
+    if (!trimmedCode) {
+      setError('请输入兑换码');
+      return;
+    }
+
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const matchingIssue = await verifyRedeemCode(trimmedCode);
+
+      if (matchingIssue) {
+        // 验证成功
+        setIsLoading(false);
+        setRedeemCode('');
+        onConfirm(trimmedCode, matchingIssue);
+      } else {
+        // 验证失败
+        setError('兑换码不存在，请检查后重新输入');
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setError('验证失败，请稍后重试');
+      setIsLoading(false);
     }
   };
 
@@ -67,6 +126,11 @@ const RedeemCodeModal = ({ isOpen, onClose, onConfirm }) => {
     if (e.key === 'Enter') {
       handleSubmit();
     }
+  };
+
+  const handleInputChange = (e) => {
+    setRedeemCode(e.target.value);
+    if (error) setError(''); // 清除错误信息
   };
 
   return (
@@ -86,13 +150,21 @@ const RedeemCodeModal = ({ isOpen, onClose, onConfirm }) => {
         {/* 兑换码输入框 - 红色边框 */}
         <input
           type="text"
-          className="redeem-input"
+          className={`redeem-input ${error ? 'error' : ''}`}
           placeholder="请输入兑换码"
           value={redeemCode}
-          onChange={(e) => setRedeemCode(e.target.value)}
+          onChange={handleInputChange}
           onKeyPress={handleKeyPress}
           maxLength={50}
+          disabled={isLoading}
         />
+
+        {/* 错误提示 */}
+        {error && (
+          <div className="error-message">
+            ⚠️ {error}
+          </div>
+        )}
 
         {/* 平台获取区域 */}
         <div className="platform-redeem-section">
@@ -114,6 +186,7 @@ const RedeemCodeModal = ({ isOpen, onClose, onConfirm }) => {
             // 打开小红书链接
             window.open('https://www.xiaohongshu.com', '_blank');
           }}
+          disabled={isLoading}
         >
           <div className="xiaohongshu-redeem-logo">
             {/* 小红书logo - 红色方块带白色文字 */}
@@ -125,13 +198,20 @@ const RedeemCodeModal = ({ isOpen, onClose, onConfirm }) => {
           <span className="btn-redeem-text">小红书获取</span>
         </button>
 
-        {/* 下一步按钮 - 粉色背景 */}
+        {/* 下一步按钮 - 带加载状态 */}
         <button
-          className="next-step-btn"
+          className={`next-step-btn ${isLoading ? 'loading' : ''}`}
           onClick={handleSubmit}
-          disabled={!redeemCode.trim()}
+          disabled={!redeemCode.trim() || isLoading}
         >
-          下一步
+          {isLoading ? (
+            <>
+              <span className="loading-spinner"></span>
+              验证中...
+            </>
+          ) : (
+            '下一步'
+          )}
         </button>
       </div>
     </div>

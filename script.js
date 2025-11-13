@@ -206,21 +206,18 @@ const SCL90Assessment = () => {
     setShowRedeemModal(false);
   };
 
-  const handleRedeemConfirm = (redeemCode) => {
-    console.log('兑换码:', redeemCode);
+  const handleRedeemConfirm = (redeemCode, issueData) => {
+    console.log('兑换码验证成功:', redeemCode, issueData);
     setShowRedeemModal(false);
 
-    // 这里可以添加兑换码验证逻辑
-    // 示例：验证成功后的处理
-    if (redeemCode.toUpperCase() === 'DEMO123') {
-      alert('兑换码验证成功！专业版功能已激活。');
-      // 可以设置专业版状态
-      // setIsProVersion(true);
-    } else {
-      alert('兑换码无效，请检查后重试。');
-      // 可以选择重新显示弹窗
-      // setShowRedeemModal(true);
-    }
+    // 验证成功后的处理
+    alert(`兑换码验证成功！\n兑换码：${redeemCode}\nIssue #${issueData.number}\n标题：${issueData.title}`);
+
+    // 可以设置专业版状态
+    // setIsProVersion(true);
+
+    // 开始测试
+    handleConfirmStart();
   };
 
   const handleAnswer = (value) => {

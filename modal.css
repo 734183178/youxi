@@ -321,6 +321,32 @@
   color: #CCCCCC; /* 浅灰色提示文字 */
 }
 
+/* 输入框错误状态 */
+.redeem-input.error {
+  border-color: #EF4444; /* 红色边框 */
+  background: #FEF2F2; /* 浅红色背景 */
+}
+
+/* 错误提示消息 */
+.error-message {
+  background: #FEE2E2;
+  border: 1px solid #FECACA;
+  color: #DC2626;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  text-align: center;
+  animation: shake 0.5s ease-in-out;
+}
+
+/* 错误提示动画 */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
 /* 平台获取区域 */
 .platform-redeem-section {
   display: flex;
@@ -435,6 +461,30 @@
 
 .next-step-btn:active {
   transform: scale(0.98);
+}
+
+/* 加载状态样式 */
+.next-step-btn.loading {
+  background: #9CA3AF; /* 灰色背景，表示加载中 */
+  cursor: not-allowed;
+  position: relative;
+}
+
+/* 加载动画旋转器 */
+.loading-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* 响应式适配 */
