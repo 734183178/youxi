@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>调试测试 - 兑换码验证</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .status { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>兑换码验证调试测试</h1>
+    <div id="status"></div>
+
+    <!-- 引用兑换码验证文件 -->
+    <script src="exchange-code-simple.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusDiv = document.getElementById('status');
+            let statusHTML = '';
+
+            // 检查1: 兑换码验证器是否加载
+            if (typeof window.exchangeCodeVerifier !== 'undefined') {
+                statusHTML += '<div class="success">✅ 兑换码验证器已加载</div>';
+
+                // 检查2: API地址
+                statusHTML += '<div class="info">📡 API地址: ' + window.exchangeCodeVerifier.apiBaseUrl + '</div>';
+
+                // 检查3: 方法是否存在
+                if (typeof window.exchangeCodeVerifier.showCodeModal === 'function') {
+                    statusHTML += '<div class="success">✅ showCodeModal方法存在</div>';
+                } else {
+                    statusHTML += '<div class="error">❌ showCodeModal方法不存在</div>';
+                }
+
+                // 检查4: 测试连接
+                window.exchangeCodeVerifier.checkConnection().then(isOnline => {
+                    if (isOnline) {
+                        statusHTML += '<div class="success">✅ 服务器连接正常</div>';
+                    } else {
+                        statusHTML += '<div class="error">❌ 服务器连接失败</div>';
+                    }
+                    statusDiv.innerHTML = statusHTML;
+                });
+
+            } else {
+                statusHTML += '<div class="error">❌ 兑换码验证器未加载</div>';
+                statusDiv.innerHTML = statusHTML;
+            }
+
+            // 添加测试按钮
+            setTimeout(() => {
+                statusHTML += '<button onclick="testModal()" style="margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">测试兑换码弹窗</button>';
+                statusDiv.innerHTML = statusHTML;
+            }, 2000);
+        });
+
+        function testModal() {
+            if (window.exchangeCodeVerifier) {
+                window.exchangeCodeVerifier.showCodeModal((success) => {
+                    alert('兑换码验证结果: ' + (success ? '成功' : '失败'));
+                });
+            } else {
+                alert('兑换码验证器未加载');
+            }
+        }
+    </script>
+</body>
+</html>

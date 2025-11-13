@@ -25,7 +25,6 @@
     <div id="root"></div>
 
     <!-- 引用外部JavaScript文件 -->
-    <script src="exchange-code-simple.js"></script>
-    <script type="text/babel" src="app.js"></script>
+<script src="exchange-code-simple.js"></script>    <script>        document.addEventListener("DOMContentLoaded", function() {            setTimeout(function() {                const script = document.createElement("script");                script.type = "text/babel";                script.src = "app.js";                document.body.appendChild(script);            }, 200);        });    </script>
 </body>
 </html>
