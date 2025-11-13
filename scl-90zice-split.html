@@ -25,6 +25,18 @@
     <div id="root"></div>
 
     <!-- 引用外部JavaScript文件 -->
-<script src="exchange-code-simple.js"></script>    <script>        document.addEventListener("DOMContentLoaded", function() {            setTimeout(function() {                const script = document.createElement("script");                script.type = "text/babel";                script.src = "app.js";                document.body.appendChild(script);            }, 200);        });    </script>
+    <script src="exchange-code-simple.js"></script>
+
+    <script>
+        // 确保兑换码验证器完全加载后再初始化React
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const script = document.createElement("script");
+                script.type = "text/babel";
+                script.src = "app.js";
+                document.body.appendChild(script);
+            }, 200);
+        });
+    </script>
 </body>
 </html>
