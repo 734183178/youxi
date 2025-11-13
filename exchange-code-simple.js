@@ -4,7 +4,12 @@
 class ExchangeCodeVerifier {
     constructor() {
         // 本地API地址 - 根据实际情况调整
-        this.apiBaseUrl = window.location.origin;
+        this.apiBaseUrl = 'http://101.132.176.113:3000';
+
+        // 如果是本地访问，使用本地地址
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            this.apiBaseUrl = 'http://101.132.176.113:3000';
+        }
     }
 
     // 显示兑换码输入弹窗（用户界面）
@@ -85,7 +90,7 @@ class ExchangeCodeVerifier {
         errorDiv.classList.add('hidden');
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/verify-code`, {
+            const response = await fetch(`${this.apiBaseUrl}/api/codes/verify`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
