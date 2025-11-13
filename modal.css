@@ -1,0 +1,390 @@
+/* 弹窗遮罩层 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+/* 弹窗容器 */
+.modal-container {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  position: relative;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+/* 弹窗动画 */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 图标区域 */
+.modal-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.modal-icon svg {
+  filter: drop-shadow(0 4px 6px rgba(255, 152, 0, 0.2));
+}
+
+/* 标题样式 */
+.modal-title {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 24px;
+  color: #1f2937;
+}
+
+/* 内容区域 */
+.modal-content {
+  color: #374151;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* 内容段落 */
+.modal-section {
+  margin-bottom: 20px;
+}
+
+.modal-section:last-child {
+  margin-bottom: 16px;
+}
+
+/* 小标题 */
+.modal-section-title {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+/* 列表样式 */
+.modal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-list li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 8px;
+  color: #4b5563;
+}
+
+.modal-list li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #ff9800;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* 特别提示 */
+.modal-notice {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  padding: 12px;
+  color: #92400e;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* 按钮区域 */
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* 按钮样式 */
+.modal-btn {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-btn:active {
+  transform: scale(0.98);
+}
+
+/* 取消按钮 */
+.modal-btn-cancel {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.modal-btn-cancel:hover {
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
+/* 确认按钮 */
+.modal-btn-confirm {
+  background: #10b981;
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+}
+
+.modal-btn-confirm:hover {
+  background: #059669;
+  box-shadow: 0 6px 8px -1px rgba(16, 185, 129, 0.4);
+}
+
+.modal-btn-confirm:active {
+  box-shadow: 0 2px 4px -1px rgba(16, 185, 129, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .modal-container {
+    margin: 16px;
+    padding: 24px 20px;
+    max-width: calc(100% - 32px);
+  }
+
+  .modal-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .modal-content {
+    font-size: 13px;
+  }
+
+  .modal-section-title {
+    font-size: 14px;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+  }
+
+  .modal-btn {
+    width: 100%;
+    padding: 14px 24px;
+  }
+}
+
+/* 滚动条样式 */
+.modal-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.modal-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 兑换码按钮样式 */
+.modal-btn-redeem {
+  background: #6366f1;
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+}
+
+.modal-btn-redeem:hover {
+  background: #4f46e5;
+  box-shadow: 0 6px 8px -1px rgba(99, 102, 241, 0.4);
+}
+
+.modal-btn-redeem:active {
+  box-shadow: 0 2px 4px -1px rgba(99, 102, 241, 0.3);
+}
+
+/* 兑换码弹窗容器 */
+.redeem-modal-container {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: redeemModalSlideIn 0.3s ease-out;
+}
+
+/* 兑换码弹窗动画 */
+@keyframes redeemModalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 关闭按钮 */
+.redeem-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.redeem-close-btn:hover {
+  background: #f3f4f6;
+}
+
+.redeem-close-btn:active {
+  background: #e5e7eb;
+  transform: scale(0.95);
+}
+
+/* 兑换码弹窗标题 */
+.redeem-title {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 8px;
+  color: #1f2937;
+}
+
+/* 兑换码弹窗副标题 */
+.redeem-subtitle {
+  font-size: 14px;
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* 输入框组 */
+.redeem-input-group {
+  margin-bottom: 24px;
+}
+
+/* 兑换码输入框 */
+.redeem-input {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  background: white;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.redeem-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.redeem-input::placeholder {
+  color: #9ca3af;
+}
+
+/* 验证按钮 */
+.redeem-submit-btn {
+  width: 100%;
+  padding: 16px;
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+}
+
+.redeem-submit-btn:hover:not(:disabled) {
+  background: #4f46e5;
+  box-shadow: 0 6px 8px -1px rgba(99, 102, 241, 0.4);
+}
+
+.redeem-submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px -1px rgba(99, 102, 241, 0.3);
+}
+
+.redeem-submit-btn:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+  .redeem-modal-container {
+    margin: 16px;
+    padding: 24px 20px;
+    max-width: calc(100% - 32px);
+  }
+
+  .redeem-title {
+    font-size: 20px;
+  }
+
+  .redeem-subtitle {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .redeem-input {
+    padding: 14px;
+    font-size: 16px; /* 防止iOS缩放 */
+  }
+
+  .redeem-submit-btn {
+    padding: 14px;
+    font-size: 16px;
+  }
+}
