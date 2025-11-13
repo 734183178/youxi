@@ -12,183 +12,230 @@
   z-index: 9999;
 }
 
-/* 弹窗1：需要兑换码弹窗容器 - 固定浅粉色背景 */
+/* 弹窗1：需要兑换码弹窗容器 - 美观设计，尺寸450*200 */
 .redeem-required-modal {
-  background: #FFF5F5; /* 固定浅粉色背景 */
-  border-radius: 12px;
-  padding: 20px;
-  width: 320px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* 渐变背景 */
+  border-radius: 16px;
+  padding: 24px;
+  width: 450px;
+  height: 200px;
   max-width: 90vw;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-/* 标题区域 */
-.modal-header {
+  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
   display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-/* 黄色钥匙图标 */
-.title-icon {
-  margin-right: 8px;
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 添加装饰性背景元素 */
+.redeem-required-modal::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 /* 标题文字 */
 .modal-title {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333333;
-  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 12px 0;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 说明文字区域 */
 .modal-description {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  font-size: 14px;
-  color: #666666;
-  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 8px 0;
   line-height: 1.5;
+  text-align: center;
 }
 
-/* 平台选择区域 */
-.platform-section {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-/* 蓝色钻石图标 */
-.platform-icon {
-  margin-right: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* 平台选择文字 */
-.platform-text {
+/* 小标题 */
+.modal-subtitle {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   font-size: 14px;
-  color: #666666;
-  margin: 0;
-  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 20px 0;
+  text-align: center;
+  font-weight: 500;
 }
 
-/* 按钮区域 */
+/* 按钮区域 - 并排布局 */
 .modal-buttons {
   display: flex;
-  flex-direction: column;
   gap: 12px;
-  margin-bottom: 16px;
-}
-
-/* 小红书获取按钮 */
-.xiaohongshu-btn {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background: white;
-  border: 1px solid #EEEEEE;
-  border-radius: 6px;
-  height: 36px;
-  padding: 0 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.xiaohongshu-btn:hover {
-  background: #F8F8F8;
-  border-color: #E0E0E0;
-}
-
-/* 小红书logo容器 */
-.xiaohongshu-logo {
-  margin-right: 8px;
-  display: flex;
-  align-items: center;
-}
-
-.logo-container {
-  position: relative;
-  width: 24px;
-  height: 20px;
-  display: flex;
-  align-items: center;
   justify-content: center;
-}
-
-/* 小红书logo背景 - 红色方块 */
-.logo-background {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background: #FF2442;
-  border-radius: 3px;
-}
-
-/* 小红书logo文字 */
-.logo-text {
+  align-items: center;
   position: relative;
-  color: white;
-  font-size: 9px;
-  font-weight: 600;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   z-index: 1;
 }
 
-/* 小红书按钮文字 */
-.btn-text {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  font-size: 14px;
-  color: #333333;
+/* 小红书店铺获取按钮 - 美观设计 */
+.xiaohongshu-shop-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  height: 42px;
+  padding: 0 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 180px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
-/* 输入兑换码按钮 - 红色圆角矩形 */
-.input-redeem-btn {
-  background: #E94343;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  height: 36px;
+.xiaohongshu-shop-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
   width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.xiaohongshu-shop-btn:hover::before {
+  left: 100%;
+}
+
+.xiaohongshu-shop-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 小红书logo容器 */
+.xiaohongshu-icon {
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+}
+
+/* 小红书logo - 简化版 */
+.logo-red-box {
+  width: 20px;
+  height: 20px;
+  background: #FF2442;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(255, 36, 66, 0.3);
+}
+
+.logo-red-box .logo-text {
+  color: white;
+  font-size: 8px;
+  font-weight: 700;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 按钮文字 */
+.btn-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 13px;
+  color: #FFFFFF;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* 输入兑换码按钮 - 美观设计 */
+.input-redeem-btn {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  border-radius: 12px;
+  height: 42px;
+  width: 120px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.input-redeem-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.input-redeem-btn:hover::before {
+  left: 100%;
 }
 
 .input-redeem-btn:hover {
-  background: #D73A3A;
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .input-redeem-btn:active {
-  transform: scale(0.98);
+  transform: translateY(-1px);
 }
 
-/* 底部取消按钮 */
-.cancel-bottom-btn {
-  background: none;
-  border: none;
-  color: #666666;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 8px;
-  width: 100%;
-  text-align: center;
-  transition: color 0.2s ease;
-}
+/* 响应式适配 */
+@media (max-width: 480px) {
+  .redeem-required-modal {
+    width: 90%;
+    max-width: 400px;
+    height: auto;
+    padding: 20px;
+  }
 
-.cancel-bottom-btn:hover {
-  color: #333333;
+  .modal-title {
+    font-size: 20px;
+  }
+
+  .modal-description {
+    font-size: 14px;
+  }
+
+  .modal-subtitle {
+    font-size: 13px;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .xiaohongshu-shop-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .input-redeem-btn {
+    width: 100%;
+    max-width: 120px;
+  }
 }
 
 /* 弹窗2：兑换码输入弹窗容器 - 固定浅粉色背景 */
