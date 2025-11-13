@@ -5,11 +5,6 @@ class ExchangeCodeVerifier {
     constructor() {
         // 本地API地址 - 根据实际情况调整
         this.apiBaseUrl = 'http://101.132.176.113:3000';
-
-        // 如果是本地访问，使用本地地址
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            this.apiBaseUrl = 'http://101.132.176.113:3000';
-        }
     }
 
     // 显示兑换码输入弹窗（用户界面）
@@ -100,3 +95,45 @@ class ExchangeCodeVerifier {
 
             const result = await response.json();
 
+
+        } finally {
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = '确认使用';
+        }
+    }
+
+    // 检查服务器连接
+    async checkConnection() {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/codes/verify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    code: 'connection-test'
+                })
+            });
+            return true;
+        } catch (error) {
+            console.warn('服务器连接检查失败:', error);
+            return false;
+        }
+    }
+}
+
+// 全局兑换码验证器实例
+window.exchangeCodeVerifier = new ExchangeCodeVerifier();
+
+// 页面加载时检查服务器连接
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🔗 正在连接验证服务器:', window.exchangeCodeVerifier.apiBaseUrl);
+
+    const isOnline = await window.exchangeCodeVerifier.checkConnection();
+    if (!isOnline) {
+        console.warn('⚠️ 无法连接到兑换码验证服务器');
+        console.log('📡 服务器地址:', window.exchangeCodeVerifier.apiBaseUrl);
+    } else {
+        console.log('✅ 兑换码验证服务器连接正常');
+    }
+});
