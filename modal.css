@@ -1,3 +1,26 @@
+/* =========================
+   弹窗颜色变量定义
+   在页面的 :root 中定义这些变量来自定义颜色
+   ========================= */
+
+/* 默认变量定义 - 如果页面没有定义，使用这些默认值 */
+:root {
+  --modal-bg-color: #FFF5F5;                    /* 弹窗背景色 */
+  --modal-primary-color: #E94343;             /* 主要操作按钮色（红色） */
+  --modal-secondary-color: #6366F1;           /* 次要操作按钮色（蓝色） */
+  --modal-success-color: #10B981;             /* 成功按钮色（绿色） */
+  --modal-accent-color: #FFC105;             /* 强调色（黄色钥匙） */
+  --modal-platform-color: #4285F4;           /* 平台图标色（蓝色钻石） */
+  --modal-text-color: #333333;               /* 主要文字色 */
+  --modal-secondary-text-color: #666666;     /* 次要文字色 */
+  --modal-border-color: #EEEEEE;             /* 边框色 */
+  --modal-shadow-color: rgba(0, 0, 0, 0.1);  /* 阴影色 */
+}
+
+/* =========================
+   弹窗组件样式
+   ========================= */
+
 /* 弹窗遮罩层 */
 .modal-overlay {
   position: fixed;
@@ -12,199 +35,410 @@
   z-index: 9999;
 }
 
-/* 开始测试弹窗容器 - 匹配截图1 */
-.start-test-modal {
-  background: white;
-  border-radius: 8px;
+/* 弹窗1：需要兑换码弹窗容器 - 自适应背景色 */
+.redeem-required-modal {
+  background: var(--modal-bg-color, #FFF5F5); /* 可自定义背景色，默认浅粉色 */
+  border-radius: 12px;
   padding: 20px;
-  width: 300px;
-  min-height: 200px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* 标题区域 */
+.modal-header {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
-/* 开始测试弹窗标题 */
-.start-test-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 15px 0;
-  text-align: center;
-}
-
-/* 开始测试弹窗描述 */
-.start-test-description {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.5;
-  margin: 0 0 20px 0;
-  text-align: center;
-  flex: 1;
+/* 黄色钥匙图标 */
+.title-icon {
+  margin-right: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 开始测试弹窗按钮容器 */
-.start-test-buttons {
+/* 标题文字 */
+.modal-title {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--modal-text-color, #333333);
+  margin: 0;
+}
+
+/* 说明文字区域 */
+.modal-description {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  color: var(--modal-secondary-text-color, #666666);
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+/* 平台选择区域 */
+.platform-section {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* 蓝色钻石图标 */
+.platform-icon {
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
-/* 开始测试弹窗按钮 */
-.btn-cancel,
-.btn-redeem,
-.btn-confirm {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
+/* 平台选择文字 */
+.platform-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   font-size: 14px;
+  color: var(--modal-secondary-text-color, #666666);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 按钮区域 */
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* 小红书获取按钮 */
+.xiaohongshu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: white;
+  border: 1px solid var(--modal-border-color, #EEEEEE);
+  border-radius: 6px;
+  height: 36px;
+  padding: 0 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 70px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.btn-cancel {
-  background: #f5f5f5;
-  color: #666;
+.xiaohongshu-btn:hover {
+  background: #F8F8F8;
+  border-color: #E0E0E0;
 }
 
-.btn-cancel:hover {
-  background: #e8e8e8;
+/* 小红书logo容器 */
+.xiaohongshu-logo {
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
 }
 
-.btn-redeem {
-  background: #6366f1;
-  color: white;
-}
-
-.btn-redeem:hover {
-  background: #4f46e5;
-}
-
-.btn-confirm {
-  background: #10b981;
-  color: white;
-}
-
-.btn-confirm:hover {
-  background: #059669;
-}
-
-/* 兑换码弹窗容器 - 匹配截图2 */
-.redeem-modal {
-  background: white;
-  border-radius: 8px;
-  padding: 25px 20px;
-  width: 280px;
+.logo-container {
   position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 24px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 兑换码弹窗关闭按钮 */
-.redeem-close {
+/* 小红书logo背景 - 红色方块 */
+.logo-background {
   position: absolute;
-  top: 12px;
-  right: 12px;
   width: 20px;
   height: 20px;
+  background: #FF2442;
+  border-radius: 3px;
+}
+
+/* 小红书logo文字 */
+.logo-text {
+  position: relative;
+  color: white;
+  font-size: 9px;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  z-index: 1;
+}
+
+/* 小红书按钮文字 */
+.btn-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  color: var(--modal-text-color, #333333);
+}
+
+/* 输入兑换码按钮 - 红色圆角矩形 */
+.input-redeem-btn {
+  background: var(--modal-primary-color, #E94343);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  height: 36px;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.input-redeem-btn:hover {
+  background: #D73A3A;
+}
+
+.input-redeem-btn:active {
+  transform: scale(0.98);
+}
+
+/* 底部取消按钮 */
+.cancel-bottom-btn {
+  background: none;
+  border: none;
+  color: #666666;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px;
+  width: 100%;
+  text-align: center;
+  transition: color 0.2s ease;
+}
+
+.cancel-bottom-btn:hover {
+  color: #333333;
+}
+
+/* 弹窗2：兑换码输入弹窗容器 - 自适应背景色 */
+.redeem-input-modal {
+  background: var(--modal-bg-color, #FFF5F5); /* 可自定义背景色，默认浅粉色 */
+  border-radius: 12px;
+  padding: 24px; /* 四周统一24px内边距 */
+  width: 320px;
+  max-width: 90vw;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* 关闭按钮 - 黑色×符号 */
+.redeem-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 24px;
+  height: 24px;
   background: none;
   border: none;
   cursor: pointer;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15 5L5 15M5 5L15 15" stroke="%23666" stroke-width="1.5" stroke-linecap="round"/></svg>');
-  background-repeat: no-repeat;
-  background-position: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 16px;
+  color: #000000;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
   padding: 0;
+  line-height: 1;
 }
 
 .redeem-close:hover {
-  opacity: 0.7;
+  background: rgba(0, 0, 0, 0.1);
 }
 
-/* 兑换码弹窗标题 */
+/* 兑换码弹窗标题 - 使用兑换码 */
 .redeem-title {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
-  margin: 0 0 10px 0;
-  text-align: center;
+  color: var(--modal-text-color, #333333);
+  margin: 0 0 8px 0; /* 标题与说明文字间距8px */
+  text-align: left;
 }
 
-/* 兑换码弹窗副标题 */
-.redeem-subtitle {
-  font-size: 12px;
-  color: #666;
-  margin: 0 0 20px 0;
-  text-align: center;
-  line-height: 1.4;
+/* 说明文字区域 - 请输入您获取的兑换码 */
+.redeem-description {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  color: var(--modal-secondary-text-color, #666666);
+  margin: 0 0 12px 0; /* 说明文字与输入框间距12px */
+  line-height: 1.5;
+  text-align: left;
 }
 
-/* 兑换码输入框 */
+/* 兑换码输入框 - 自适应边框色 */
 .redeem-input {
   width: 100%;
-  height: 36px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 0 12px;
+  height: 40px;
+  border: 2px solid var(--modal-primary-color, #E94343); /* 自适应边框色 */
+  border-radius: 6px; /* 边框圆角6px */
+  padding: 0 15px;
   font-size: 14px;
   box-sizing: border-box;
-  margin-bottom: 15px;
+  margin-bottom: 16px; /* 输入框与平台获取区域间距16px */
   outline: none;
+  background: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  transition: border-color 0.2s ease;
 }
 
 .redeem-input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  border-color: #E94343;
+  box-shadow: 0 0 0 3px rgba(233, 67, 67, 0.1);
 }
 
 .redeem-input::placeholder {
-  color: #999;
+  color: #CCCCCC; /* 浅灰色提示文字 */
 }
 
-/* 兑换码提交按钮 */
-.redeem-submit {
+/* 平台获取区域 */
+.platform-redeem-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px; /* 平台获取区域与下一步按钮间距20px */
+}
+
+/* 蓝色钻石图标 */
+.platform-redeem-icon {
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 平台获取文字 */
+.platform-redeem-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  color: var(--modal-secondary-text-color, #666666);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 小红书获取按钮 */
+.xiaohongshu-redeem-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: white;
+  border: 1px solid #EEEEEE;
+  border-radius: 6px;
+  height: 32px;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
   width: 100%;
-  height: 36px;
-  background: #6366f1;
+  box-sizing: border-box;
+  margin-bottom: 20px; /* 与下一步按钮间距20px */
+}
+
+.xiaohongshu-redeem-btn:hover {
+  background: #F8F8F8;
+  border-color: #E0E0E0;
+}
+
+/* 小红书logo容器 */
+.xiaohongshu-redeem-logo {
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.logo-redeem-container {
+  position: relative;
+  width: 24px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 小红书logo背景 - 红色方块 */
+.logo-redeem-background {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #FF2442;
+  border-radius: 3px;
+}
+
+/* 小红书logo文字 */
+.logo-redeem-text {
+  position: relative;
+  color: white;
+  font-size: 9px;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  z-index: 1;
+}
+
+/* 小红书按钮文字 */
+.btn-redeem-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  color: var(--modal-text-color, #333333);
+}
+
+/* 下一步按钮 - 自适应背景色 */
+.next-step-btn {
+  width: 100%;
+  height: 40px;
+  background: var(--modal-secondary-color, #F5A9B8); /* 自适应背景色，默认粉色 */
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px; /* 边框圆角8px */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.redeem-submit:hover:not(:disabled) {
-  background: #4f46e5;
+.next-step-btn:hover:not(:disabled) {
+  background: #E895A4;
 }
 
-.redeem-submit:disabled {
-  background: #ccc;
+.next-step-btn:disabled {
+  background: #D1D5DB;
   cursor: not-allowed;
+}
+
+.next-step-btn:active {
+  transform: scale(0.98);
 }
 
 /* 响应式适配 */
 @media (max-width: 480px) {
-  .start-test-modal {
-    width: 280px;
+  .redeem-required-modal {
+    width: 90%;
+    max-width: 320px;
     margin: 0 20px;
+    padding: 20px 15px;
   }
 
-  .redeem-modal {
-    width: 260px;
+  .redeem-input-modal {
+    width: 90%;
+    max-width: 300px;
     margin: 0 20px;
+    padding: 20px 15px;
   }
 
-  .start-test-buttons {
-    flex-wrap: wrap;
+  .modal-title {
+    font-size: 16px;
   }
 
-  .btn-cancel,
-  .btn-redeem,
-  .btn-confirm {
-    flex: 1;
-    min-width: 60px;
+  .modal-description,
+  .platform-text {
+    font-size: 13px;
+  }
+
+  .btn-text {
+    font-size: 13px;
   }
 }
