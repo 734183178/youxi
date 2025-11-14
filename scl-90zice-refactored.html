@@ -24,10 +24,21 @@
 <body>
     <div id="root"></div>
 
-    <!-- 兑换码弹窗脚本 -->
-    <script src="redeem-modal.js"></script>
+    <!-- 兑换码弹窗脚本 - 确保在React应用之前加载 -->
+    <script src="redeem-modal-local.js"></script>
+    <script>
+        console.log('兑换码弹窗脚本加载完成, GithubRedeemModal:', typeof GithubRedeemModal);
+    </script>
 
     <!-- 应用逻辑脚本 -->
     <script type="text/babel" src="app.js"></script>
+
+    <!-- 调试脚本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成');
+            console.log('window.GithubRedeemModal:', typeof window.GithubRedeemModal);
+        });
+    </script>
 </body>
 </html>
