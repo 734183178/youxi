@@ -1,5 +1,4 @@
-// SCL-90症状自评量表 - 应用逻辑
-
+// SCL-90症状自评量表 - JavaScript脚本
 const { useState, useEffect, useRef } = React;
 
 const SCL90Assessment = () => {
@@ -7,6 +6,13 @@ const SCL90Assessment = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const chartRef = useRef(null);
+
+  // 兑换码验证相关状态
+  const [showCodeModal, setShowCodeModal] = useState(false);
+  const [redeemCode, setRedeemCode] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationError, setVerificationError] = useState('');
+  const [isVerified, setIsVerified] = useState(false);
 
   // SCL-90题目数据
   const questions = [
@@ -183,28 +189,73 @@ const SCL90Assessment = () => {
   });
 
   const handleStartTest = () => {
-    // 初始化兑换码弹窗（如果还没有初始化）
-    if (!window.redeemModal) {
-      window.redeemModal = new GithubRedeemModal();
+    if (!isVerified) {
+      setShowCodeModal(true);
+      setVerificationError('');
+    } else {
+      setCurrentPage('test');
+      setCurrentQuestion(0);
+      setAnswers({});
+    }
+  };
+
+  // 兑换码验证函数
+  const verifyRedeemCode = async () => {
+    if (!redeemCode.trim()) {
+      setVerificationError('请输入兑换码');
+      return;
     }
 
-    // 设置回调函数
-    window.redeemModal.setCallbacks({
-      onSuccess: (verificationResult) => {
-        console.log('兑换码验证成功:', verificationResult);
-        // 验证成功，开始测试
+    setIsVerifying(true);
+    setVerificationError('');
+
+    try {
+      const response = await fetch('http://101.132.176.113:3000/api/codes/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code: redeemCode.trim(),
+          usedBy: 'SCL90-User-' + Date.now()
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setIsVerified(true);
+        setShowCodeModal(false);
+        setRedeemCode('');
+        setVerificationError('');
+        // 验证成功后开始测试
         setCurrentPage('test');
         setCurrentQuestion(0);
         setAnswers({});
-      },
-      onCancel: () => {
-        console.log('用户取消了兑换码验证');
-        // 用户取消，保持在介绍页面
+      } else {
+        setVerificationError(data.error || '兑换码验证失败');
       }
-    });
+    } catch (error) {
+      console.error('验证错误:', error);
+      setVerificationError('网络错误，请检查网络连接或稍后重试');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
 
-    // 显示兑换码弹窗
-    window.redeemModal.show();
+  // 处理输入框回车事件
+  const handleCodeInputKeyPress = (e) => {
+    if (e.key === 'Enter' && !isVerifying) {
+      verifyRedeemCode();
+    }
+  };
+
+  // 关闭弹窗
+  const closeModal = () => {
+    setShowCodeModal(false);
+    setRedeemCode('');
+    setVerificationError('');
+    setIsVerifying(false);
   };
 
   const handleAnswer = (value) => {
@@ -416,9 +467,73 @@ const SCL90Assessment = () => {
             onClick={handleStartTest}
             className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-lg text-base sm:text-lg transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
-            开始测试 (90题)
+            开始测试 (90题) {isVerified && '✅'}
           </button>
         </div>
+
+        {/* 兑换码验证弹窗 */}
+        {showCodeModal && (
+          <div className="modal-overlay" onClick={closeModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">兑换码验证</h3>
+                <p className="text-gray-600 text-sm">请输入您的兑换码以开始测试</p>
+              </div>
+
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  value={redeemCode}
+                  onChange={(e) => {
+                    setRedeemCode(e.target.value);
+                    setVerificationError('');
+                  }}
+                  onKeyPress={handleCodeInputKeyPress}
+                  placeholder="请输入兑换码"
+                  className={`code-input ${verificationError ? 'error' : ''}`}
+                  disabled={isVerifying}
+                  autoFocus
+                />
+
+                {verificationError && (
+                  <div className="error-message">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    {verificationError}
+                  </div>
+                )}
+
+                <button
+                  onClick={verifyRedeemCode}
+                  disabled={isVerifying || !redeemCode.trim()}
+                  className="verify-btn"
+                >
+                  {isVerifying ? (
+                    <span className="flex items-center justify-center">
+                      <span className="loading-spinner mr-2"></span>
+                      验证中...
+                    </span>
+                  ) : (
+                    '验证兑换码'
+                  )}
+                </button>
+
+                <button
+                  onClick={closeModal}
+                  className="w-full py-2 text-gray-500 hover:text-gray-700 text-sm transition-colors"
+                >
+                  取消
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -636,27 +751,27 @@ const SCL90Assessment = () => {
             </div>
           </div>
           {/* 资源下载链接 */}
-          <div className="mt-6 sm:mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-4 sm:p-6">
-            <h4 className="text-lg sm:text-xl font-bold text-gray-800 mb-4 text-center">📖 心理健康资源</h4>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-              <a
-                href="https://pan.quark.cn/s/ad34f9a1dc43"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 text-center text-sm sm:text-base shadow-lg hover:shadow-xl"
-              >
-                📚 推荐书单
-              </a>
-              <a
-                href="https://pan.quark.cn/s/ad34f9a1dc43"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 sm:flex-none bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 text-center text-sm sm:text-base shadow-lg hover:shadow-xl"
-              >
-                ✨ 提升能量
-              </a>
-            </div>
-          </div>
+<div className="mt-6 sm:mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-4 sm:p-6">
+  <h4 className="text-lg sm:text-xl font-bold text-gray-800 mb-4 text-center">📖 心理健康资源</h4>
+  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+    <a
+      href="https://pan.quark.cn/s/ad34f9a1dc43"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 text-center text-sm sm:text-base shadow-lg hover:shadow-xl"
+    >
+      📚 推荐书单
+    </a>
+    <a
+      href="https://pan.quark.cn/s/ad34f9a1dc43"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex-1 sm:flex-none bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 text-center text-sm sm:text-base shadow-lg hover:shadow-xl"
+    >
+      ✨ 提升能量
+    </a>
+  </div>
+</div>
           <div className="mt-6 sm:mt-8 text-center space-y-3 sm:space-y-4">
             <button
               onClick={() => {

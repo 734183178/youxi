@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCL-90症状自评量表</title>
+
+    <!-- 外部样式表 -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- React 和 ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel Standalone for JSX compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <!-- GitHub API兑换码弹窗组件 -->
+    <script src="redeem-modal.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const SCL90Assessment = () => {
+          const [currentPage, setCurrentPage] = useState('intro');
+          const [currentQuestion, setCurrentQuestion] = useState(0);
+          const [answers, setAnswers] = useState({});
+          const [showVerificationModal, setShowVerificationModal] = useState(false);
+          const [lastVerificationInfo, setLastVerificationInfo] = useState(null);
+          const chartRef = useRef(null);
+
+          // 初始化兑换码弹窗
+          useEffect(() => {
+            // 初始化弹窗组件
+            const modal = new window.GithubRedeemModal();
+
+            // 设置回调函数
+            modal.setCallbacks({
+              onSuccess: (result) => {
+                console.log('兑换码验证成功:', result);
+                setLastVerificationInfo(result);
+                setCurrentPage('instruction'); // 验证成功后进入指导页面
+              },
+              onCancel: () => {
+                console.log('用户取消验证');
+                setShowVerificationModal(false);
+              }
+            });
+
+            // 将modal实例存储到全局，供其他函数使用
+            window.redeemModal = modal;
+          }, []);
+
+          // 开始测试函数 - 每次都需要验证
+          const startTest = () => {
+            setShowVerificationModal(true);
+            if (window.redeemModal) {
+              window.redeemModal.show();
+            }
+          };
+
+          // 显示验证信息
+          const showVerificationInfo = () => {
+            if (lastVerificationInfo) {
+              alert(`最近验证信息：
+兑换码: ${lastVerificationInfo.code}
+验证时间: ${new Date(lastVerificationInfo.verifyTime).toLocaleString()}
+${lastVerificationInfo.info.isHistorical ? `原定日期: ${lastVerificationInfo.info.originalDate}` : '当前有效兑换码'}`);
+            } else {
+              alert('暂无验证记录');
+            }
+          };
+
+          // SCL-90 问题数据
+          const questions = [
+            // 躯体化 (Somatization)
+            "头痛",
+            "神经过敏，心中不踏实",
+            "头脑中有不必要的想法或字句盘旋",
+            "头晕或昏倒",
+            "对异性的兴趣减退",
+            "对旁人责备求全",
+            "感到别人能控制您的思想",
+            "责怪别人制造麻烦",
+            "忘性大",
+            "担心自己的衣饰整齐及仪态的端正",
+
+            // 强迫症状 (Obsessive-Compulsive)
+            "容易烦恼和激动",
+            "胸痛",
+            "害怕空旷的场所或街道",
+            "感到自己的精力下降，活动减慢",
+            "想结束自己的生命",
+            "听到旁人听不到的声音",
+            "发抖",
+            "感到大多数人都不可信任",
+            "胃口不好",
+            "容易哭泣",
+
+            // 人际关系敏感 (Interpersonal Sensitivity)
+            "同异性相处时感到害羞不自在",
+            "受骗，中了圈套或有人想抓住您",
+            "无缘无故地突然感到害怕",
+            "自己不能控制地大发脾气",
+            "怕单独出门",
+            "经常责怪自己",
+            "腰痛",
+            "感到难以完成任务",
+            "感到孤独",
+            "感到苦闷",
+
+            // 抑郁 (Depression)
+            "过分担忧",
+            "对事物不感兴趣",
+            "感到害怕",
+            "您的感情容易受到伤害",
+            "旁人能知道您的私下想法",
+            "感到别人不理解您、不同情您",
+            "感到人们对您不友好、不喜欢您",
+            "做事必须做得很慢以保证做得正确",
+            "心跳得很厉害",
+            "恶心或胃部不舒服",
+
+            // 焦虑 (Anxiety)
+            "感到比不上他人",
+            "肌肉酸痛",
+            "感到有人在监视您或谈论您",
+            "难以入睡",
+            "做事必须反复检查",
+            "难以作出决定",
+            "怕乘电车、公共汽车、地铁或火车",
+            "呼吸有困难",
+            "一阵阵发冷或发热",
+            "因为感到害怕而避开某些东西、场合或活动",
+
+            // 敌对 (Hostility)
+            "脑子变空了",
+            "身体发麻或刺痛",
+            "喉咙有梗塞感",
+            "感到前途没有希望",
+            "不能集中注意力",
+            "感到身体的某一部分软弱无力",
+            "感到紧张或容易紧张",
+            "感到手或脚发重",
+            "想到死亡的事",
+            "吃得太多",
+
+            // 恐怖 (Phobic Anxiety)
+            "当别人看着您或谈论您时感到不自在",
+            "有一些不属于您自己的想法",
+            "有想打人或伤害他人的冲动",
+            "醒得太早",
+            "必须反复洗手、点数目或触摸某些东西",
+            "睡得不稳不深",
+            "有想摔坏或破坏东西的冲动",
+            "有一些别人没有的想法或念头",
+            "感到对别人神经过敏",
+            "在商店或电影院等人多的地方感到不自在",
+
+            // 偏执 (Paranoid Ideation)
+            "感到任何事情都很困难",
+            "一阵阵恐惧或惊恐",
+            "感到公共场合吃东西很不舒服",
+            "经常与人争论",
+            "单独一人时神经很紧张",
+            "别人在您的背后议论您",
+            "即使是和别人在一起也感到孤单",
+            "感到坐立不安心神不定",
+            "感到自己没有什么价值",
+            "感到熟悉的东西变成陌生或不像是真的",
+
+            // 精神病性 (Psychoticism)
+            "大叫或摔东西",
+            "害怕会在公共场合昏倒",
+            "感到别人想占您的便宜",
+            "为一些有关'性'的想法而很苦恼",
+            "您认为应该因为自己的过错而受到惩罚",
+            "感到要赶快把事情做完",
+            "感到一些坏东西附着在身上",
+            "感到有人或某种力量在控制您的思想",
+            "听到自己脑子里有声音在说话",
+            "认为自己有罪"
+          ];
+
+          // 因子定义
+          const factors = {
+            躯体化: [0, 4, 12, 16, 27, 31, 35, 41, 45, 55, 59, 63, 67, 72, 76],
+            强迫症状: [1, 8, 14, 19, 26, 32, 38, 44, 49, 54, 60, 66, 71, 77],
+            人际关系敏感: [5, 9, 13, 17, 23, 28, 33, 36, 42, 46, 51, 56, 61, 69, 73, 78],
+            抑郁: [2, 6, 11, 15, 20, 24, 29, 34, 37, 43, 48, 52, 57, 62, 67, 72, 76],
+            焦虑: [10, 18, 21, 25, 30, 39, 47, 50, 53, 58, 64, 68, 74, 79],
+            敌对: [3, 7, 22, 40, 45, 50, 55, 60, 65, 70, 75, 80],
+            恐怖: [5, 15, 25, 35, 45, 55, 65, 75],
+            偏执: [6, 16, 26, 36, 46, 56, 66, 76],
+            精神病性: [7, 17, 27, 37, 47, 57, 67, 77],
+            其他: [19, 44, 59, 69, 79, 89]
+          };
+
+          // 评分标准 (1=没有, 2=很轻, 3=中等, 4=偏重, 5=严重)
+          const scoreLabels = ['没有', '很轻', '中等', '偏重', '严重'];
+
+          // 计算因子分数
+          const calculateFactorScores = () => {
+            const factorScores = {};
+
+            Object.keys(factors).forEach(factorName => {
+              const factorQuestions = factors[factorName];
+              let totalScore = 0;
+
+              factorQuestions.forEach(qIndex => {
+                totalScore += answers[qIndex] || 0;
+              });
+
+              factorScores[factorName] = totalScore;
+            });
+
+            return factorScores;
+          };
+
+          // 计算总分
+          const calculateTotalScore = () => {
+            return Object.values(answers).reduce((sum, score) => sum + score, 0);
+          };
+
+          // 获取症状等级
+          const getSeverityLevel = (score) => {
+            if (score <= 62) return { level: '健康', color: 'text-green-600', bg: 'bg-green-100' };
+            if (score <= 99) return { level: '轻度', color: 'text-yellow-600', bg: 'bg-yellow-100' };
+            if (score <= 149) return { level: '中度', color: 'text-orange-600', bg: 'bg-orange-100' };
+            if (score <= 199) return { level: '较重', color: 'text-red-600', bg: 'bg-red-100' };
+            return { level: '严重', color: 'text-purple-600', bg: 'bg-purple-100' };
+          };
+
+          // 获取因子解释
+          const getFactorInterpretation = (factorName, score) => {
+            const interpretations = {
+              躯体化: {
+                low: "身体状况良好，无明显躯体不适症状。",
+                medium: "存在一些躯体不适，可能与心理压力有关。",
+                high: "躯体症状较为明显，建议关注身心健康。"
+              },
+              强迫症状: {
+                low: "思维和行为自然流畅，无明显强迫倾向。",
+                medium: "偶尔有一些强迫想法或行为，在正常范围内。",
+                high: "强迫症状较明显，可能需要专业指导。"
+              },
+              人际关系敏感: {
+                low: "人际交往自信，社交关系良好。",
+                medium: "在某些社交场合可能感到不适，总体正常。",
+                high: "人际敏感度较高，可能影响社交活动。"
+              },
+              抑郁: {
+                low: "情绪稳定，积极乐观。",
+                medium: "偶尔有情绪低落，能够自我调节。",
+                high: "抑郁情绪较为明显，建议寻求帮助。"
+              },
+              焦虑: {
+                low: "心态平和，无明显焦虑表现。",
+                medium: "在特定情况下可能感到焦虑，属于正常反应。",
+                high: "焦虑情绪较明显，建议学习放松技巧。"
+              },
+              敌对: {
+                low: "情绪管理良好，与人和善。",
+                medium: "偶尔有敌对情绪，能够控制。",
+                high: "敌对情绪较明显，建议学习情绪管理。"
+              },
+              恐怖: {
+                low: "勇敢自信，无明显恐惧心理。",
+                medium: "对某些事物有轻微恐惧，正常范围。",
+                high: "恐惧心理较明显，建议逐步克服。"
+              },
+              偏执: {
+                low: "思维开放，信任他人。",
+                medium: "偶尔有多疑想法，总体理性。",
+                high: "偏执倾向较明显，建议保持开放心态。"
+              },
+              精神病性: {
+                low: "思维清晰，现实感强。",
+                medium: "偶尔有异常想法，能够区分现实。",
+                high: "异常思维较多，建议专业评估。"
+              }
+            };
+
+            const factorInterpretation = interpretations[factorName] || { low: '', medium: '', high: '' };
+            const maxScore = factors[factorName].length * 5;
+            const percentage = (score / maxScore) * 100;
+
+            if (percentage <= 30) return factorInterpretation.low;
+            if (percentage <= 70) return factorInterpretation.medium;
+            return factorInterpretation.high;
+          };
+
+          // 创建雷达图
+          const createRadarChart = () => {
+            if (chartRef.current) {
+              const ctx = chartRef.current.getContext('2d');
+              const factorScores = calculateFactorScores();
+
+              // 清除之前的图表
+              if (window.scl90Chart) {
+                window.scl90Chart.destroy();
+              }
+
+              window.scl90Chart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                  labels: Object.keys(factorScores),
+                  datasets: [{
+                    label: '您的分数',
+                    data: Object.values(factorScores),
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: 'rgb(59, 130, 246)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgb(59, 130, 246)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(59, 130, 246)'
+                  }, {
+                    label: '正常参考值',
+                    data: Object.keys(factorScores).map(() => 20),
+                    backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                    borderColor: 'rgb(156, 163, 175)',
+                    borderWidth: 1,
+                    borderDash: [5, 5]
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+                    r: {
+                      beginAtZero: true,
+                      max: Math.max(...Object.values(factorScores)) + 10
+                    }
+                  },
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                    },
+                    title: {
+                      display: true,
+                      text: 'SCL-90 各因子得分雷达图'
+                    }
+                  }
+                }
+              });
+            }
+          };
+
+          // 渲染结果页面时创建图表
+          useEffect(() => {
+            if (currentPage === 'results') {
+              setTimeout(createRadarChart, 100);
+            }
+          }, [currentPage]);
+
+          // 回答问题
+          const handleAnswer = (score) => {
+            setAnswers({
+              ...answers,
+              [currentQuestion]: score
+            });
+
+            if (currentQuestion < questions.length - 1) {
+              setCurrentQuestion(currentQuestion + 1);
+            } else {
+              setCurrentPage('results');
+            }
+          };
+
+          // 重新开始测试
+          const restartTest = () => {
+            setCurrentPage('intro');
+            setCurrentQuestion(0);
+            setAnswers({});
+            setLastVerificationInfo(null);
+            if (window.scl90Chart) {
+              window.scl90Chart.destroy();
+            }
+          };
+
+          // 渲染不同页面
+          const renderPage = () => {
+            switch(currentPage) {
+              case 'intro':
+                return (
+                  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
+                      <div className="text-center mb-8">
+                        <h1 className="text-4xl font-bold text-gray-800 mb-4">SCL-90 症状自评量表</h1>
+                        <p className="text-lg text-gray-600">正确版本 - 每次验证，兑换码持续有效</p>
+                        {lastVerificationInfo && (
+                          <div className="mt-4 p-3 bg-blue-100 border border-blue-400 rounded-lg">
+                            <p className="text-blue-800 text-sm">
+                              最近验证: {lastVerificationInfo.code}
+                              ({new Date(lastVerificationInfo.verifyTime).toLocaleString()})
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-6">
+                        <div className="bg-blue-50 p-6 rounded-lg">
+                          <h2 className="text-xl font-semibold text-blue-800 mb-3">📋 测试说明</h2>
+                          <p className="text-blue-700 leading-relaxed">
+                            SCL-90症状自评量表是世界上最著名的心理健康测试量表之一，
+                            从感觉、情感、思维、意识、行为直到生活习惯、人际关系、饮食睡眠等多种角度，
+                            评定一个人是否有某种心理症状及其严重程度。
+                          </p>
+                        </div>
+
+                        <div className="bg-yellow-50 p-6 rounded-lg">
+                          <h2 className="text-xl font-semibold text-yellow-800 mb-3">⚠️ 重要提示</h2>
+                          <ul className="text-yellow-700 space-y-2 text-sm">
+                            <li>• 本测试包含90个问题，预计需要15-20分钟完成</li>
+                            <li>• 请根据您最近一周内的实际情况如实回答</li>
+                            <li>• 每个问题都有5个选项：没有、很轻、中等、偏重、严重</li>
+                            <li>• 测试结果仅供参考，不能替代专业诊断</li>
+                            <li>• <strong>每次使用都需要验证，但兑换码不会按日期过期</strong></li>
+                            <li>• <strong>兑换码只有在从GitHub仓库中被移除时才会失效</strong></li>
+                          </ul>
+                        </div>
+
+                        <div className="bg-green-50 p-6 rounded-lg">
+                          <h2 className="text-xl font-semibold text-green-800 mb-3">✨ 验证机制</h2>
+                          <ul className="text-green-700 space-y-2 text-sm">
+                            <li>• <strong>每次使用都需要验证</strong> - 确保安全性</li>
+                            <li>• <strong>兑换码持续有效</strong> - 不会按日期自动过期</li>
+                            <li>• <strong>管理员控制</strong> - 通过GitHub文件管理兑换码</li>
+                            <li>• <strong>实时验证</strong> - 每次都检查GitHub仓库中的最新兑换码</li>
+                          </ul>
+                        </div>
+
+                        <div className="flex gap-4">
+                          <button
+                            onClick={startTest}
+                            className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-4 px-8 rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg"
+                          >
+                            🔐 开始验证
+                          </button>
+
+                          {lastVerificationInfo && (
+                            <button
+                              onClick={showVerificationInfo}
+                              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                              title="查看验证信息"
+                            >
+                              ℹ️
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+
+              case 'instruction':
+                return (
+                  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
+                      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">📖 测试指导语</h2>
+
+                      <div className="space-y-4 mb-8">
+                        <div className="bg-gray-50 p-6 rounded-lg">
+                          <h3 className="text-xl font-semibold text-gray-800 mb-4">请仔细阅读以下说明：</h3>
+                          <ol className="list-decimal list-inside space-y-3 text-gray-700">
+                            <li>请根据您<strong>最近一周内</strong>的实际感受和体验进行评分</li>
+                            <li>每个问题都有5个等级，请选择最符合您情况的等级</li>
+                            <li>没有标准答案，请如实回答每个问题</li>
+                            <li>如果某个问题您从未经历过，请选择"没有"</li>
+                            <li>整个测试大约需要15-20分钟</li>
+                          </ol>
+                        </div>
+
+                        <div className="bg-blue-50 p-6 rounded-lg">
+                          <h3 className="text-xl font-semibold text-blue-800 mb-4">评分标准：</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                            {scoreLabels.map((label, index) => (
+                              <div key={index} className="bg-white p-3 rounded-lg text-center shadow-sm">
+                                <div className="text-2xl font-bold text-blue-600 mb-1">{index + 1}</div>
+                                <div className="text-sm text-gray-700">{label}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4">
+                        <button
+                          onClick={() => setCurrentPage('intro')}
+                          className="flex-1 bg-gray-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-600 transition-colors"
+                        >
+                          返回
+                        </button>
+                        <button
+                          onClick={() => setCurrentQuestion(0)}
+                          className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-6 rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all transform hover:scale-105"
+                        >
+                          开始测试
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+
+              case 'questions':
+                return (
+                  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+                    <div className="max-w-4xl mx-auto">
+                      {/* 进度条 */}
+                      <div className="bg-white rounded-lg shadow-lg p-4 mb-6">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm text-gray-600">进度</span>
+                          <span className="text-sm font-semibold text-blue-600">
+                            {currentQuestion + 1} / {questions.length}
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3">
+                          <div
+                            className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-300"
+                            style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* 问题卡片 */}
+                      <div className="bg-white rounded-2xl shadow-xl p-8">
+                        <div className="text-center mb-8">
+                          <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                            问题 {currentQuestion + 1}
+                          </h3>
+                          <p className="text-xl text-gray-700 leading-relaxed">
+                            {questions[currentQuestion]}
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                          {scoreLabels.map((label, index) => (
+                            <button
+                              key={index}
+                              onClick={() => handleAnswer(index + 1)}
+                              className="group relative bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl hover:from-blue-100 hover:to-indigo-100 transition-all transform hover:scale-105 border-2 border-transparent hover:border-blue-300"
+                            >
+                              <div className="text-center">
+                                <div className="text-3xl font-bold text-blue-600 mb-2 group-hover:text-blue-700">
+                                  {index + 1}
+                                </div>
+                                <div className="text-sm text-gray-700 font-medium">
+                                  {label}
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+
+                        <div className="mt-6 flex justify-between">
+                          <button
+                            onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
+                            className="bg-gray-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={currentQuestion === 0}
+                          >
+                            上一题
+                          </button>
+                          <span className="text-gray-500 text-sm self-center">
+                            已完成 {Object.keys(answers).length} 题
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+
+              case 'results':
+                const totalScore = calculateTotalScore();
+                const factorScores = calculateFactorScores();
+                const severityLevel = getSeverityLevel(totalScore);
+
+                return (
+                  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+                    <div className="max-w-6xl mx-auto">
+                      {/* 总分概览 */}
+                      <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
+                        <div className="text-center mb-6">
+                          <h2 className="text-3xl font-bold text-gray-800 mb-4">🎯 测试结果分析</h2>
+
+                          <div className={`inline-block px-6 py-3 rounded-full ${severityLevel.bg} ${severityLevel.color} text-xl font-bold mb-4`}>
+                            总分: {totalScore} 分 - {severityLevel.level}
+                          </div>
+
+                          {lastVerificationInfo && (
+                            <div className="text-sm text-gray-500">
+                              测试时间: {new Date().toLocaleString()} | 验证码: {lastVerificationInfo.code}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                          {/* 雷达图 */}
+                          <div className="bg-gray-50 p-6 rounded-xl">
+                            <canvas ref={chartRef} width="400" height="400"></canvas>
+                          </div>
+
+                          {/* 总体建议 */}
+                          <div className="bg-blue-50 p-6 rounded-xl">
+                            <h3 className="text-xl font-semibold text-blue-800 mb-4">💡 总体建议</h3>
+                            <div className="text-blue-700 leading-relaxed">
+                              {severityLevel.level === '健康' && '您的心理健康状况良好，请继续保持积极的生活方式。'}
+                              {severityLevel.level === '轻度' && '您有一些轻微的心理症状，可以通过运动、放松等方式改善。'}
+                              {severityLevel.level === '中度' && '建议关注心理健康，可以考虑寻求专业的心理咨询。'}
+                              {severityLevel.level === '较重' && '建议尽快寻求专业心理帮助，进行系统评估和干预。'}
+                              {severityLevel.level === '严重' && '强烈建议立即寻求专业心理医疗帮助。'}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 各因子详细分析 */}
+                      <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
+                        <h3 className="text-2xl font-bold text-gray-800 mb-6">📊 各因子详细分析</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {Object.entries(factorScores).map(([factorName, score]) => (
+                            <div key={factorName} className="bg-gray-50 p-6 rounded-xl">
+                              <h4 className="text-lg font-semibold text-gray-800 mb-3">{factorName}</h4>
+                              <div className="flex items-center justify-between mb-3">
+                                <span className="text-2xl font-bold text-blue-600">{score}分</span>
+                                <div className="text-sm text-gray-500">
+                                  最高{factors[factorName].length * 5}分
+                                </div>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                                <div
+                                  className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full"
+                                  style={{ width: `${(score / (factors[factorName].length * 5)) * 100}%` }}
+                                />
+                              </div>
+                              <p className="text-sm text-gray-600">
+                                {getFactorInterpretation(factorName, score)}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 操作按钮 */}
+                      <div className="flex gap-4 justify-center">
+                        <button
+                          onClick={restartTest}
+                          className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-8 rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all transform hover:scale-105"
+                        >
+                          🔄 重新测试
+                        </button>
+                        <button
+                          onClick={() => window.print()}
+                          className="bg-gray-500 text-white font-bold py-3 px-8 rounded-xl hover:bg-gray-600 transition-colors"
+                        >
+                          📄 打印结果
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+
+              default:
+                return null;
+            }
+          };
+
+          return renderPage();
+        };
+
+        // 渲染应用
+        ReactDOM.render(<SCL90Assessment />, document.getElementById('root'));
+    </script>
+</body>
+</html>
