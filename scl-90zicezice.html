@@ -116,7 +116,7 @@
             console.log('🔧 测试GitHub Token访问...');
 
             const apiUrl = 'https://api.github.com/repos/734183178/scl90-exchange-codes/contents/redeem-codes.json';
-            const token = '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';
+            const token = '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';
 
             try {
               // 首先测试token有效性
@@ -325,6 +325,10 @@
                 'WEB2024', 'LIVE2024', 'GITHUB2024', 'ZUOYOU2024'
               ];
 
+              console.log(`🔍 检查输入的兑换码: "${code.toUpperCase()}"`);
+              console.log(`🔍 备用兑换码列表:`, productionValidCodes);
+              console.log(`🔍 是否包含: ${productionValidCodes.includes(code.toUpperCase())}`);
+
               if (productionValidCodes.includes(code.toUpperCase())) {
                 setIsCodeVerified(true);
                 setShowRedemptionModal(false);
@@ -332,7 +336,10 @@
                 console.log('✅ 生产环境备用验证成功');
                 return true;
               } else {
-                setRedemptionError('验证失败。请使用有效兑换码（如：DEMO2024）或联系管理员');
+                console.log(`❌ 所有验证方案都失败了`);
+                console.log(`❌ 输入的兑换码: "${code}"`);
+                console.log(`❌ 转换为大写: "${code.toUpperCase()}"`);
+                setRedemptionError(`验证失败。请使用有效兑换码（如：DEMO2024）或联系管理员。输入: "${code}"`);
                 return false;
               }
             } catch (error) {
