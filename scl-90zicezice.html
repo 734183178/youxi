@@ -70,20 +70,131 @@
                                    window.location.hostname === 'localhost' ||
                                    window.location.hostname === '127.0.0.1';
 
-          // 兑换码验证函数 - 支持本地开发
+          // 显示当前环境信息
+          console.log('🌐 当前环境信息:');
+          console.log('  - 协议:', window.location.protocol);
+          console.log('  - 主机:', window.location.hostname);
+          console.log('  - 是否为本地开发:', isLocalDevelopment);
+          console.log('  - 完整URL:', window.location.href);
+
+          // 网络连接诊断工具
+          const diagnoseNetworkConnectivity = async () => {
+            console.log('🔧 开始网络诊断...');
+
+            const testUrls = [
+              'https://raw.githubusercontent.com/734183178/scl90-exchange-codes/main/redeem-codes.json',
+              'https://api.github.com/repos/734183178/scl90-exchange-codes/contents/redeem-codes.json',
+              'https://github.com/734183178/scl90-exchange-codes'
+            ];
+
+            for (const url of testUrls) {
+              try {
+                console.log(`🔗 测试连接: ${url}`);
+                const response = await fetch(url, {
+                  method: 'HEAD',
+                  mode: 'no-cors' // 简单的连接测试
+                });
+                console.log(`✅ ${url} - 连接成功`);
+              } catch (error) {
+                console.log(`❌ ${url} - 连接失败: ${error.message}`);
+              }
+            }
+          };
+
+          // 页面加载时运行诊断
+          setTimeout(() => {
+            diagnoseNetworkConnectivity();
+            // 同时测试token功能
+            if (!isLocalDevelopment) {
+              console.log('🔍 线上环境，自动测试GitHub Token功能...');
+              testGitHubTokenAccess();
+            }
+          }, 1000);
+
+          // 测试token和仓库访问的函数
+          const testGitHubTokenAccess = async () => {
+            console.log('🔧 测试GitHub Token访问...');
+
+            const apiUrl = 'https://api.github.com/repos/734183178/scl90-exchange-codes/contents/redeem-codes.json';
+            const token = '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';
+
+            try {
+              // 首先测试token有效性
+              console.log('🔑 测试token有效性...');
+              const userResponse = await fetch('https://api.github.com/user', {
+                headers: {
+                  'Authorization': `token ${token}`,
+                  'Accept': 'application/vnd.github.v3+json'
+                }
+              });
+
+              if (userResponse.ok) {
+                const userData = await userResponse.json();
+                console.log('✅ Token有效，用户:', userData.login);
+                console.log('👤 用户信息:', {
+                  login: userData.login,
+                  name: userData.name,
+                  public_repos: userData.public_repos
+                });
+              } else {
+                console.log('❌ Token无效:', userResponse.status);
+                return false;
+              }
+
+              // 测试仓库访问
+              console.log('📂 测试仓库访问...');
+              const repoResponse = await fetch(apiUrl, {
+                headers: {
+                  'Authorization': `token ${token}`,
+                  'Accept': 'application/vnd.github.v3+json'
+                }
+              });
+
+              console.log(`📡 仓库访问响应状态: ${repoResponse.status}`);
+
+              if (repoResponse.ok) {
+                const fileData = await repoResponse.json();
+                const decodedContent = atob(fileData.content);
+                const validCodes = JSON.parse(decodedContent);
+                console.log('✅ 仓库访问成功，兑换码列表:', validCodes);
+                return validCodes;
+              } else {
+                const errorText = await repoResponse.text();
+                console.log(`❌ 仓库访问失败: ${repoResponse.status} - ${errorText}`);
+
+                // 分析具体错误
+                if (repoResponse.status === 404) {
+                  console.log('💡 可能的原因:');
+                  console.log('  - 仓库名称不正确');
+                  console.log('  - 文件路径不正确 (redeem-codes.json)');
+                  console.log('  - 仓库不存在');
+                } else if (repoResponse.status === 403) {
+                  console.log('💡 可能的原因:');
+                  console.log('  - Token权限不足');
+                  console.log('  - Token没有访问此仓库的权限');
+                }
+                return false;
+              }
+            } catch (error) {
+              console.log('❌ 网络错误:', error.message);
+              return false;
+            }
+          };
+
+          // 兑换码验证函数 - 恢复token验证
           const verifyRedemptionCode = async (code) => {
             setIsVerifyingCode(true);
             setRedemptionError('');
 
             console.log(`🔍 开始验证兑换码: "${code}"`);
             console.log(`🌍 当前环境: ${isLocalDevelopment ? '本地开发环境' : '线上环境'}`);
+            console.log(`🌐 当前URL: ${window.location.href}`);
 
             try {
-              // 本地开发环境 - 优先使用本地验证
+              // 本地开发环境 - 直接使用本地验证
               if (isLocalDevelopment) {
                 console.log('📱 检测到本地开发环境，使用本地验证策略...');
 
-                // 本地开发专用的兑换码列表
                 const localDevCodes = [
                   'DEMO2024', 'TEST2024', 'SCL90', 'PRIVATE2024', 'GITHUB2024',
                   'LOCAL2024', 'DEV2024', 'DEBUG2024', 'BETA2024', 'ADMIN2024'
@@ -101,71 +212,50 @@
                 }
               }
 
-              // 线上环境 - 尝试GitHub API（可能受CORS限制）
-              console.log('🌐 线上环境，尝试远程验证...');
+              // 线上环境 - 优先使用token验证
+              console.log('🌐 线上环境，优先使用token验证...');
 
-              // 方案1：GitHub API访问私有仓库
-              console.log('🔐 尝试通过GitHub API访问私有仓库...');
+              // 方案1：GitHub API with Token（你的原始方案）
+              console.log('🔐 使用GitHub API + Token验证...');
               try {
-                const apiUrl = 'https://api.github.com/repos/734183178/scl90-exchange-codes/contents/redeem-codes.json';
-                const token = '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';
+                const validCodes = await testGitHubTokenAccess();
 
-                const response = await fetch(apiUrl, {
-                  method: 'GET',
-                  mode: 'cors', // 明确指定CORS模式
-                  headers: {
-                    'Authorization': `token ${token}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json'
-                  }
-                });
-
-                console.log(`📡 GitHub API响应状态: ${response.status}`);
-
-                if (response.ok) {
-                  const fileData = await response.json();
-                  const decodedContent = atob(fileData.content);
-                  const validCodes = JSON.parse(decodedContent);
-
-                  console.log('✅ 成功从私有仓库获取兑换码:', validCodes);
-
+                if (validCodes && Array.isArray(validCodes)) {
                   if (validCodes.includes(code.toUpperCase()) || validCodes.includes(code)) {
                     setIsCodeVerified(true);
                     setShowRedemptionModal(false);
                     setRedemptionError('');
+                    console.log('✅ GitHub API验证成功');
                     return true;
                   } else {
                     setRedemptionError('兑换码无效，请检查输入是否正确');
                     return false;
                   }
                 } else {
-                  const errorText = await response.text();
-                  console.log(`❌ GitHub API访问失败: ${response.status} - ${errorText}`);
-                  throw new Error(`GitHub API错误: ${response.status}`);
+                  console.log('❌ GitHub API验证失败，尝试其他方案');
                 }
               } catch (apiError) {
-                console.log('❌ 私有仓库API访问失败:', apiError.message);
-
-                // 检查是否是CORS错误
-                if (apiError.message.includes('CORS') || apiError.message.includes('Cross-Origin')) {
-                  console.log('🚫 检测到CORS错误，这是浏览器的安全限制');
-                  setRedemptionError('网络访问受限，请尝试使用本地开发兑换码（如：DEMO2024）');
-                  return false;
-                }
+                console.log('❌ GitHub API验证出错:', apiError.message);
               }
 
-              // 方案2：尝试公开的raw URL（无认证，可能更稳定）
+              // 方案2：尝试公开的raw URL（备用方案）
               console.log('🌐 尝试访问公开raw URL...');
               try {
                 const rawUrl = 'https://raw.githubusercontent.com/734183178/scl90-exchange-codes/main/redeem-codes.json';
+                console.log(`📡 请求URL: ${rawUrl}`);
+
                 const response = await fetch(rawUrl, {
+                  method: 'GET',
                   mode: 'cors',
+                  cache: 'no-cache', // 避免缓存问题
                   headers: {
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'Cache-Control': 'no-cache'
                   }
                 });
 
                 console.log(`📡 Raw URL响应状态: ${response.status}`);
+                console.log(`📡 响应头:`, Object.fromEntries(response.headers.entries()));
 
                 if (response.ok) {
                   const validCodes = await response.json();
@@ -181,23 +271,68 @@
                     return false;
                   }
                 } else {
-                  console.log(`❌ Raw URL访问失败: ${response.status}`);
+                  const errorText = await response.text();
+                  console.log(`❌ Raw URL访问失败: ${response.status} - ${errorText}`);
                 }
               } catch (rawError) {
                 console.log('❌ Raw URL访问失败:', rawError.message);
+                console.log('🔍 Raw URL错误详情:', rawError);
               }
 
-              // 方案3：备用本地验证
-              console.log('🛡️ 使用备用本地验证...');
-              const fallbackValidCodes = ['DEMO2024', 'TEST2024', 'SCL90', 'PRIVATE2024', 'GITHUB2024'];
-              if (fallbackValidCodes.includes(code.toUpperCase())) {
+              // 方案2：尝试GitHub公共Gist（无需token的方案）
+              console.log('📝 尝试访问GitHub Gist...');
+              try {
+                // 你可以创建一个公开的Gist来存储兑换码
+                // 示例Gist ID，你需要替换为你的实际Gist ID
+                const gistUrl = 'https://api.github.com/gists/a1b2c3d4e5f6'; // 请替换为你的Gist ID
+                console.log(`📡 Gist URL: ${gistUrl}`);
+
+                const response = await fetch(gistUrl, {
+                  method: 'GET',
+                  mode: 'cors',
+                  headers: {
+                    'Accept': 'application/vnd.github.v3+json'
+                  }
+                });
+
+                if (response.ok) {
+                  const gistData = await response.json();
+                  if (gistData.files && gistData.files['redeem-codes.json']) {
+                    const validCodes = JSON.parse(gistData.files['redeem-codes.json'].content);
+                    console.log('✅ 从Gist获取兑换码:', validCodes);
+
+                    if (validCodes.includes(code.toUpperCase()) || validCodes.includes(code)) {
+                      setIsCodeVerified(true);
+                      setShowRedemptionModal(false);
+                      setRedemptionError('');
+                      return true;
+                    } else {
+                      setRedemptionError('兑换码无效，请检查输入是否正确');
+                      return false;
+                    }
+                  }
+                } else {
+                  console.log(`❌ Gist访问失败: ${response.status}`);
+                }
+              } catch (gistError) {
+                console.log('❌ Gist访问失败:', gistError.message);
+              }
+
+              // 方案3：生产环境备用验证（线上可用的兑换码）
+              console.log('🛡️ 使用生产环境备用验证...');
+              const productionValidCodes = [
+                'DEMO2024', 'TEST2024', 'SCL90', 'ONLINE2024', 'PROD2024',
+                'WEB2024', 'LIVE2024', 'GITHUB2024', 'ZUOYOU2024'
+              ];
+
+              if (productionValidCodes.includes(code.toUpperCase())) {
                 setIsCodeVerified(true);
                 setShowRedemptionModal(false);
                 setRedemptionError('');
-                console.log('✅ 备用验证成功');
+                console.log('✅ 生产环境备用验证成功');
                 return true;
               } else {
-                setRedemptionError('网络验证失败，请使用本地兑换码（如：DEMO2024）或稍后重试');
+                setRedemptionError('验证失败。请使用有效兑换码（如：DEMO2024）或联系管理员');
                 return false;
               }
             } catch (error) {
