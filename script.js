@@ -181,29 +181,43 @@ const SCL90Assessment = () => {
   });
 
   const handleStartTest = () => {
-    // 初始化兑换码弹窗
-    if (typeof window.GithubRedeemModal !== 'undefined') {
-      const modal = new window.GithubRedeemModal();
+    console.log('点击开始测试按钮，检查兑换码组件...');
 
-      // 设置成功回调
-      modal.setCallbacks({
-        onSuccess: (result) => {
-          console.log('兑换码验证成功:', result);
-          // 验证成功后开始测试
-          setCurrentPage('test');
-          setCurrentQuestion(0);
-          setAnswers({});
-        },
-        onCancel: () => {
-          console.log('用户取消验证');
-          // 用户取消，不做任何操作
-        }
-      });
+    // 检查兑换码弹窗组件是否可用
+    if (typeof window.RedeemModal !== 'undefined') {
+      console.log('兑换码组件可用，初始化弹窗...');
 
-      // 显示兑换码弹窗
-      modal.show();
+      try {
+        const modal = new window.RedeemModal();
+
+        // 设置成功回调
+        modal.setCallbacks({
+          onSuccess: (result) => {
+            console.log('✅ 兑换码验证成功:', result);
+            // 验证成功后开始测试
+            setCurrentPage('test');
+            setCurrentQuestion(0);
+            setAnswers({});
+          },
+          onCancel: () => {
+            console.log('❌ 用户取消验证');
+            // 用户取消，不做任何操作
+          }
+        });
+
+        // 显示兑换码弹窗
+        console.log('显示兑换码弹窗...');
+        modal.show();
+      } catch (error) {
+        console.error('❌ 创建兑换码弹窗时出错:', error);
+        // 出错时直接开始测试
+        setCurrentPage('test');
+        setCurrentQuestion(0);
+        setAnswers({});
+      }
     } else {
-      console.error('兑换码弹窗组件未加载');
+      console.error('❌ 兑换码弹窗组件未加载，可用组件:', Object.keys(window));
+      alert('兑换码验证组件加载失败，将直接开始测试。');
       // 如果兑换码组件加载失败，直接开始测试（备用方案）
       setCurrentPage('test');
       setCurrentQuestion(0);

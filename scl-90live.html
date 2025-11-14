@@ -27,7 +27,25 @@
     <!-- 兑换码验证弹窗 -->
     <script src="redeem-modal.js"></script>
 
-    <!-- 外部JavaScript文件 -->
-    <script type="text/babel" src="script.js"></script>
+    <!-- 外部JavaScript文件 - 确保兑换码组件先加载 -->
+    <script>
+        // 等待兑换码组件加载完成后再启动React应用
+        function initReactApp() {
+            if (typeof window.RedeemModal !== 'undefined') {
+                console.log('兑换码组件已加载，启动React应用');
+                // 加载React组件
+                const script = document.createElement('script');
+                script.type = 'text/babel';
+                script.src = 'script.js';
+                document.body.appendChild(script);
+            } else {
+                console.error('兑换码组件未加载，重试中...');
+                setTimeout(initReactApp, 100);
+            }
+        }
+
+        // 启动React应用
+        initReactApp();
+    </script>
 </body>
 </html>
