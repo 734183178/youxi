@@ -4,7 +4,7 @@ class GithubRedeemModal {
         this.isVerifying = false;
         this.onSuccess = null;
         this.onCancel = null;
-        this.githubToken = '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'; // 您的GitHub Token
+        this.githubToken = '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'; // 您的GitHub Token
         this.githubRepo = '734183178/scl90-exchange-codes'; // 您的仓库
         this.filePath = 'redeem-codes.json'; // 仓库中的兑换码文件
         this.init();
@@ -571,5 +571,6 @@ class GithubRedeemModal {
         }
     }
 }
+
 
 window.GithubRedeemModal = GithubRedeemModal;
