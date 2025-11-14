@@ -1,12 +1,24 @@
-// GitHub API兑换码验证弹窗组件
-class GithubRedeemModal {
+// 内置兑换码验证弹窗组件
+class RedeemModal {
     constructor() {
         this.isVerifying = false;
         this.onSuccess = null;
         this.onCancel = null;
-        this.githubToken = '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'; // 您的GitHub Token
-        this.githubRepo = '734183178/scl90-exchange-codes'; // 您的仓库
-        this.filePath = 'redeem-codes.json'; // 仓库中的兑换码文件
+
+        // 🔑 内置兑换码列表（只有知道怎么查看代码的人才能看到）
+        this.redeemCodes = [
+            "AB12-CD34",
+            "EF56-GH78",
+            "IJ90-KL12",
+            "MN34-OP56",
+            "QR78-ST90",
+            "UV12-WX34",
+            "YZ56-AB78",
+            "CD90-EF12",
+            "GH34-IJ56",
+            "KL78-MN90"
+        ];
+
         this.init();
     }
 
@@ -28,7 +40,7 @@ class GithubRedeemModal {
                         <h3 class="text-xl font-bold text-gray-800 mb-2">兑换码验证</h3>
                         <p class="text-gray-600 text-sm">请输入兑换码以开始测试</p>
                         <div class="text-xs text-gray-500 mt-2">
-                            <span id="availableCodesCount">检查可用兑换码...</span>
+                            <span id="availableCodesCount">当前可用兑换码: ${this.redeemCodes.length} 个</span>
                         </div>
                     </div>
 
@@ -239,7 +251,6 @@ class GithubRedeemModal {
         this.hideMessages();
         input.focus();
         document.body.style.overflow = 'hidden';
-        this.updateAvailableCodesCount();
     }
 
     close() {
@@ -252,57 +263,8 @@ class GithubRedeemModal {
         }
     }
 
-    // 从GitHub获取兑换码
-    async fetchRedeemCodes() {
-        try {
-            const url = `https://api.github.com/repos/${this.githubRepo}/contents/${this.filePath}`;
-            const response = await fetch(url, {
-                headers: {
-                    'Authorization': `token ${this.githubToken}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`GitHub API Error: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const content = atob(data.content);
-            return JSON.parse(content);
-        } catch (error) {
-            console.error('获取兑换码失败:', error);
-            throw error;
-        }
-    }
-
-    // 更新可用兑换码数量显示
-    async updateAvailableCodesCount() {
-        const countElement = document.getElementById('availableCodesCount');
-        if (!countElement) return;
-
-        try {
-            const redeemCodes = await this.fetchRedeemCodes();
-            let availableCodes = [];
-
-            if (Array.isArray(redeemCodes)) {
-                // 新格式：数组
-                availableCodes = redeemCodes;
-            } else {
-                // 旧格式：对象
-                availableCodes = Object.values(redeemCodes);
-            }
-
-            countElement.textContent = `当前可用兑换码: ${availableCodes.length} 个`;
-            countElement.style.color = '#10b981';
-        } catch (error) {
-            countElement.textContent = '无法获取兑换码信息';
-            countElement.style.color = '#ef4444';
-        }
-    }
-
-    // 验证兑换码
-    async verifyRedeemCode() {
+    // 验证兑换码（使用内置列表）
+    verifyRedeemCode() {
         const input = document.getElementById('redeemCodeInput');
         const code = input.value.trim().toUpperCase();
 
@@ -314,41 +276,26 @@ class GithubRedeemModal {
         this.setVerifying(true);
         this.hideMessages();
 
-        try {
-            this.showStatus('正在连接GitHub...', 'loading');
+        // 模拟验证过程，增加用户体验
+        this.showStatus('正在验证兑换码...', 'loading');
 
-            // 获取兑换码列表
-            const redeemCodes = await this.fetchRedeemCodes();
-            this.showStatus('正在验证兑换码...', 'loading');
-
-            // 获取所有有效的兑换码（支持数组格式）
-            let availableCodes = [];
-
-            if (Array.isArray(redeemCodes)) {
-                // 新格式：直接是数组
-                availableCodes = redeemCodes;
-            } else {
-                // 兼容旧格式：对象形式
-                availableCodes = Object.values(redeemCodes);
-            }
-
-            const codeExists = availableCodes.includes(code);
+        setTimeout(() => {
+            // 检查兑换码是否在内置列表中
+            const codeExists = this.redeemCodes.includes(code);
 
             if (codeExists) {
                 // 验证成功
                 this.showSuccess();
 
                 // 获取兑换码的详细信息
-                const codeInfo = this.getCodeInfo(code, redeemCodes);
-
-                // 保存本次验证的临时信息（仅用于显示，不做持久化）
-                const tempVerification = {
+                const codeInfo = {
                     code: code,
-                    verifyTime: new Date().toISOString(),
-                    codeInfo: codeInfo
+                    index: this.redeemCodes.indexOf(code),
+                    totalCodes: this.redeemCodes.length,
+                    verifyTime: new Date().toISOString()
                 };
 
-                console.log('验证成功:', tempVerification);
+                console.log('验证成功:', codeInfo);
 
                 setTimeout(() => {
                     this.close();
@@ -356,107 +303,52 @@ class GithubRedeemModal {
                         this.onSuccess({
                             code: code,
                             valid: true,
-                            info: codeInfo,
-                            verifyTime: tempVerification.verifyTime
+                            info: codeInfo
                         });
                     }
                 }, 1500);
             } else {
                 this.showError('兑换码无效，请检查后重试');
             }
-        } catch (error) {
-            console.error('验证错误:', error);
-            let errorMessage = '网络错误，请稍后重试';
 
-            if (error.message.includes('404')) {
-                errorMessage = '兑换码文件不存在，请联系管理员';
-            } else if (error.message.includes('403')) {
-                errorMessage = 'API权限错误，请联系管理员';
-            } else if (error.message.includes('GitHub')) {
-                errorMessage = 'GitHub连接失败，请检查网络';
-            }
-
-            this.showError(errorMessage);
-        } finally {
             this.setVerifying(false);
             setTimeout(() => this.hideStatus(), 1000);
-        }
+        }, 800);
     }
 
-    // 获取兑换码的详细信息
-    getCodeInfo(code, redeemCodes) {
-        if (Array.isArray(redeemCodes)) {
-            // 新格式：数组形式
-            return {
-                code: code,
-                addedDate: '未知',
-                format: 'array'
-            };
-        } else {
-            // 兼容旧格式：对象形式
-            for (const [date, storedCode] of Object.entries(redeemCodes)) {
-                if (storedCode.toUpperCase() === code.toUpperCase()) {
-                    return {
-                        code: storedCode,
-                        originalDate: date,
-                        addedDate: date,
-                        isHistorical: date !== new Date().toISOString().split('T')[0],
-                        format: 'object'
-                    };
-                }
-            }
-            return {
-                code: code,
-                originalDate: '未知',
-                addedDate: '未知',
-                format: 'object'
-            };
+    // 添加新兑换码到内置列表
+    addRedeemCode(code) {
+        const upperCode = code.trim().toUpperCase();
+        if (upperCode && !this.redeemCodes.includes(upperCode)) {
+            this.redeemCodes.push(upperCode);
+            console.log(`已添加兑换码: ${upperCode}`);
+            return true;
         }
+        return false;
     }
 
-    // 检查兑换码是否仍然有效（用于管理员检查）
-    async isCodeStillValid(code) {
-        try {
-            const redeemCodes = await this.fetchRedeemCodes();
-            let availableCodes = [];
-
-            if (Array.isArray(redeemCodes)) {
-                availableCodes = redeemCodes;
-            } else {
-                availableCodes = Object.values(redeemCodes);
-            }
-
-            return availableCodes.includes(code.toUpperCase());
-        } catch (error) {
-            console.error('检查兑换码有效性失败:', error);
-            return false;
+    // 移除兑换码
+    removeRedeemCode(code) {
+        const upperCode = code.trim().toUpperCase();
+        const index = this.redeemCodes.indexOf(upperCode);
+        if (index > -1) {
+            this.redeemCodes.splice(index, 1);
+            console.log(`已移除兑换码: ${upperCode}`);
+            return true;
         }
+        return false;
     }
 
-    // 获取所有可用兑换码（用于管理员）
-    async getAvailableCodes() {
-        try {
-            const redeemCodes = await this.fetchRedeemCodes();
+    // 获取所有可用兑换码（调试用）
+    getAllRedeemCodes() {
+        return [...this.redeemCodes];
+    }
 
-            if (Array.isArray(redeemCodes)) {
-                // 新格式：数组形式
-                return redeemCodes.map((code, index) => ({
-                    code: code,
-                    index: index,
-                    format: 'array'
-                }));
-            } else {
-                // 兼容旧格式：对象形式
-                return Object.entries(redeemCodes).map(([date, code]) => ({
-                    date: date,
-                    code: code,
-                    isHistorical: date !== new Date().toISOString().split('T')[0],
-                    format: 'object'
-                }));
-            }
-        } catch (error) {
-            console.error('获取可用兑换码失败:', error);
-            return [];
+    // 更新兑换码列表
+    updateRedeemCodes(newCodes) {
+        if (Array.isArray(newCodes)) {
+            this.redeemCodes = newCodes.map(code => code.trim().toUpperCase());
+            console.log('兑换码列表已更新');
         }
     }
 
@@ -531,45 +423,17 @@ class GithubRedeemModal {
         this.onCancel = options.onCancel || null;
     }
 
-    // 静态方法：检查是否需要验证（每次都返回false，意味着每次都需要验证）
+    // 静态方法：检查是否需要验证
     static shouldVerify() {
         return true; // 每次都需要验证
     }
 
-    // 静态方法：检查兑换码是否在有效期内（基于GitHub文件内容）
-    static async isCodeValid(code, githubToken, githubRepo, filePath) {
-        try {
-            const url = `https://api.github.com/repos/${githubRepo}/contents/${filePath}`;
-            const response = await fetch(url, {
-                headers: {
-                    'Authorization': `token ${githubToken}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-
-            if (!response.ok) {
-                return false;
-            }
-
-            const data = await response.json();
-            const content = atob(data.content);
-            const redeemCodes = JSON.parse(content);
-            let availableCodes = [];
-
-            if (Array.isArray(redeemCodes)) {
-                // 新格式：数组形式
-                availableCodes = redeemCodes;
-            } else {
-                // 兼容旧格式：对象形式
-                availableCodes = Object.values(redeemCodes);
-            }
-
-            return availableCodes.includes(code.toUpperCase());
-        } catch (error) {
-            console.error('检查兑换码有效性失败:', error);
-            return false;
-        }
+    // 静态方法：检查兑换码是否有效
+    static isCodeValid(code) {
+        // 这个方法现在需要在实例上调用，或者传入兑换码列表
+        console.warn('isCodeValid现在是实例方法，请创建实例后调用');
+        return false;
     }
 }
 
-window.GithubRedeemModal = GithubRedeemModal;
+window.RedeemModal = RedeemModal;
