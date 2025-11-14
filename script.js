@@ -181,14 +181,14 @@ const SCL90Assessment = () => {
   });
 
   const handleStartTest = () => {
-    console.log('点击开始测试按钮，检查兑换码组件...');
+    console.log('点击开始测试按钮，检查GitHub兑换码组件...');
 
-    // 检查兑换码弹窗组件是否可用
-    if (typeof window.RedeemModal !== 'undefined') {
-      console.log('兑换码组件可用，初始化弹窗...');
+    // 检查GitHub兑换码弹窗组件是否可用
+    if (typeof window.GithubRedeemModal !== 'undefined') {
+      console.log('GitHub兑换码组件可用，初始化弹窗...');
 
       try {
-        const modal = new window.RedeemModal();
+        const modal = new window.GithubRedeemModal();
 
         // 设置成功回调
         modal.setCallbacks({
@@ -206,18 +206,18 @@ const SCL90Assessment = () => {
         });
 
         // 显示兑换码弹窗
-        console.log('显示兑换码弹窗...');
+        console.log('显示GitHub兑换码弹窗...');
         modal.show();
       } catch (error) {
-        console.error('❌ 创建兑换码弹窗时出错:', error);
+        console.error('❌ 创建GitHub兑换码弹窗时出错:', error);
         // 出错时直接开始测试
         setCurrentPage('test');
         setCurrentQuestion(0);
         setAnswers({});
       }
     } else {
-      console.error('❌ 兑换码弹窗组件未加载，可用组件:', Object.keys(window));
-      alert('兑换码验证组件加载失败，将直接开始测试。');
+      console.error('❌ GitHub兑换码弹窗组件未加载，可用组件:', Object.keys(window));
+      alert('GitHub兑换码验证组件加载失败，将直接开始测试。');
       // 如果兑换码组件加载失败，直接开始测试（备用方案）
       setCurrentPage('test');
       setCurrentQuestion(0);

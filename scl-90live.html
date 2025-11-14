@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCL-90症状自评量表</title>
+
+    <!-- 外部样式表 -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- React 和 ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel Standalone for JSX compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- 兑换码验证弹窗 -->
+    <script src="redeem-modal.js"></script>
+
+    <!-- 外部JavaScript文件 - 确保兑换码组件先加载 -->
+    <script>
+        // 等待兑换码组件加载完成后再启动React应用
+        function initReactApp() {
+            if (typeof window.GithubRedeemModal !== 'undefined') {
+                console.log('GitHub兑换码组件已加载，启动React应用');
+                // 加载React组件
+                const script = document.createElement('script');
+                script.type = 'text/babel';
+                script.src = 'script.js';
+                document.body.appendChild(script);
+            } else {
+                console.error('GitHub兑换码组件未加载，重试中...');
+                setTimeout(initReactApp, 100);
+            }
+        }
+
+        // 启动React应用
+        initReactApp();
+    </script>
+</body>
+</html>
