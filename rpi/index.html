@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,10 +49,25 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.3; }
-            90% { opacity: 0.3; }
-            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+
+            0%,
+            100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.3;
+            }
+
+            90% {
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
         }
 
         .header {
@@ -93,8 +109,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         .logo-text h1 {
@@ -166,8 +189,15 @@
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .hero h2 {
@@ -182,8 +212,15 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .hero-subtitle {
@@ -231,7 +268,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transition: left 0.5s;
         }
 
@@ -707,8 +744,13 @@
         }
 
         @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .privacy-content {
@@ -736,7 +778,7 @@
             font-weight: 700;
         }
 
-        .privacy-guarantee > p {
+        .privacy-guarantee>p {
             font-size: 18px;
             color: #aaa;
             margin-bottom: 40px;
@@ -807,25 +849,194 @@
             font-weight: 700;
         }
 
+        /* 
+ * 移动端适配修改 - 替换 index.html 中原有的 @media 部分
+ * 找到文件底部的 @media (max-width: 768px) 部分，替换为以下内容
+ */
+
         @media (max-width: 768px) {
+
+            /* ===== Header 缩小 1/3 ===== */
+            .header {
+                padding: 12px 0;
+            }
+
+            .header-content {
+                padding: 0 15px;
+            }
+
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 20px;
+                border-radius: 10px;
+            }
+
+            .logo-text h1 {
+                font-size: 16px;
+            }
+
+            .logo-text p {
+                font-size: 10px;
+            }
+
+            .logo {
+                gap: 10px;
+            }
+
+            /* ===== Hero 区域压缩 ===== */
+            .hero {
+                padding: 30px 20px 40px;
+            }
+
+            .hero-badge {
+                padding: 6px 15px;
+                font-size: 12px;
+                margin-bottom: 20px;
+            }
+
             .hero h2 {
-                font-size: 38px;
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+                margin-bottom: 12px;
+            }
+
+            .hero p {
+                font-size: 14px;
+                margin-bottom: 25px;
+                line-height: 1.7;
+            }
+
+            .cta-buttons {
+                gap: 12px;
+                flex-direction: column;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 16px 30px;
+                font-size: 16px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* ===== 信任指标区域 ===== */
+            .trust-indicators {
+                margin: 0 auto 40px;
+                padding: 0 15px;
+                gap: 15px;
+            }
+
+            .trust-item {
+                padding: 20px 15px;
+            }
+
+            .trust-number {
+                font-size: 32px;
+            }
+
+            .trust-label {
+                font-size: 13px;
+            }
+
+            /* ===== 其他区域适配 ===== */
+            .section {
+                margin: 50px auto;
+                padding: 0 15px;
+            }
+
+            .section-header {
+                margin-bottom: 40px;
+            }
+
+            .section-header h2 {
+                font-size: 24px;
+            }
+
+            .section-header p {
+                font-size: 14px;
             }
 
             .test-modes {
                 grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .mode-card {
+                padding: 30px 20px;
             }
 
             .nav {
                 display: none;
             }
 
-            .section-header h2 {
-                font-size: 32px;
+            .features-grid {
+                gap: 20px;
+            }
+
+            .feature-card {
+                padding: 30px 20px;
+            }
+
+            .dimensions-showcase {
+                padding: 40px 20px;
+                margin: 40px 0;
+            }
+
+            .dimensions-grid {
+                gap: 20px;
+            }
+
+            .benefits-section {
+                padding: 40px 20px;
+                margin: 50px 0;
+            }
+
+            .privacy-guarantee {
+                padding: 40px 25px;
+                margin: 50px auto;
+            }
+
+            .privacy-guarantee h2 {
+                font-size: 28px;
+            }
+
+            .cta-final {
+                padding: 50px 20px;
+            }
+
+            .cta-final h2 {
+                font-size: 26px;
+            }
+
+            .action-title {
+                font-size: 24px;
+            }
+        }
+
+        /* 针对更小屏幕的额外优化 */
+        @media (max-width: 375px) {
+            .hero h2 {
+                font-size: 24px;
+            }
+
+            .hero p {
+                font-size: 13px;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 14px 25px;
+                font-size: 15px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="animated-bg"></div>
     <div class="floating-hearts">
@@ -938,7 +1149,9 @@
                 </ul>
             </div>
             <div class="feature-card" style="position: relative;">
-                <div style="position: absolute; top: 20px; right: 20px; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #000; padding: 6px 15px; border-radius: 15px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);">⭐ 升级获取</div>
+                <div
+                    style="position: absolute; top: 20px; right: 20px; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #000; padding: 6px 15px; border-radius: 15px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);">
+                    ⭐ 升级获取</div>
                 <div class="feature-icon">🧠</div>
                 <h3>AI智能分析</h3>
                 <p>运用先进的心理学算法和AI技术，对你的每一个答案进行深度解析，生成更精准的个性化心理画像和改善建议</p>
@@ -957,7 +1170,7 @@
             <h2>四大核心维度，全面解析你的占有欲</h2>
             <p>每个维度都经过精心设计，从不同角度剖析你在恋爱关系中的心理状态</p>
         </div>
-        
+
         <div class="dimensions-grid">
             <div class="dimension-item">
                 <div class="dimension-number">01</div>
@@ -1096,7 +1309,7 @@
                 仅保存在你的本地设备，不会上传到任何服务器。<br>
                 <strong>你有绝对的控制权，可随时删除全部数据。</strong>
             </p>
-            
+
             <div class="privacy-features">
                 <div class="privacy-feature">
                     <div class="privacy-feature-icon">✓</div>
@@ -1161,25 +1374,26 @@
             observer.observe(el);
         });
         // 平滑滚动到指定区域
-function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId) || document.querySelector('.section');
-    if (section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-}
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId) || document.querySelector('.section');
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
 
-// 从首页显示历史记录
-function showHistoryFromIndex() {
-    const history = JSON.parse(localStorage.getItem('rpiTestHistory') || '[]');
-    
-    if (history.length === 0) {
-        alert('你还没有任何测试记录哦！\n\n立即开始你的第一次测试吧 🎯');
-        return;
-    }
-    
-    // 跳转到结果页并显示历史
-    window.location.href = 'result.html#history';
-}
+        // 从首页显示历史记录
+        function showHistoryFromIndex() {
+            const history = JSON.parse(localStorage.getItem('rpiTestHistory') || '[]');
+
+            if (history.length === 0) {
+                alert('你还没有任何测试记录哦！\n\n立即开始你的第一次测试吧 🎯');
+                return;
+            }
+
+            // 跳转到结果页并显示历史
+            window.location.href = 'result.html#history';
+        }
     </script>
 </body>
+
 </html>
