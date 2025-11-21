@@ -366,3 +366,4 @@ class RedeemModal {
 
 // 自动初始化并暴露到全局
 window.RedeemModal = RedeemModal;
+
