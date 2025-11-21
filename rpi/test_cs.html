@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -121,8 +122,15 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .dimension-tag {
@@ -438,6 +446,11 @@
             font-size: 13px;
         }
 
+        /* 
+ * test_cs.html 移动端适配修改
+ * 找到文件中的 @media 部分，替换为以下内容
+ */
+
         @media (max-width: 1024px) {
             .sidebar-progress {
                 display: none;
@@ -445,50 +458,196 @@
         }
 
         @media (max-width: 768px) {
-            .container {
-                margin: 30px auto;
-                padding: 0 20px;
+
+            /* ===== Header 压缩 ===== */
+            .header {
+                padding: 10px 0;
             }
 
+            .header-content {
+                padding: 0 15px;
+            }
+
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 18px;
+                border-radius: 8px;
+            }
+
+            .logo-text {
+                font-size: 14px;
+            }
+
+            .logo {
+                gap: 8px;
+            }
+
+            .progress-info {
+                font-size: 12px;
+                gap: 10px;
+            }
+
+            /* ===== 主容器 ===== */
+            .container {
+                margin: 15px auto;
+                padding: 0 12px;
+                /* 底部留出空间给快速测试面板 */
+                padding-bottom: 80px;
+            }
+
+            /* ===== 测试卡片 ===== */
             .test-card {
-                padding: 40px 25px;
+                padding: 20px 16px;
+                border-radius: 20px;
+            }
+
+            /* ===== 维度标签 ===== */
+            .dimension-tag {
+                padding: 5px 12px;
+                font-size: 12px;
+                margin-bottom: 12px;
+            }
+
+            /* ===== 题目区域 ===== */
+            .question-header {
+                margin-bottom: 16px;
+            }
+
+            .question-number {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+
+            .question-number span {
+                font-size: 16px;
             }
 
             .question-text {
-                font-size: 22px;
+                font-size: 18px;
+                margin-bottom: 8px;
+                line-height: 1.4;
             }
 
+            .question-subtitle {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+
+            /* ===== 选项区域 - 重点压缩 ===== */
+            .options-container {
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+
+            .option-card {
+                padding: 14px 16px;
+                border-radius: 14px;
+                gap: 12px;
+            }
+
+            .option-radio {
+                width: 20px;
+                height: 20px;
+                flex-shrink: 0;
+            }
+
+            .option-text {
+                font-size: 14px;
+                line-height: 1.4;
+            }
+
+            /* ===== 按钮区域 ===== */
             .button-container {
-                flex-direction: column;
+                flex-direction: row;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 14px;
+                border-radius: 12px;
             }
 
             .btn-back {
-                order: 2;
+                padding: 14px 16px;
+                flex: 0 0 auto;
             }
 
             .btn-next {
-                order: 1;
+                flex: 1;
             }
 
+            /* ===== 隐藏进度点 ===== */
+            .progress-dots {
+                display: none;
+            }
+
+            /* ===== 快速测试面板 - 移动端优化 ===== */
             .quick-test-panel {
-                bottom: 20px;
-                padding: 10px 15px;
-                gap: 10px;
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+                transform: none;
+                padding: 12px 15px;
+                border-radius: 16px;
                 flex-wrap: wrap;
-                max-width: 90%;
+                justify-content: center;
+                gap: 8px;
+                max-width: none;
             }
 
             .quick-test-label {
                 width: 100%;
                 text-align: center;
+                font-size: 12px;
+                margin-bottom: 4px;
+            }
+
+            .quick-test-btn {
+                padding: 8px 12px;
+                font-size: 11px;
+                border-radius: 20px;
+                flex: 1;
+                min-width: 0;
+            }
+        }
+
+        /* 更小屏幕优化 */
+        @media (max-width: 375px) {
+            .test-card {
+                padding: 16px 14px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .option-card {
+                padding: 12px 14px;
+            }
+
+            .option-text {
+                font-size: 13px;
+            }
+
+            .btn {
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+
+            .quick-test-btn {
+                padding: 6px 10px;
+                font-size: 10px;
             }
         }
     </style>
     <script src="js/questions.js"></script>
 </head>
+
 <body>
     <div class="animated-bg"></div>
-    
+
     <div class="top-progress-bar">
         <div class="top-progress-fill" id="topProgress"></div>
     </div>
@@ -554,8 +713,8 @@
                     </linearGradient>
                 </defs>
                 <circle class="progress-circle-bg" cx="40" cy="40" r="36"></circle>
-                <circle class="progress-circle-fill" cx="40" cy="40" r="36" 
-                    stroke-dasharray="226" stroke-dashoffset="226" id="progressCircle"></circle>
+                <circle class="progress-circle-fill" cx="40" cy="40" r="36" stroke-dasharray="226"
+                    stroke-dashoffset="226" id="progressCircle"></circle>
             </svg>
             <div class="progress-percentage" id="progressPercentage">2%</div>
         </div>
@@ -568,7 +727,9 @@
         <button class="quick-test-btn low" onclick="quickTest(1)">低占有欲</button>
         <button class="quick-test-btn medium" onclick="quickTest(3)">中等占有欲</button>
         <button class="quick-test-btn high" onclick="quickTest(5)">高占有欲</button>
-        <button class="quick-test-btn" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); color: white;" onclick="quickTestRandom()">随机填写</button>
+        <button class="quick-test-btn"
+            style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); color: white;"
+            onclick="quickTestRandom()">随机填写</button>
     </div>
 
     <script>
@@ -580,14 +741,14 @@
         const urlParams = new URLSearchParams(window.location.search);
         const testMode = urlParams.get('mode') || 'self';
         localStorage.setItem('testMode', testMode);
-        
+
         const testquestions = window.getQuestions(testMode);
         let currentQuestion = 0;
         let answers = [];
         let startTime = Date.now();
 
         // ========== 新增：快速测试函数 ==========
-        
+
         /**
          * 快速测试 - 用指定分数填充所有答案
          * @param {number} score - 1(低), 3(中), 5(高)
@@ -596,10 +757,10 @@
             if (!confirm(`确定要用"${score === 1 ? '低' : score === 3 ? '中等' : '高'}占有欲"的答案快速填充所有题目吗？\n\n这将直接跳转到结果页面。`)) {
                 return;
             }
-            
+
             // 用指定分数填充所有42个答案
             answers = Array(42).fill(score);
-            
+
             // 保存并跳转
             saveAndSubmit();
         }
@@ -611,15 +772,15 @@
             if (!confirm('确定要随机生成所有答案吗？\n\n这将随机选择1-5分，直接跳转到结果页面。')) {
                 return;
             }
-            
+
             // 生成42个随机答案(1-5)
             answers = Array(42).fill(0).map(() => Math.floor(Math.random() * 5) + 1);
-            
+
             // 显示生成的答案分布
-            const distribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+            const distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
             answers.forEach(a => distribution[a]++);
             console.log('随机生成的答案分布:', distribution);
-            
+
             // 保存并跳转
             saveAndSubmit();
         }
@@ -630,13 +791,13 @@
         function saveAndSubmit() {
             localStorage.setItem('testAnswers', JSON.stringify(answers));
             localStorage.setItem('testTime', new Date().toISOString());
-            
+
             // 显示提示
             const loadingDiv = document.createElement('div');
             loadingDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); color: #ff6b9d; padding: 30px 50px; border-radius: 20px; font-size: 18px; z-index: 9999; text-align: center;';
             loadingDiv.innerHTML = '✓ 测试完成！<br><span style="font-size: 14px; color: #999;">正在跳转到结果页...</span>';
             document.body.appendChild(loadingDiv);
-            
+
             // 延迟跳转，让用户看到提示
             setTimeout(() => {
                 window.location.href = 'result.html';
@@ -664,7 +825,7 @@
 
         function updateQuestion() {
             const q = testquestions[currentQuestion] || testquestions[0];
-            
+
             document.getElementById('dimensionTag').innerHTML = q.dimension;
             document.getElementById('questionNum').textContent = currentQuestion + 1;
             document.getElementById('questionText').textContent = q.question;
@@ -686,10 +847,10 @@
 
             updateProgress();
             setupOptionListeners();
-            
+
             document.getElementById('btnBack').disabled = currentQuestion === 0;
             document.getElementById('btnNext').disabled = true;
-            
+
             if (answers[currentQuestion]) {
                 const selectedOption = document.querySelector(`[data-value="${answers[currentQuestion]}"]`);
                 if (selectedOption) {
@@ -701,14 +862,14 @@
 
         function updateProgress() {
             const progress = ((currentQuestion + 1) / 42) * 100;
-            
+
             document.getElementById('topProgress').style.width = progress + '%';
-            
+
             const circumference = 226;
             const offset = circumference - (progress / 100) * circumference;
             document.getElementById('progressCircle').style.strokeDashoffset = offset;
             document.getElementById('progressPercentage').textContent = Math.round(progress) + '%';
-            
+
             const dots = document.querySelectorAll('.progress-dot');
             dots.forEach((dot, index) => {
                 dot.classList.remove('current', 'completed');
@@ -722,11 +883,11 @@
 
         function setupOptionListeners() {
             document.querySelectorAll('.option-card').forEach(option => {
-                option.addEventListener('click', function() {
+                option.addEventListener('click', function () {
                     document.querySelectorAll('.option-card').forEach(opt => {
                         opt.classList.remove('selected');
                     });
-                    
+
                     this.classList.add('selected');
                     answers[currentQuestion] = parseInt(this.dataset.value);
                     document.getElementById('btnNext').disabled = false;
@@ -768,4 +929,5 @@
         init();
     </script>
 </body>
+
 </html>
