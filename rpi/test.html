@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -124,8 +125,15 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* 维度标签 */
@@ -393,6 +401,11 @@
             color: #999;
         }
 
+        /* 
+ * test.html 移动端适配修改
+ * 找到文件底部的 @media 部分，替换为以下内容
+ */
+
         /* 响应式 */
         @media (max-width: 1024px) {
             .sidebar-progress {
@@ -401,37 +414,160 @@
         }
 
         @media (max-width: 768px) {
-            .container {
-                margin: 30px auto;
-                padding: 0 20px;
+
+            /* ===== Header 压缩 ===== */
+            .header {
+                padding: 10px 0;
             }
 
+            .header-content {
+                padding: 0 15px;
+            }
+
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 18px;
+                border-radius: 8px;
+            }
+
+            .logo-text {
+                font-size: 14px;
+            }
+
+            .logo {
+                gap: 8px;
+            }
+
+            .progress-info {
+                font-size: 12px;
+                gap: 10px;
+            }
+
+            /* ===== 主容器 ===== */
+            .container {
+                margin: 15px auto;
+                padding: 0 12px;
+            }
+
+            /* ===== 测试卡片 ===== */
             .test-card {
-                padding: 40px 25px;
+                padding: 20px 16px;
+                border-radius: 20px;
+            }
+
+            /* ===== 维度标签 ===== */
+            .dimension-tag {
+                padding: 5px 12px;
+                font-size: 12px;
+                margin-bottom: 12px;
+            }
+
+            /* ===== 题目区域 ===== */
+            .question-header {
+                margin-bottom: 16px;
+            }
+
+            .question-number {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+
+            .question-number span {
+                font-size: 16px;
             }
 
             .question-text {
-                font-size: 22px;
+                font-size: 18px;
+                margin-bottom: 8px;
+                line-height: 1.4;
             }
 
+            .question-subtitle {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+
+            /* ===== 选项区域 - 重点压缩 ===== */
+            .options-container {
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+
+            .option-card {
+                padding: 14px 16px;
+                border-radius: 14px;
+                gap: 12px;
+            }
+
+            .option-radio {
+                width: 20px;
+                height: 20px;
+                flex-shrink: 0;
+            }
+
+            .option-text {
+                font-size: 14px;
+                line-height: 1.4;
+            }
+
+            /* ===== 按钮区域 ===== */
             .button-container {
-                flex-direction: column;
+                flex-direction: row;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 14px;
+                border-radius: 12px;
             }
 
             .btn-back {
-                order: 2;
+                padding: 14px 16px;
+                flex: 0 0 auto;
             }
 
             .btn-next {
-                order: 1;
+                flex: 1;
+            }
+
+            /* ===== 隐藏进度点 ===== */
+            .progress-dots {
+                display: none;
+            }
+        }
+
+        /* 更小屏幕优化 */
+        @media (max-width: 375px) {
+            .test-card {
+                padding: 16px 14px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .option-card {
+                padding: 12px 14px;
+            }
+
+            .option-text {
+                font-size: 13px;
+            }
+
+            .btn {
+                padding: 12px 16px;
+                font-size: 13px;
             }
         }
     </style>
     <script src="js/questions.js"></script>
 </head>
+
 <body>
     <div class="animated-bg"></div>
-    
+
     <!-- 顶部进度条 -->
     <div class="top-progress-bar">
         <div class="top-progress-fill" id="topProgress"></div>
@@ -525,8 +661,8 @@
                     </linearGradient>
                 </defs>
                 <circle class="progress-circle-bg" cx="40" cy="40" r="36"></circle>
-                <circle class="progress-circle-fill" cx="40" cy="40" r="36" 
-                    stroke-dasharray="226" stroke-dashoffset="226" id="progressCircle"></circle>
+                <circle class="progress-circle-fill" cx="40" cy="40" r="36" stroke-dasharray="226"
+                    stroke-dashoffset="226" id="progressCircle"></circle>
             </svg>
             <div class="progress-percentage" id="progressPercentage">2%</div>
         </div>
@@ -534,16 +670,16 @@
     </div>
 
     <script>
-    // 确保questions.js已加载
-    if (typeof getQuestions === 'undefined') {
-        alert('题目文件加载失败,请刷新页面重试');
-    }
+        // 确保questions.js已加载
+        if (typeof getQuestions === 'undefined') {
+            alert('题目文件加载失败,请刷新页面重试');
+        }
 
         // 获取测试模式
         const urlParams = new URLSearchParams(window.location.search);
         const testMode = urlParams.get('mode') || 'self';
         localStorage.setItem('testMode', testMode);
-        
+
         // 获取对应模式的题目
         const testquestions = window.getQuestions(testMode);
 
@@ -575,7 +711,7 @@
         // 更新问题
         function updateQuestion() {
             const q = testquestions[currentQuestion] || testquestions[0];
-            
+
             document.getElementById('dimensionTag').innerHTML = q.dimension;
             document.getElementById('questionNum').textContent = currentQuestion + 1;
             document.getElementById('questionText').textContent = q.question;
@@ -598,14 +734,14 @@
 
             // 更新进度
             updateProgress();
-            
+
             // 重新绑定选项事件
             setupOptionListeners();
-            
+
             // 更新按钮状态
             document.getElementById('btnBack').disabled = currentQuestion === 0;
             document.getElementById('btnNext').disabled = true;
-            
+
             // 恢复之前的答案
             if (answers[currentQuestion]) {
                 const selectedOption = document.querySelector(`[data-value="${answers[currentQuestion]}"]`);
@@ -619,16 +755,16 @@
         // 更新进度
         function updateProgress() {
             const progress = ((currentQuestion + 1) / 42) * 100;
-            
+
             // 顶部进度条
             document.getElementById('topProgress').style.width = progress + '%';
-            
+
             // 圆形进度
             const circumference = 226;
             const offset = circumference - (progress / 100) * circumference;
             document.getElementById('progressCircle').style.strokeDashoffset = offset;
             document.getElementById('progressPercentage').textContent = Math.round(progress) + '%';
-            
+
             // 进度点
             const dots = document.querySelectorAll('.progress-dot');
             dots.forEach((dot, index) => {
@@ -644,18 +780,18 @@
         // 设置选项监听
         function setupOptionListeners() {
             document.querySelectorAll('.option-card').forEach(option => {
-                option.addEventListener('click', function() {
+                option.addEventListener('click', function () {
                     // 移除其他选项的选中状态
                     document.querySelectorAll('.option-card').forEach(opt => {
                         opt.classList.remove('selected');
                     });
-                    
+
                     // 添加当前选项的选中状态
                     this.classList.add('selected');
-                    
+
                     // 保存答案
                     answers[currentQuestion] = parseInt(this.dataset.value);
-                    
+
                     // 启用下一题按钮
                     document.getElementById('btnNext').disabled = false;
                 });
@@ -697,7 +833,7 @@
             // 保存答案到 localStorage
             localStorage.setItem('testAnswers', JSON.stringify(answers));
             localStorage.setItem('testTime', new Date().toISOString());
-            
+
             // 跳转到结果页
             window.location.href = 'result.html';
         }
@@ -706,4 +842,5 @@
         init();
     </script>
 </body>
+
 </html>
