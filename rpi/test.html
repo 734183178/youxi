@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋爱占有欲测试 - 正在测评中</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0a1e 0%, #2d1b3d 50%, #1a0a1e 100%);
+            z-index: -1;
+        }
+
+        /* 顶部进度条 */
+        .top-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .top-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b9d 0%, #ffa07a 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(255, 107, 157, 0.6);
+        }
+
+        /* 头部 */
+        .header {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 107, 157, 0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .progress-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        .progress-text {
+            color: #ff6b9d;
+            font-weight: 600;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 0 30px;
+        }
+
+        /* 测试卡片 */
+        .test-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 60px 50px;
+            border: 1px solid rgba(255, 107, 157, 0.2);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 维度标签 */
+        .dimension-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 107, 157, 0.15);
+            color: #ff6b9d;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+        }
+
+        /* 问题区域 */
+        .question-header {
+            margin-bottom: 40px;
+        }
+
+        .question-number {
+            font-size: 16px;
+            color: #999;
+            margin-bottom: 15px;
+        }
+
+        .question-number span {
+            color: #ff6b9d;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .question-text {
+            font-size: 28px;
+            color: #fff;
+            line-height: 1.5;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .question-subtitle {
+            font-size: 15px;
+            color: #aaa;
+            line-height: 1.7;
+        }
+
+        /* 选项区域 */
+        .options-container {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 157, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .option-card:hover::before {
+            left: 100%;
+        }
+
+        .option-card:hover {
+            border-color: rgba(255, 107, 157, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .option-card.selected {
+            border-color: #ff6b9d;
+            background: rgba(255, 107, 157, 0.1);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
+        }
+
+        .option-radio {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .option-card.selected .option-radio {
+            border-color: #ff6b9d;
+            background: #ff6b9d;
+        }
+
+        .option-card.selected .option-radio::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 17px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .option-card.selected .option-text {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* 按钮区域 */
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ccc;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            flex: 1;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+            justify-content: center;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 进度指示器 */
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .progress-dot.completed {
+            background: #4caf50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .progress-dot.current {
+            background: #ff6b9d;
+            width: 24px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(255, 107, 157, 0.6);
+        }
+
+        /* 侧边栏进度 */
+        .sidebar-progress {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            padding: 25px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.2);
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .sidebar-progress-circle {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+
+        .sidebar-progress-circle svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+        }
+
+        .progress-circle-fill {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff6b9d;
+        }
+
+        .sidebar-progress-text {
+            font-size: 13px;
+            color: #999;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .sidebar-progress {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 30px auto;
+                padding: 0 20px;
+            }
+
+            .test-card {
+                padding: 40px 25px;
+            }
+
+            .question-text {
+                font-size: 22px;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .btn-back {
+                order: 2;
+            }
+
+            .btn-next {
+                order: 1;
+            }
+        }
+    </style>
+    <script src="js/questions.js"></script>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <!-- 顶部进度条 -->
+    <div class="top-progress-bar">
+        <div class="top-progress-fill" id="topProgress"></div>
+    </div>
+
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">💝</div>
+                <div class="logo-text">恋爱占有欲测试</div>
+            </div>
+            <div class="progress-info">
+                <span class="progress-text" id="progressText">1/42</span>
+                <span>|</span>
+                <span id="timeElapsed">00:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <div class="test-card">
+            <!-- 维度标签 -->
+            <div class="dimension-tag" id="dimensionTag">
+                🎯 控制欲望维度
+            </div>
+
+            <!-- 问题区域 -->
+            <div class="question-header">
+                <div class="question-number">
+                    第 <span id="questionNum">1</span> 题 / 共 42 题
+                </div>
+                <h2 class="question-text" id="questionText">
+                    当你的伴侣和异性朋友单独出去时，你会有什么感受？
+                </h2>
+                <p class="question-subtitle" id="questionSubtitle">
+                    请根据你的真实感受选择最符合的选项
+                </p>
+            </div>
+
+            <!-- 选项区域 -->
+            <div class="options-container" id="optionsContainer">
+                <div class="option-card" data-value="1">
+                    <div class="option-radio"></div>
+                    <div class="option-text">完全不介意，相信对方的判断</div>
+                </div>
+                <div class="option-card" data-value="2">
+                    <div class="option-radio"></div>
+                    <div class="option-text">有一点在意，但不会表现出来</div>
+                </div>
+                <div class="option-card" data-value="3">
+                    <div class="option-radio"></div>
+                    <div class="option-text">会感到不安，希望了解详细情况</div>
+                </div>
+                <div class="option-card" data-value="4">
+                    <div class="option-radio"></div>
+                    <div class="option-text">非常介意，会明确表达反对</div>
+                </div>
+                <div class="option-card" data-value="5">
+                    <div class="option-radio"></div>
+                    <div class="option-text">无法接受，觉得这是对关系的不尊重</div>
+                </div>
+            </div>
+
+            <!-- 按钮区域 -->
+            <div class="button-container">
+                <button class="btn btn-back" id="btnBack">
+                    ← 上一题
+                </button>
+                <button class="btn btn-next" id="btnNext" disabled>
+                    下一题 →
+                </button>
+            </div>
+
+            <!-- 进度点 -->
+            <div class="progress-dots" id="progressDots">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 侧边栏进度 -->
+    <div class="sidebar-progress">
+        <div class="sidebar-progress-circle">
+            <svg width="80" height="80">
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ff6b9d;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#ffa07a;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <circle class="progress-circle-bg" cx="40" cy="40" r="36"></circle>
+                <circle class="progress-circle-fill" cx="40" cy="40" r="36" 
+                    stroke-dasharray="226" stroke-dashoffset="226" id="progressCircle"></circle>
+            </svg>
+            <div class="progress-percentage" id="progressPercentage">2%</div>
+        </div>
+        <div class="sidebar-progress-text">测试进度</div>
+    </div>
+
+    <script>
+    // 确保questions.js已加载
+    if (typeof getQuestions === 'undefined') {
+        alert('题目文件加载失败,请刷新页面重试');
+    }
+
+        // 获取测试模式
+        const urlParams = new URLSearchParams(window.location.search);
+        const testMode = urlParams.get('mode') || 'self';
+        localStorage.setItem('testMode', testMode);
+        
+        // 获取对应模式的题目
+        const testquestions = window.getQuestions(testMode);
+
+        // 测试数据
+
+        let currentQuestion = 0;
+        let answers = [];
+        let startTime = Date.now();
+
+        // 初始化
+        function init() {
+            generateProgressDots();
+            updateQuestion();
+            setupEventListeners();
+            startTimer();
+        }
+
+        // 生成进度点
+        function generateProgressDots() {
+            const dotsContainer = document.getElementById('progressDots');
+            for (let i = 0; i < 42; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                if (i === 0) dot.classList.add('current');
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        // 更新问题
+        function updateQuestion() {
+            const q = testquestions[currentQuestion] || testquestions[0];
+            
+            document.getElementById('dimensionTag').innerHTML = q.dimension;
+            document.getElementById('questionNum').textContent = currentQuestion + 1;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('questionSubtitle').textContent = q.subtitle;
+            document.getElementById('progressText').textContent = `${currentQuestion + 1}/42`;
+
+            // 更新选项
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            q.options.forEach((option, index) => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.dataset.value = index + 1;
+                optionCard.innerHTML = `
+                    <div class="option-radio"></div>
+                    <div class="option-text">${option}</div>
+                `;
+                optionsContainer.appendChild(optionCard);
+            });
+
+            // 更新进度
+            updateProgress();
+            
+            // 重新绑定选项事件
+            setupOptionListeners();
+            
+            // 更新按钮状态
+            document.getElementById('btnBack').disabled = currentQuestion === 0;
+            document.getElementById('btnNext').disabled = true;
+            
+            // 恢复之前的答案
+            if (answers[currentQuestion]) {
+                const selectedOption = document.querySelector(`[data-value="${answers[currentQuestion]}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('selected');
+                    document.getElementById('btnNext').disabled = false;
+                }
+            }
+        }
+
+        // 更新进度
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / 42) * 100;
+            
+            // 顶部进度条
+            document.getElementById('topProgress').style.width = progress + '%';
+            
+            // 圆形进度
+            const circumference = 226;
+            const offset = circumference - (progress / 100) * circumference;
+            document.getElementById('progressCircle').style.strokeDashoffset = offset;
+            document.getElementById('progressPercentage').textContent = Math.round(progress) + '%';
+            
+            // 进度点
+            const dots = document.querySelectorAll('.progress-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.remove('current', 'completed');
+                if (index < currentQuestion) {
+                    dot.classList.add('completed');
+                } else if (index === currentQuestion) {
+                    dot.classList.add('current');
+                }
+            });
+        }
+
+        // 设置选项监听
+        function setupOptionListeners() {
+            document.querySelectorAll('.option-card').forEach(option => {
+                option.addEventListener('click', function() {
+                    // 移除其他选项的选中状态
+                    document.querySelectorAll('.option-card').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 添加当前选项的选中状态
+                    this.classList.add('selected');
+                    
+                    // 保存答案
+                    answers[currentQuestion] = parseInt(this.dataset.value);
+                    
+                    // 启用下一题按钮
+                    document.getElementById('btnNext').disabled = false;
+                });
+            });
+        }
+
+        // 设置按钮监听
+        function setupEventListeners() {
+            document.getElementById('btnBack').addEventListener('click', () => {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    updateQuestion();
+                }
+            });
+
+            document.getElementById('btnNext').addEventListener('click', () => {
+                if (currentQuestion < 41) {
+                    currentQuestion++;
+                    updateQuestion();
+                } else {
+                    // 完成测试
+                    submitTest();
+                }
+            });
+        }
+
+        // 计时器
+        function startTimer() {
+            setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                const seconds = (elapsed % 60).toString().padStart(2, '0');
+                document.getElementById('timeElapsed').textContent = `${minutes}:${seconds}`;
+            }, 1000);
+        }
+
+        // 提交测试
+        function submitTest() {
+            // 保存答案到 localStorage
+            localStorage.setItem('testAnswers', JSON.stringify(answers));
+            localStorage.setItem('testTime', new Date().toISOString());
+            
+            // 跳转到结果页
+            window.location.href = 'result.html';
+        }
+
+        // 初始化
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>你的恋爱占有欲测试结果</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0a1e 0%, #2d1b3d 50%, #1a0a1e 100%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        /* 头部完成提示 */
+        .completion-banner {
+            text-align: center;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 107, 157, 0.2);
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .completion-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .rpi-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out;
+        }
+        .completion-title {
+            font-size: 32px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .test-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .test-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* RPI核心结果区 */
+        .rpi-section {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.15) 0%, rgba(196, 69, 105, 0.15) 100%);
+            backdrop-filter: blur(10px);
+            padding: 60px 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .rpi-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 107, 157, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .rpi-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .rpi-label {
+            font-size: 18px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .rpi-score {
+            font-size: 120px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+
+        .rpi-level {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            padding: 12px 35px;
+            border-radius: 25px;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        .rpi-summary {
+            font-size: 18px;
+            color: #ccc;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.8;
+        }
+
+        /* RPI进度条 */
+        .rpi-progress-container {
+            max-width: 600px;
+            margin: 30px auto 20px;
+            padding: 25px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.2);
+        }
+
+        .rpi-scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        .rpi-scale-label {
+            text-align: center;
+            flex: 1;
+        }
+
+        .rpi-scale-label.active {
+            color: #ff6b9d;
+            font-weight: 600;
+        }
+
+        .rpi-progress-bar {
+            position: relative;
+            height: 12px;
+            background: linear-gradient(90deg, 
+                rgba(100, 200, 100, 0.3) 0%, 
+                rgba(255, 200, 100, 0.3) 50%, 
+                rgba(255, 107, 157, 0.3) 100%);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .rpi-progress-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #64c864 0%, #ffc864 50%, #ff6b9d 100%);
+            border-radius: 10px;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .rpi-progress-marker {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            border: 3px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .rpi-scale-marks {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5px;
+        }
+
+        .rpi-scale-mark {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .percentile {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 25px;
+            border-radius: 20px;
+            color: #ffa07a;
+            font-size: 15px;
+            border: 1px solid rgba(255, 107, 157, 0.2);
+        }
+
+        /* 通用版块样式 */
+        .section {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            padding: 50px 40px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            color: #fff;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: #999;
+        }
+
+        /* 分析框样式 */
+        .analysis-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            margin-bottom: 25px;
+        }         
+
+        .analysis-box h3 {
+            color: #ff6b9d;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .analysis-box p {
+            color: #ccc;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        #suggestionContent {
+            color: #ccc;
+            font-size: 15px;
+            line-height: 1.8;
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        .tone-badge {
+            display: inline-block;
+            background: rgba(255, 107, 157, 0.2);
+            color: #ff6b9d;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .goal-box {
+            background: rgba(255, 107, 157, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 3px solid #ff6b9d;
+            margin-bottom: 15px;
+        }
+
+        .goal-box strong {
+            color: #ffa07a;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .reminder-box {
+            background: rgba(255, 215, 0, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            display: flex;
+            gap: 15px;
+            align-items: start;
+        }
+
+        .reminder-icon {
+            font-size: 24px;
+        }
+
+        .reminder-box strong {
+            color: #ffd700;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .reminder-box p {
+            color: #aaa;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* 雷达图 */
+        .radar-container {
+            max-width: 600px;
+            margin: 0 auto 50px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+        }
+
+        .radar-chart {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #radarSvg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* 维度卡片 */
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .dimension-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            transition: all 0.4s;
+        }
+
+        .dimension-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 107, 157, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .dimension-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .dimension-name {
+            font-size: 20px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .dimension-score {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .dimension-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .dimension-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b9d 0%, #ffa07a 100%);
+            border-radius: 10px;
+            transition: width 1s ease-out;
+        }
+
+        .dimension-desc {
+            font-size: 14px;
+            color: #aaa;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        /* 维度深度分析（直接展示，不需要点击） */
+        .dimension-deep-analysis {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 107, 157, 0.2);
+        }
+
+        .deep-analysis-title {
+            color: #ffa07a;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .deep-analysis-score-range {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .deep-analysis-description {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .deep-analysis-list {
+            margin-top: 12px;
+        }
+
+        .deep-analysis-list-title {
+            color: #ff6b9d;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .deep-analysis-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .deep-analysis-list li {
+            color: #aaa;
+            font-size: 13px;
+            line-height: 1.6;
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 6px;
+        }
+
+        .deep-analysis-list li:before {
+            content: "•";
+            color: #ff6b9d;
+            position: absolute;
+            left: 5px;
+        }
+
+        /* 维度组合模式分析 */
+        .pattern-analysis-section {
+            margin-top: 40px;
+        }
+
+        .pattern-card {
+            background: rgba(255, 107, 157, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.2);
+            margin-bottom: 25px;
+        }
+
+        .pattern-title {
+            color: #ff6b9d;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .pattern-description {
+            color: #ccc;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .pattern-section {
+            margin-top: 15px;
+        }
+
+        .pattern-section-title {
+            color: #ffa07a;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .pattern-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .pattern-section li {
+            color: #aaa;
+            font-size: 14px;
+            line-height: 1.7;
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .pattern-section li:before {
+            content: "▸";
+            color: #ff6b9d;
+            position: absolute;
+            left: 5px;
+        }
+
+        .pattern-advice-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid #ffd700;
+        }
+
+        .pattern-advice-box strong {
+            color: #ffd700;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .pattern-advice-box p {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* 学习资料 */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .resource-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 107, 157, 0.4);
+        }
+
+        .resource-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .resource-title {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .resource-desc {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .resource-link {
+            color: #ff6b9d;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 升级提示卡 */
+        .upgrade-card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upgrade-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .upgrade-title {
+            font-size: 28px;
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .upgrade-desc {
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .upgrade-features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .upgrade-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffd700;
+            font-size: 15px;
+        }
+
+        /* 行动按钮区 */
+        .action-section {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(196, 69, 105, 0.1) 100%);
+            padding: 60px 40px;
+            border-radius: 25px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .action-title {
+            font-size: 36px;
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .action-subtitle {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 40px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ff6b9d;
+            border: 2px solid #ff6b9d;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 107, 157, 0.1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #ccc;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-outline:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #fff;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .rpi-score {
+                font-size: 80px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .dimensions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+
+    <div class="container">
+        <!-- 完成提示 -->
+        <div class="completion-banner">
+            <div class="completion-icon">🎉</div>
+            <h1 class="completion-title">恭喜你完成测试!</h1>
+            <p style="color: #aaa; font-size: 16px;">我们已经为你生成了专属的分析报告</p>
+            <div class="test-info">
+                <div class="test-info-item">
+                    <span>📅</span>
+                    <span id="testDate">2024年1月15日 14:32</span>
+                </div>
+                <div class="test-info-item">
+                    <span>🎯</span>
+                    <span id="testMode">自我评测模式</span>
+                </div>
+                <div class="test-info-item">
+                    <span>✓</span>
+                    <span>已完成 42/42 题</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RPI核心得分 -->
+        <div class="rpi-section">
+            <div class="rpi-content">
+                <div class="rpi-icon">💖</div> 
+                <div class="rpi-label">恋爱占有欲指数 (RPI)</div>
+                <div class="rpi-score" id="rpiScore">68</div>
+                <div class="rpi-level" id="rpiLevel">很高(爱到极致)</div>
+                
+                <div class="rpi-progress-container">
+                    <div class="rpi-scale-labels">
+                        <div class="rpi-scale-label">自由自在</div>
+                        <div class="rpi-scale-label">氛到好处</div>
+                        <div class="rpi-scale-label active">爱到极致</div>
+                    </div>
+                    
+                    <div class="rpi-progress-bar">
+                        <div class="rpi-progress-fill" id="rpiFill"></div>
+                        <div class="rpi-progress-marker" id="rpiMarker"></div>
+                    </div>
+                    
+                    <div class="rpi-scale-marks">
+                        <span class="rpi-scale-mark">0</span>
+                        <span class="rpi-scale-mark">50</span>
+                        <span class="rpi-scale-mark">100</span>
+                    </div>
+                </div>
+
+                <p class="rpi-summary" id="rpiSummary">
+                    你的恋爱占有欲指数为 <strong style="color: #ff6b9d;">68</strong>,处于 <strong style="color: #ffa07a;">很高(爱到极致)</strong> 水平
+                </p>
+                <div class="percentile" id="percentile">
+                    💫 你的占有欲强度超过了 58% 的测试者
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果解释和个性化建议 -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">📋</div>
+                <h2 class="section-title">结果解释和个性化建议</h2>
+                <p class="section-subtitle">深入理解你的测试结果</p>
+            </div>
+
+            <div style="max-width: 900px; margin: 0 auto;">
+                <!-- RPI含义解释 -->
+                <div class="analysis-box" id="rpiMeaningBox">
+                    <h3>📊 你的得分意味着什么?<span class="tone-badge" id="toneBadge">轻松型</span></h3>
+                    <p id="meaningText">
+                        加载中...
+                    </p>
+                    <p id="suggestionText">
+                        加载中...
+                    </p>
+                </div>
+
+                <!-- 个性化建议 -->
+                <div class="analysis-box" id="personalizedSuggestions">
+                    <h3>💡 针对你的个性化建议</h3>
+                    <div class="suggestion-content" id="suggestionContent">
+                        加载中...
+                    </div>
+                </div>
+
+                <div class="reminder-box">
+                    <div class="reminder-icon">💭</div>
+                    <div>
+                        <strong>记住</strong>
+                        <p>
+                            改变是一个渐进的过程,不要期待一夜之间就能完全改变。每一次成功控制住冲动、每一次选择信任而非质疑,都是宝贵的进步。对自己保持耐心和善意。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 四大维度深度分析 -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">📊</div>
+                <h2 class="section-title">四大维度深度分析</h2>
+                <p class="section-subtitle">从四个核心维度全面解析你的占有欲特点</p>
+            </div>
+
+            <div class="radar-container">
+                <div class="radar-chart" id="radarChart">
+                    <svg id="radarSvg" width="400" height="400" viewBox="0 0 400 400"></svg>
+                </div>
+            </div>
+
+            <div class="dimensions-grid" id="dimensionsGrid">
+                <!-- 维度卡片将通过JS动态生成 -->
+            </div>
+
+            <!-- 维度组合模式分析 -->
+            <div class="pattern-analysis-section" id="patternAnalysisSection">
+                <!-- 组合模式将通过JS动态生成 -->
+            </div>
+        </div>
+
+        <!-- 推荐学习资料 -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">📚</div>
+                <h2 class="section-title">推荐学习资料</h2>
+                <p class="section-subtitle">深入学习,持续成长</p>
+            </div>
+
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">📖</div>
+                    <div class="resource-title">《依恋理论与亲密关系》</div>
+                    <div class="resource-desc">
+                        深入了解依恋类型如何影响成年后的恋爱模式,找到你占有欲的深层心理根源。
+                    </div>
+                    <a href="#" class="resource-link">
+                        查看详情 →
+                    </a>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">🎥</div>
+                    <div class="resource-title">《如何建立安全型依恋》</div>
+                    <div class="resource-desc">
+                        视频课程系列,教你从焦虑型依恋转变为安全型依恋,建立更健康的关系模式。
+                    </div>
+                    <a href="#" class="resource-link">
+                        开始学习 →
+                    </a>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">💭</div>
+                    <div class="resource-title">《非暴力沟通实践指南》</div>
+                    <div class="resource-desc">
+                        学习如何在冲突中有效沟通,表达需求而不是指责,建立更深层的情感连接。
+                    </div>
+                    <a href="#" class="resource-link">
+                        阅读文章 →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI升级提示 -->
+        <div class="upgrade-card">
+            <div class="upgrade-badge">⭐ 升级获取</div>
+            <h2 class="upgrade-title">解锁AI深度分析报告</h2>
+            <p class="upgrade-desc">
+                想要获得更精准的个性化分析和专业改善方案?<br>
+                升级至AI智能分析版本,享受更深度的心理洞察
+            </p>
+            <div class="upgrade-features">
+                <div class="upgrade-feature">
+                    <span>✓</span>
+                    <span>深层心理模式分析</span>
+                </div>
+                <div class="upgrade-feature">
+                    <span>✓</span>
+                    <span>15+条定制化改善建议</span>
+                </div>
+                <div class="upgrade-feature">
+                    <span>✓</span>
+                    <span>专业级详细报告(20+页)</span>
+                </div>
+                <div class="upgrade-feature">
+                    <span>✓</span>
+                    <span>情侣匹配度对比分析</span>
+                </div>
+            </div>
+            <button class="btn btn-primary">🚀 立即升级解锁</button>
+        </div>
+
+        <!-- 行动号召区 -->
+        <div class="action-section">
+            <h2 class="action-title">接下来,你可以...</h2>
+            <p class="action-subtitle">继续你的心理探索之旅</p>
+            <div class="action-buttons">
+                <button class="btn btn-secondary">
+                    👥 为伴侣也测一次
+                </button>
+                <button class="btn btn-outline">
+                    📊 查看历史记录
+                </button>
+                <button class="btn btn-outline">
+                    🔄 重新测试
+                </button>
+            </div>
+        </div>
+
+        <!-- 底部提示 -->
+        <div style="text-align: center; padding: 40px 20px; color: #666;">
+            <p style="margin-bottom: 15px;">感谢你完成测试,祝愿你拥有健康美好的亲密关系 💕</p>
+            <p style="font-size: 14px;">恋爱占有欲指数计算器. 仅供教育和自我了解使用,不能替代专业心理健康服务。</p>
+        </div>
+    </div>
+
+    <!-- 引入外部JS文件 -->
+    <script src="js/scoring.js"></script>
+
+    <script>
+        // ============================================
+        // 核心函数:从 scoring.js 导入的计算逻辑
+        // ============================================
+        
+        /**
+         * 更新结果显示 - 完整版
+         */
+        function updateResultDisplay(result, mode) {
+            console.log('开始更新结果显示:', result);
+
+            const pronoun = mode === 'partner' ? 'TA' : '你';
+            const possessive = mode === 'partner' ? 'TA的' : '你的';
+
+            // 1. 更新测试信息
+            updateTestInfo(result, mode);
+
+            // 2. 更新RPI核心数据
+            updateRPICore(result, possessive);
+
+            // 3. 更新结果解释(使用 enhancedRPIAnalysis)
+            updateRPIMeaning(result, pronoun, possessive);
+
+            // 4. 更新个性化建议(使用 generateGoals)
+            updatePersonalizedSuggestions(result, pronoun, possessive);
+
+            // 5. 绘制雷达图
+            drawRadarChart(result.dimensions);
+
+            // 6. 更新维度卡片(包含 deepAnalysis)
+            updateDimensionCards(result.dimensions, pronoun, possessive);
+
+            // 7. 显示维度组合模式(patterns)
+            displayPatternAnalysis(result.dimensions, pronoun, possessive);
+        }
+
+        /**
+         * 1. 更新测试信息横幅
+         */
+        function updateTestInfo(result, mode) {
+            const date = new Date(result.timestamp);
+            const dateStr = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            document.getElementById('testDate').textContent = dateStr;
+
+            const modeText = mode === 'partner' ? '伴侣评测模式' : '自我评测模式';
+            document.getElementById('testMode').textContent = modeText;
+        }
+
+        /**
+         * 2. 更新RPI核心数据
+         */
+        function updateRPICore(result, possessive) {
+            document.getElementById('rpiScore').textContent = result.rpi;
+            
+            const levelElement = document.getElementById('rpiLevel');
+            levelElement.textContent = result.levelName;
+            levelElement.style.background = `linear-gradient(135deg, ${result.levelColor} 0%, ${adjustColor(result.levelColor, -20)} 100%)`;
+
+            const fillElement = document.getElementById('rpiFill');
+            const markerElement = document.getElementById('rpiMarker');
+            fillElement.style.width = result.rpi + '%';
+            markerElement.style.left = result.rpi + '%';
+
+            updateScaleLabels(result.level);
+
+            document.getElementById('rpiSummary').innerHTML = `
+                ${possessive}恋爱占有欲指数为 <strong style="color: #ff6b9d;">${result.rpi}</strong>,
+                处于 <strong style="color: #ffa07a;">${result.levelName}</strong> 水平
+            `;
+
+            document.getElementById('percentile').innerHTML = `
+                💫 ${possessive}占有欲强度${result.percentile}
+            `;
+        }
+
+        /**
+         * 3. 更新RPI含义解释(使用 enhancedRPIAnalysis 的随机文案)
+         */
+        function updateRPIMeaning(result, pronoun, possessive) {
+            if (typeof enhancedRPIAnalysis === 'undefined') {
+                console.error('enhancedRPIAnalysis 未定义,请确保 scoring.js 已加载');
+                return;
+            }
+
+            const levelDescriptions = enhancedRPIAnalysis[result.level];
+            if (!levelDescriptions || levelDescriptions.length === 0) {
+                console.error('没有找到对应等级的描述');
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * levelDescriptions.length);
+            const selectedDesc = levelDescriptions[randomIndex];
+
+            document.getElementById('toneBadge').textContent = selectedDesc.tone;
+            document.getElementById('meaningText').textContent = 
+                selectedDesc.meaning.replace(/你/g, pronoun).replace(/你的/g, possessive);
+            document.getElementById('suggestionText').textContent = 
+                selectedDesc.suggestion.replace(/你/g, pronoun).replace(/你的/g, possessive);
+        }
+
+        /**
+         * 4. 更新个性化建议(使用 goals)
+         */
+        function updatePersonalizedSuggestions(result, pronoun, possessive) {
+            if (!result.personalizedAnalysis || !result.personalizedAnalysis.goals) {
+                console.error('没有个性化建议数据');
+                return;
+            }
+
+            const goals = result.personalizedAnalysis.goals;
+            
+            document.getElementById('suggestionContent').textContent = 
+                goals.replace(/你/g, pronoun).replace(/你的/g, possessive);
+        }
+
+        /**
+         * 5. 绘制雷达图
+         */
+        function drawRadarChart(dimensions) {
+            const svg = document.getElementById('radarSvg');
+            if (!svg || !dimensions) {
+                console.error('雷达图数据缺失');
+                return;
+            }
+
+            const centerX = 200;
+            const centerY = 200;
+            const maxRadius = 150;
+            const levels = 5;
+
+            svg.innerHTML = '';
+
+            const dataPoints = [
+                { name: '控制欲望', value: dimensions.control.percent, emoji: '🎯' },
+                { name: '嫉妒强度', value: dimensions.jealousy.percent, emoji: '💖' },
+                { name: '情感依赖', value: dimensions.dependency.percent, emoji: '💥' },
+                { name: '关系安全感', value: dimensions.security.percent, emoji: '🛡️' }
+            ];
+
+            const numPoints = dataPoints.length;
+            const angleStep = (Math.PI * 2) / numPoints;
+
+            // 绘制背景圆圈
+            for (let i = levels; i > 0; i--) {
+                const radius = (maxRadius / levels) * i;
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', centerX);
+                circle.setAttribute('cy', centerY);
+                circle.setAttribute('r', radius);
+                circle.setAttribute('fill', 'none');
+                circle.setAttribute('stroke', 'rgba(255, 107, 157, 0.2)');
+                circle.setAttribute('stroke-width', '1');
+                svg.appendChild(circle);
+            }
+
+            // 绘制坐标轴线
+            for (let i = 0; i < numPoints; i++) {
+                const angle = angleStep * i - Math.PI / 2;
+                const x = centerX + Math.cos(angle) * maxRadius;
+                const y = centerY + Math.sin(angle) * maxRadius;
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', centerX);
+                line.setAttribute('y1', centerY);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', 'rgba(255, 107, 157, 0.2)');
+                line.setAttribute('stroke-width', '1');
+                svg.appendChild(line);
+            }
+
+            // 计算数据点位置
+            const points = dataPoints.map((point, i) => {
+                const angle = angleStep * i - Math.PI / 2;
+                const radius = (point.value / 100) * maxRadius;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                return { x, y, ...point };
+            });
+
+            // 绘制数据多边形
+            const polygonPoints = points.map(p => `${p.x},${p.y}`).join(' ');
+            const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            polygon.setAttribute('points', polygonPoints);
+            polygon.setAttribute('fill', 'rgba(255, 107, 157, 0.3)');
+            polygon.setAttribute('stroke', '#ff6b9d');
+            polygon.setAttribute('stroke-width', '2');
+            svg.appendChild(polygon);
+
+            // 绘制数据点
+            points.forEach(point => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', point.x);
+                circle.setAttribute('cy', point.y);
+                circle.setAttribute('r', '5');
+                circle.setAttribute('fill', '#ff6b9d');
+                circle.setAttribute('stroke', '#fff');
+                circle.setAttribute('stroke-width', '2');
+                svg.appendChild(circle);
+            });
+
+            // 添加标签
+            dataPoints.forEach((point, i) => {
+                const angle = angleStep * i - Math.PI / 2;
+                const labelRadius = maxRadius + 30;
+                const x = centerX + Math.cos(angle) * labelRadius;
+                const y = centerY + Math.sin(angle) * labelRadius;
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x);
+                text.setAttribute('y', y);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('dominant-baseline', 'middle');
+                text.setAttribute('fill', '#fff');
+                text.setAttribute('font-size', '14px');
+                text.setAttribute('font-weight', '600');
+                text.textContent = `${point.emoji} ${point.name}`;
+                svg.appendChild(text);
+
+                const scoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                scoreText.setAttribute('x', x);
+                scoreText.setAttribute('y', y + 18);
+                scoreText.setAttribute('text-anchor', 'middle');
+                scoreText.setAttribute('fill', '#ff6b9d');
+                scoreText.setAttribute('font-size', '12px');
+                scoreText.textContent = `${Math.round(point.value)}%`;
+                svg.appendChild(scoreText);
+            });
+        }
+
+        /**
+         * 6. 更新维度卡片(包含 deepAnalysis,直接展示)
+         */
+        function updateDimensionCards(dimensions, pronoun, possessive) {
+            const grid = document.getElementById('dimensionsGrid');
+            grid.innerHTML = '';
+
+            const dimensionConfigs = [
+                { key: 'control', name: '🎯 控制欲望', emoji: '🎯' },
+                { key: 'jealousy', name: '💖 嫉妒强度', emoji: '💖' },
+                { key: 'dependency', name: '💥 情感依赖', emoji: '💥' },
+                { key: 'security', name: '🛡️ 关系安全感', emoji: '🛡️' }
+            ];
+
+            dimensionConfigs.forEach(config => {
+                const dim = dimensions[config.key];
+                const deepAnalysis = dim.deepAnalysis;
+
+                const card = document.createElement('div');
+                card.className = 'dimension-card';
+
+                // 构建深度分析内容(直接展示,不需要点击)
+                let deepAnalysisHTML = '';
+                if (deepAnalysis) {
+                    deepAnalysisHTML = `
+                        <div class="dimension-deep-analysis">
+                            <div class="deep-analysis-title">${deepAnalysis.title || '详细分析'}</div>
+                            ${deepAnalysis.score ? `<div class="deep-analysis-score-range">分数区间: ${deepAnalysis.score}</div>` : ''}
+                            ${deepAnalysis.description ? `<div class="deep-analysis-description">${deepAnalysis.description.replace(/你/g, pronoun).replace(/你的/g, possessive)}</div>` : ''}
+                            
+                            ${deepAnalysis.positives ? `
+                                <div class="deep-analysis-list">
+                                    <div class="deep-analysis-list-title">✨ 积极方面:</div>
+                                    <ul>
+                                        ${deepAnalysis.positives.map(item => `<li>${item.replace(/你/g, pronoun).replace(/你的/g, possessive)}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            
+                            ${deepAnalysis.cautions ? `
+                                <div class="deep-analysis-list">
+                                    <div class="deep-analysis-list-title">⚠️ 注意事项:</div>
+                                    <ul>
+                                        ${deepAnalysis.cautions.map(item => `<li>${item.replace(/你/g, pronoun).replace(/你的/g, possessive)}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            
+                            ${deepAnalysis.concerns ? `
+                                <div class="deep-analysis-list">
+                                    <div class="deep-analysis-list-title">⚠️ 需要关注:</div>
+                                    <ul>
+                                        ${deepAnalysis.concerns.map(item => `<li>${item.replace(/你/g, pronoun).replace(/你的/g, possessive)}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            
+                            ${deepAnalysis.improvement ? `
+                                <div class="deep-analysis-list">
+                                    <div class="deep-analysis-list-title">💡 改善建议:</div>
+                                    <ul>
+                                        ${deepAnalysis.improvement.map(item => `<li>${item.replace(/你/g, pronoun).replace(/你的/g, possessive)}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            
+                            ${deepAnalysis.redFlags ? `
+                                <div class="deep-analysis-list">
+                                    <div class="deep-analysis-list-title">🚩 警示信号:</div>
+                                    <ul>
+                                        ${deepAnalysis.redFlags.map(item => `<li>${item.replace(/你/g, pronoun).replace(/你的/g, possessive)}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            
+                            ${deepAnalysis.urgentChange ? `
+                                <div class="deep-analysis-list">
+                                    <div class="deep-analysis-list-title">🆘 紧急改变:</div>
+                                    <ul>
+                                        ${deepAnalysis.urgentChange.map(item => `<li>${item.replace(/你/g, pronoun).replace(/你的/g, possessive)}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="dimension-header">
+                        <div class="dimension-name">${config.name}</div>
+                        <div class="dimension-score">${dim.score}</div>
+                    </div>
+                    <div class="dimension-bar">
+                        <div class="dimension-bar-fill" style="width: ${Math.round(dim.percent)}%"></div>
+                    </div>
+                    <p class="dimension-desc">
+                        ${dim.description.replace(/你/g, pronoun).replace(/你的/g, possessive)}
+                    </p>
+                    ${deepAnalysisHTML}
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        /**
+         * 7. 显示维度组合模式分析
+         */
+        function displayPatternAnalysis(dimensions, pronoun, possessive) {
+            const section = document.getElementById('patternAnalysisSection');
+            
+            const patterns = dimensions.control.patterns || [];
+            
+            if (!patterns || patterns.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            section.innerHTML = '<h3 style="color: #ff6b9d; font-size: 24px; margin-bottom: 25px; text-align: center;">🔍 你的占有欲组合模式分析</h3>';
+
+            patterns.forEach(pattern => {
+                const patternCard = document.createElement('div');
+                patternCard.className = 'pattern-card';
+
+                let contentHTML = `
+                    <div class="pattern-title">${pattern.title}</div>
+                    <div class="pattern-description">${pattern.description.replace(/你/g, pronoun).replace(/你的/g, possessive)}</div>
+                `;
+
+                if (pattern.risks) {
+                    contentHTML += `
+                        <div class="pattern-section">
+                            <div class="pattern-section-title">⚠️ 风险提示:</div>
+                            <ul>
+                                ${pattern.risks.map(risk => `<li>${risk.replace(/你/g, pronoun).replace(/你的/g, possessive)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                if (pattern.rootCause) {
+                    contentHTML += `
+                        <div class="pattern-section">
+                            <div class="pattern-section-title">🔍 根源分析:</div>
+                            <p style="color: #ccc; font-size: 14px; line-height: 1.7; padding-left: 20px;">
+                                ${pattern.rootCause.replace(/你/g, pronoun).replace(/你的/g, possessive)}
+                            </p>
+                        </div>
+                    `;
+                }
+
+                if (pattern.consequences) {
+                    contentHTML += `
+                        <div class="pattern-section">
+                            <div class="pattern-section-title">📉 可能后果:</div>
+                            <p style="color: #ccc; font-size: 14px; line-height: 1.7; padding-left: 20px;">
+                                ${pattern.consequences.replace(/你/g, pronoun).replace(/你的/g, possessive)}
+                            </p>
+                        </div>
+                    `;
+                }
+
+                if (pattern.psychologicalRoots) {
+                    contentHTML += `
+                        <div class="pattern-section">
+                            <div class="pattern-section-title">🧠 心理根源:</div>
+                            <p style="color: #ccc; font-size: 14px; line-height: 1.7; padding-left: 20px;">
+                                ${pattern.psychologicalRoots.replace(/你/g, pronoun).replace(/你的/g, possessive)}
+                            </p>
+                        </div>
+                    `;
+                }
+
+                if (pattern.healingPath) {
+                    contentHTML += `
+                        <div class="pattern-section">
+                            <div class="pattern-section-title">🌱 成长路径:</div>
+                            <ul>
+                                ${pattern.healingPath.map(path => `<li>${path.replace(/你/g, pronoun).replace(/你的/g, possessive)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                if (pattern.strengths) {
+                    contentHTML += `
+                        <div class="pattern-section">
+                            <div class="pattern-section-title">✨ ${possessive}优势:</div>
+                            <ul>
+                                ${pattern.strengths.map(strength => `<li>${strength.replace(/你/g, pronoun).replace(/你的/g, possessive)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                if (pattern.warning) {
+                    contentHTML += `
+                        <div class="pattern-section">
+                            <div class="pattern-section-title">⚡ 特别提醒:</div>
+                            <p style="color: #ccc; font-size: 14px; line-height: 1.7; padding-left: 20px;">
+                                ${pattern.warning.replace(/你/g, pronoun).replace(/你的/g, possessive)}
+                            </p>
+                        </div>
+                    `;
+                }
+
+                if (pattern.advice) {
+                    contentHTML += `
+                        <div class="pattern-advice-box">
+                            <strong>💡 核心建议:</strong>
+                            <p>${pattern.advice.replace(/你/g, pronoun).replace(/你的/g, possessive)}</p>
+                        </div>
+                    `;
+                }
+
+                patternCard.innerHTML = contentHTML;
+                section.appendChild(patternCard);
+            });
+        }
+
+        /**
+         * 辅助函数:调整颜色亮度
+         */
+        function adjustColor(color, amount) {
+            return color.replace(/^#/, '')
+                .match(/.{2}/g)
+                .map(hex => {
+                    const num = parseInt(hex, 16) + amount;
+                    return Math.max(0, Math.min(255, num)).toString(16).padStart(2, '0');
+                })
+                .join('');
+        }
+
+        /**
+         * 更新进度条标签
+         */
+        function updateScaleLabels(level) {
+            const labels = document.querySelectorAll('.rpi-scale-label');
+            labels.forEach((label, index) => {
+                label.classList.remove('active');
+                if ((level <= 2 && index === 0) ||
+                    (level === 3 && index === 1) ||
+                    (level >= 4 && index === 2)) {
+                    label.classList.add('active');
+                }
+            });
+        }
+
+        // ============================================
+        // 页面加载时执行
+        // ============================================
+        window.addEventListener('load', () => {
+            console.log('页面加载完成,开始获取测试结果');
+
+            const testMode = localStorage.getItem('testMode') || 'self';
+            const answers = JSON.parse(localStorage.getItem('testAnswers') || '[]');
+
+            console.log('测试模式:', testMode);
+            console.log('答案数据:', answers);
+
+            if (answers.length !== 42) {
+                alert('未找到测试数据,请先完成测试!');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // 确保 scoring.js 中的函数已加载
+            if (typeof calculateRPI === 'undefined') {
+                console.error('❌ calculateRPI 函数未定义,请确保 scoring.js 已正确加载');
+                alert('评分系统加载失败,请刷新页面重试');
+                return;
+            }
+
+            // 计算结果
+            const result = calculateRPI(answers, testMode);
+            console.log('计算完成,结果:', result);
+
+            if (!result) {
+                alert('结果计算失败,请重新测试');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // 保存结果
+            saveResult(result);
+
+            // 更新显示
+            updateResultDisplay(result, testMode);
+        });
+        // ============================================
+// 添加按钮事件监听器
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    // 为伴侣也测一次
+    const partnerTestBtns = document.querySelectorAll('.btn-secondary');
+    partnerTestBtns.forEach(btn => {
+        if (btn.textContent.includes('为伴侣也测一次')) {
+            btn.addEventListener('click', function() {
+                localStorage.setItem('testMode', 'partner');
+                window.location.href = 'test.html?mode=partner';
+            });
+        }
+    });
+
+    // 查看历史记录
+    const historyBtns = document.querySelectorAll('.btn-outline');
+    if (historyBtns[0] && historyBtns[0].textContent.includes('查看历史记录')) {
+        historyBtns[0].addEventListener('click', function() {
+            showHistoryModal();
+        });
+    }
+
+    // 重新测试
+    if (historyBtns[1] && historyBtns[1].textContent.includes('重新测试')) {
+        historyBtns[1].addEventListener('click', function() {
+            if (confirm('确定要重新测试吗？当前结果将被保存到历史记录中。')) {
+                localStorage.removeItem('testAnswers');
+                localStorage.setItem('testMode', 'self');
+                window.location.href = 'test.html?mode=self';
+            }
+        });
+    }
+});
+
+// 显示历史记录的模态框
+function showHistoryModal() {
+    const history = getTestHistory();
+    
+    if (history.length === 0) {
+        alert('还没有历史记录哦！完成更多测试后就能看到你的成长轨迹了 📈');
+        return;
+    }
+
+    // 创建模态框HTML
+    const modalHTML = `
+        <div id="historyModal" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-out;
+        ">
+            <div style="
+                background: linear-gradient(135deg, #1a0a1e 0%, #2d1b3d 100%);
+                border-radius: 25px;
+                padding: 40px;
+                max-width: 800px;
+                max-height: 80vh;
+                overflow-y: auto;
+                border: 1px solid rgba(255, 107, 157, 0.3);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            ">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 style="color: #ff6b9d; font-size: 28px; margin: 0;">📊 我的测试历史</h2>
+                    <button onclick="document.getElementById('historyModal').remove()" style="
+                        background: rgba(255, 255, 255, 0.1);
+                        border: none;
+                        color: #fff;
+                        font-size: 24px;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                    " onmouseover="this.style.background='rgba(255, 107, 157, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">×</button>
+                </div>
+                
+                <div style="color: #aaa; margin-bottom: 20px;">
+                    共 ${history.length} 次测试记录
+                </div>
+                
+                ${history.map((record, index) => `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.03);
+                        border-radius: 15px;
+                        padding: 20px;
+                        margin-bottom: 15px;
+                        border: 1px solid rgba(255, 107, 157, 0.15);
+                        transition: all 0.3s;
+                        cursor: pointer;
+                    " onmouseover="this.style.borderColor='rgba(255, 107, 157, 0.4)'; this.style.background='rgba(255, 255, 255, 0.05)'" onmouseout="this.style.borderColor='rgba(255, 107, 157, 0.15)'; this.style.background='rgba(255, 255, 255, 0.03)'">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div style="color: #fff; font-size: 18px; font-weight: 600;">
+                                ${index === 0 ? '🌟 ' : ''}测试 #${history.length - index}
+                            </div>
+                            <div style="
+                                background: ${record.levelColor};
+                                color: white;
+                                padding: 5px 15px;
+                                border-radius: 15px;
+                                font-size: 14px;
+                                font-weight: 600;
+                            ">
+                                RPI ${record.rpi}
+                            </div>
+                        </div>
+                        
+                        <div style="color: #999; font-size: 14px; margin-bottom: 8px;">
+                            📅 ${new Date(record.timestamp).toLocaleString('zh-CN')}
+                        </div>
+                        
+                        <div style="color: #ccc; font-size: 14px;">
+                            ${record.testMode === 'partner' ? '👥 伴侣评测模式' : '🪞 自我评测模式'} | 
+                            等级: ${record.levelName}
+                        </div>
+                    </div>
+                `).join('')}
+                
+                <div style="
+                    margin-top: 30px;
+                    padding: 20px;
+                    background: rgba(255, 215, 0, 0.05);
+                    border-radius: 15px;
+                    border: 1px solid rgba(255, 215, 0, 0.2);
+                    text-align: center;
+                ">
+                    <div style="color: #ffd700; margin-bottom: 10px;">💡 小提示</div>
+                    <div style="color: #aaa; font-size: 14px; line-height: 1.7;">
+                        定期测试能帮助你追踪自己的变化。建议每月测试一次，看看自己的成长轨迹！
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // 添加到页面
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+// 添加淡入动画
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+`;
+document.head.appendChild(style);
+    </script>
+
+</body>
+</html>

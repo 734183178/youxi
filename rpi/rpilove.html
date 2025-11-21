@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋爱占有欲测试 - 解锁你的爱情密码</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0a1e 0%, #2d1b3d 50%, #1a0a1e 100%);
+            z-index: -2;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.1;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .header {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 107, 157, 0.2);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .nav {
+            display: flex;
+            gap: 35px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #ccc;
+            font-size: 15px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav a:hover {
+            color: #ff6b9d;
+        }
+
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b9d, #ffa07a);
+            transition: width 0.3s;
+        }
+
+        .nav a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 100px 30px 80px;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 107, 157, 0.15);
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            color: #ff6b9d;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            margin-bottom: 35px;
+            backdrop-filter: blur(10px);
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h2 {
+            font-size: 62px;
+            background: linear-gradient(135deg, #fff 0%, #ff6b9d 50%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+            font-weight: 800;
+            line-height: 1.2;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-subtitle {
+            font-size: 22px;
+            color: #ccc;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #999;
+            margin-bottom: 50px;
+            line-height: 1.9;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 35px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ff6b9d;
+            padding: 20px 50px;
+            border: 2px solid #ff6b9d;
+            border-radius: 35px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 107, 157, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .trust-indicators {
+            max-width: 1400px;
+            margin: 0 auto 80px;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .trust-item {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            padding: 35px 25px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            transition: all 0.4s;
+        }
+
+        .trust-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 107, 157, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .trust-number {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .trust-label {
+            font-size: 15px;
+            color: #999;
+        }
+
+        .section {
+            max-width: 1400px;
+            margin: 100px auto;
+            padding: 0 30px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: rgba(255, 107, 157, 0.15);
+            color: #ff6b9d;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+        }
+
+        .section-header h2 {
+            font-size: 48px;
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .section-header p {
+            font-size: 18px;
+            color: #999;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 35px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            padding: 45px 35px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 107, 157, 0.4);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.2);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2) 0%, rgba(196, 69, 105, 0.2) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            color: #aaa;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .feature-details {
+            list-style: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-details li {
+            color: #ccc;
+            font-size: 14px;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-details li::before {
+            content: '→';
+            color: #ff6b9d;
+            font-weight: bold;
+        }
+
+        .dimensions-showcase {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            padding: 80px 50px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            margin: 80px 0;
+        }
+
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .dimension-item {
+            text-align: center;
+            padding: 35px 25px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.1);
+            transition: all 0.4s;
+        }
+
+        .dimension-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 107, 157, 0.3);
+        }
+
+        .dimension-number {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .dimension-item h4 {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .dimension-item p {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.7;
+        }
+
+        .test-modes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 50px;
+            margin-top: 60px;
+        }
+
+        .mode-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            padding: 50px 40px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            position: relative;
+            transition: all 0.4s;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 107, 157, 0.4);
+            box-shadow: 0 20px 50px rgba(255, 107, 157, 0.2);
+        }
+
+        .mode-card.recommended::before {
+            content: '⭐ 最受欢迎';
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+        }
+
+        .mode-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mode-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2) 0%, rgba(196, 69, 105, 0.2) 100%);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+        }
+
+        .mode-header h3 {
+            font-size: 28px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .mode-description {
+            font-size: 16px;
+            color: #aaa;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .mode-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .mode-features li {
+            padding: 15px 0;
+            color: #ccc;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            font-size: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .mode-features li:last-child {
+            border-bottom: none;
+        }
+
+        .mode-features li::before {
+            content: '✓';
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .mode-stats {
+            display: flex;
+            gap: 30px;
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+        }
+
+        .mode-stat {
+            flex: 1;
+            text-align: center;
+        }
+
+        .mode-stat-label {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .mode-stat-value {
+            font-size: 24px;
+            color: #ff6b9d;
+            font-weight: 700;
+        }
+
+        .mode-button {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-button.primary {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+        }
+
+        .mode-button.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
+        }
+
+        .mode-button.secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ff6b9d;
+            border: 2px solid #ff6b9d;
+        }
+
+        .mode-button.secondary:hover {
+            background: rgba(255, 107, 157, 0.1);
+        }
+
+        .benefits-section {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(196, 69, 105, 0.1) 100%);
+            padding: 80px 50px;
+            border-radius: 30px;
+            margin: 100px 0;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 40px 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.2);
+            transition: all 0.4s;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .benefit-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        .benefit-card h4 {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .benefit-card p {
+            font-size: 15px;
+            color: #aaa;
+            line-height: 1.8;
+        }
+
+        .privacy-guarantee {
+            max-width: 1200px;
+            margin: 100px auto;
+            padding: 70px 60px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .privacy-guarantee::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 107, 157, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .privacy-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .privacy-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2) 0%, rgba(196, 69, 105, 0.2) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            border: 2px solid rgba(255, 107, 157, 0.3);
+        }
+
+        .privacy-guarantee h2 {
+            font-size: 42px;
+            color: #fff;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .privacy-guarantee > p {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 40px;
+            line-height: 1.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .privacy-features {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .privacy-feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .privacy-feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .privacy-feature span {
+            color: #ccc;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .cta-final {
+            text-align: center;
+            padding: 100px 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cta-final h2 {
+            font-size: 52px;
+            color: #fff;
+            margin-bottom: 25px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .cta-final p {
+            font-size: 20px;
+            color: #aaa;
+            margin-bottom: 40px;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 38px;
+            }
+
+            .test-modes {
+                grid-template-columns: 1fr;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .section-header h2 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="floating-hearts">
+        <div class="heart" style="left: 10%; animation-delay: 0s;">💕</div>
+        <div class="heart" style="left: 25%; animation-delay: 3s;">💖</div>
+        <div class="heart" style="left: 40%; animation-delay: 6s;">💝</div>
+        <div class="heart" style="left: 55%; animation-delay: 2s;">💗</div>
+        <div class="heart" style="left: 70%; animation-delay: 5s;">💓</div>
+        <div class="heart" style="left: 85%; animation-delay: 4s;">💘</div>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">💝</div>
+                <div class="logo-text">
+                    <h1>恋爱占有欲测试</h1>
+                    <p>AI驱动的心理分析平台</p>
+                </div>
+            </div>
+            <nav class="nav">
+                <a href="#" onclick="scrollToSection('features'); return false;">测试指南</a>
+                <a href="#" onclick="showHistoryFromIndex(); return false;">我的测试记录</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-badge">
+            ⚡ 专业的心理评估工具，帮助你深入了解自己
+        </div>
+        <h2>你的爱情，需要多少占有欲？</h2>
+        <p class="hero-subtitle">10分钟深度测评，揭秘你在爱情中的真实心理</p>
+        <p>
+            在恋爱中，你是否常常担心失去对方？是否总想知道TA的一举一动？<br>
+            这可能不是爱，而是占有欲在作祟。通过科学的心理测评，<br>
+            <span class="highlight">让我们一起探索最健康的爱情状态</span>
+        </p>
+        <div class="cta-buttons">
+            <button class="btn-primary" onclick="startTest('self')">💝 开始自我评测</button>
+            <button class="btn-secondary" onclick="startTest('partner')">👥 开始伴侣评测</button>
+        </div>
+    </section>
+
+    <div class="trust-indicators">
+        <div class="trust-item">
+            <div class="trust-number">4大</div>
+            <div class="trust-label">核心评估维度</div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-number">100%</div>
+            <div class="trust-label">隐私保护</div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-number">双视角</div>
+            <div class="trust-label">测评分析</div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-number">15分钟</div>
+            <div class="trust-label">快速完成</div>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-tag">💡 为什么选择我们</div>
+            <h2>不只是测试，更是一次自我觉醒</h2>
+            <p>基于心理学专业量表，结合大数据分析，为你提供最精准的自我认知报告</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>多维度评估</h3>
+                <p>从控制欲、嫉妒心、依赖性、安全感四大核心维度进行全方位扫描，不是简单的"高中低"三档评分</p>
+                <ul class="feature-details">
+                    <li>40+精选测评题目</li>
+                    <li>覆盖恋爱关系的各个场景</li>
+                    <li>可视化雷达图呈现</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>双视角分析</h3>
+                <p>不仅可以测自己，还能为伴侣测试，帮助你更好地理解TA的心理状态和行为模式，增进情侣间的相互了解</p>
+                <ul class="feature-details">
+                    <li>自我探索模式</li>
+                    <li>伴侣分析模式</li>
+                    <li>深度行为解读</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⏱️</div>
+                <h3>历史记录追踪</h3>
+                <p>支持多次测试，自动记录你的占有欲变化曲线，见证自己在关系中的成长轨迹，让改变可视化</p>
+                <ul class="feature-details">
+                    <li>时间轴记录功能</li>
+                    <li>进步趋势可视化</li>
+                    <li>里程碑成就徽章</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>隐私安全保障</h3>
+                <p>所有测评数据仅保存在本地，不上传任何服务器，100%保护你的隐私安全，你拥有完全的数据控制权</p>
+                <ul class="feature-details">
+                    <li>本地数据存储</li>
+                    <li>完全匿名测评</li>
+                    <li>可随时删除数据</li>
+                </ul>
+            </div>
+            <div class="feature-card" style="position: relative;">
+                <div style="position: absolute; top: 20px; right: 20px; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #000; padding: 6px 15px; border-radius: 15px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);">⭐ 升级获取</div>
+                <div class="feature-icon">🧠</div>
+                <h3>AI智能分析</h3>
+                <p>运用先进的心理学算法和AI技术，对你的每一个答案进行深度解析，生成更精准的个性化心理画像和改善建议</p>
+                <ul class="feature-details">
+                    <li>深度心理模式分析</li>
+                    <li>个性化改善方案</li>
+                    <li>专业级详细报告</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="dimensions-showcase">
+        <div class="section-header">
+            <div class="section-tag">🎯 测评维度</div>
+            <h2>四大核心维度，全面解析你的占有欲</h2>
+            <p>每个维度都经过精心设计，从不同角度剖析你在恋爱关系中的心理状态</p>
+        </div>
+        
+        <div class="dimensions-grid">
+            <div class="dimension-item">
+                <div class="dimension-number">01</div>
+                <h4>控制欲望指数</h4>
+                <p>评估你是否试图掌控伴侣的行为、决策和社交圈。过高的控制欲会让对方感到窒息，需要学会尊重对方的独立空间</p>
+            </div>
+            <div class="dimension-item">
+                <div class="dimension-number">02</div>
+                <h4>嫉妒强度等级</h4>
+                <p>测量你对伴侣与异性交往的敏感程度。适度的嫉妒是在乎的表现，但过度嫉妒会破坏信任基础，引发无谓争吵</p>
+            </div>
+            <div class="dimension-item">
+                <div class="dimension-number">03</div>
+                <h4>情感依赖程度</h4>
+                <p>检测你对伴侣的精神依赖水平。过度依赖会失去自我，让关系变得不平衡，保持适当独立性才能让爱情更持久</p>
+            </div>
+            <div class="dimension-item">
+                <div class="dimension-number">04</div>
+                <h4>关系安全感</h4>
+                <p>衡量你在关系中的焦虑和不安程度。缺乏安全感往往是占有欲的根源，找到内心的稳定感是关键突破口</p>
+            </div>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-tag">🎭 双重视角</div>
+            <h2>选择你的测评角色</h2>
+            <p>根据不同的测评需求，我们提供两种测评模式，帮助你从多角度认识占有欲</p>
+        </div>
+
+        <div class="test-modes">
+            <div class="mode-card recommended">
+                <div class="mode-header">
+                    <div class="mode-icon">🪞</div>
+                    <h3>自我探索模式</h3>
+                </div>
+                <p class="mode-description">
+                    深入了解自己在恋爱中的真实状态，发现那些你未曾意识到的心理模式。这是一次与自己对话的机会，勇敢面对内心最真实的声音。
+                </p>
+                <ul class="mode-features">
+                    <li><strong>识别盲区：</strong>揭示你在恋爱中的无意识行为模式，那些你自己都没察觉到的控制倾向</li>
+                    <li><strong>情绪溯源：</strong>追溯占有欲的深层心理根源，可能来自童年经历、过往感情创伤或原生家庭影响</li>
+                    <li><strong>行为预判：</strong>预测你在特定情境下的可能反应，提前做好情绪管理准备</li>
+                    <li><strong>成长路径：</strong>获得针对性的自我提升建议，从认知、情绪、行为三个层面进行改善</li>
+                    <li><strong>危机预警：</strong>识别可能导致关系破裂的红色警报信号</li>
+                </ul>
+                <div class="mode-stats">
+                    <div class="mode-stat">
+                        <div class="mode-stat-label">完成时间</div>
+                        <div class="mode-stat-value">12-15分钟</div>
+                    </div>
+                    <div class="mode-stat">
+                        <div class="mode-stat-label">测评题数</div>
+                        <div class="mode-stat-value">42题</div>
+                    </div>
+                    <div class="mode-stat">
+                        <div class="mode-stat-label">报告页数</div>
+                        <div class="mode-stat-value">8-10页</div>
+                    </div>
+                </div>
+                <button class="mode-button primary">开始自我测评 →</button>
+            </div>
+
+            <div class="mode-card">
+                <div class="mode-header">
+                    <div class="mode-icon">👫</div>
+                    <h3>伴侣分析模式</h3>
+                </div>
+                <p class="mode-description">
+                    从第三方视角评估你的伴侣，帮助你理解TA的行为背后的心理动机。不是为了指责，而是为了更好地理解和包容。
+                </p>
+                <ul class="mode-features">
+                    <li><strong>行为解码：</strong>解读伴侣那些让你困惑的行为，理解TA为什么会查看你的手机、限制你的社交</li>
+                    <li><strong>需求透视：</strong>看穿TA占有欲背后真正的情感需求，可能是缺乏安全感、害怕被抛弃</li>
+                    <li><strong>冲突预防：</strong>识别你们关系中的高风险触发点，避免踩雷引发不必要的争吵</li>
+                    <li><strong>沟通策略：</strong>获得与占有欲强的伴侣有效沟通的话术和技巧，让TA放下防备</li>
+                    <li><strong>危机预警：</strong>识别可能导致关系破裂的红色警报信号</li>
+                </ul>
+                <div class="mode-stats">
+                    <div class="mode-stat">
+                        <div class="mode-stat-label">完成时间</div>
+                        <div class="mode-stat-value">12-15分钟</div>
+                    </div>
+                    <div class="mode-stat">
+                        <div class="mode-stat-label">测评题数</div>
+                        <div class="mode-stat-value">42题</div>
+                    </div>
+                    <div class="mode-stat">
+                        <div class="mode-stat-label">报告页数</div>
+                        <div class="mode-stat-value">8-10页</div>
+                    </div>
+                </div>
+                <button class="mode-button secondary">开始伴侣测评 →</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="benefits-section">
+        <div class="section-header">
+            <div class="section-tag">✨ 测试收获</div>
+            <h2>完成测试后，你将获得什么？</h2>
+            <p>这不仅仅是一份报告，而是一把打开幸福关系的钥匙</p>
+        </div>
+
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">📋</div>
+                <h4>专属心理档案</h4>
+                <p>一份详细分析报告，包含你的占有欲雷达图、各维度得分解读、性格特征分析、行为模式总结</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">📚</div>
+                <h4>深度心理科普</h4>
+                <p>帮助你理解占有欲的心理学原理，从依恋理论、安全感理论等专业角度解释你的行为，知其然更知其所以然</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🔄</div>
+                <h4>成长追踪系统</h4>
+                <p>支持反复测试，见证自己每一步的进步。每个月测一次，看看自己是否在变得更好</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🤝</div>
+                <h4>深入了解伴侣</h4>
+                <p>也可以为伴侣进行测试，深入理解TA的占有欲特点和心理状态，发现你们关系中的互动模式，促进双方相互理解</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="privacy-guarantee">
+        <div class="privacy-content">
+            <div class="privacy-icon">🔐</div>
+            <h2>你的隐私，我们的承诺</h2>
+            <p>
+                我们深知心理测评的敏感性，所有数据均采用银行级加密存储，<br>
+                仅保存在你的本地设备，不会上传到任何服务器。<br>
+                <strong>你有绝对的控制权，可随时删除全部数据。</strong>
+            </p>
+            
+            <div class="privacy-features">
+                <div class="privacy-feature">
+                    <div class="privacy-feature-icon">✓</div>
+                    <span>本地存储</span>
+                </div>
+                <div class="privacy-feature">
+                    <div class="privacy-feature-icon">✓</div>
+                    <span>完全匿名</span>
+                </div>
+                <div class="privacy-feature">
+                    <div class="privacy-feature-icon">✓</div>
+                    <span>随时删除</span>
+                </div>
+                <div class="privacy-feature">
+                    <div class="privacy-feature-icon">✓</div>
+                    <span>零追踪</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="cta-final">
+        <h2>
+            准备好探索<span class="highlight">真实的自己</span>了吗？
+        </h2>
+        <p>
+            开始你的心理探索之旅<br>
+            现在，轮到你了
+        </p>
+        <div class="cta-buttons">
+            <button class="btn-primary" onclick="startTest('self')">💝 立即开始自我评测</button>
+            <button class="btn-secondary" onclick="startTest('partner')">👥 立即开始伴侣评测</button>
+        </div>
+    </section>
+
+    <script>
+        // 测试模式选择函数
+        function startTest(mode) {
+            window.location.href = 'test.html?mode=' + mode;
+        }
+
+        // 添加滚动动画效果
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // 观察所有需要动画的元素
+        document.querySelectorAll('.feature-card, .dimension-item, .mode-card, .benefit-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+        // 平滑滚动到指定区域
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId) || document.querySelector('.section');
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+// 从首页显示历史记录
+function showHistoryFromIndex() {
+    const history = JSON.parse(localStorage.getItem('rpiTestHistory') || '[]');
+    
+    if (history.length === 0) {
+        alert('你还没有任何测试记录哦！\n\n立即开始你的第一次测试吧 🎯');
+        return;
+    }
+    
+    // 跳转到结果页并显示历史
+    window.location.href = 'result.html#history';
+}
+    </script>
+</body>
+</html>

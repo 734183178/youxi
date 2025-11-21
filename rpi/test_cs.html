@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋爱占有欲测试 - 正在测评中</title>
+    <style>
+        /* ... 保持原有所有样式不变 ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0a1e 0%, #2d1b3d 50%, #1a0a1e 100%);
+            z-index: -1;
+        }
+
+        .top-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .top-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b9d 0%, #ffa07a 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(255, 107, 157, 0.6);
+        }
+
+        .header {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 107, 157, 0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .progress-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        .progress-text {
+            color: #ff6b9d;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 0 30px;
+        }
+
+        .test-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 60px 50px;
+            border: 1px solid rgba(255, 107, 157, 0.2);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dimension-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 107, 157, 0.15);
+            color: #ff6b9d;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+        }
+
+        .question-header {
+            margin-bottom: 40px;
+        }
+
+        .question-number {
+            font-size: 16px;
+            color: #999;
+            margin-bottom: 15px;
+        }
+
+        .question-number span {
+            color: #ff6b9d;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .question-text {
+            font-size: 28px;
+            color: #fff;
+            line-height: 1.5;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .question-subtitle {
+            font-size: 15px;
+            color: #aaa;
+            line-height: 1.7;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 157, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .option-card:hover::before {
+            left: 100%;
+        }
+
+        .option-card:hover {
+            border-color: rgba(255, 107, 157, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .option-card.selected {
+            border-color: #ff6b9d;
+            background: rgba(255, 107, 157, 0.1);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
+        }
+
+        .option-radio {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .option-card.selected .option-radio {
+            border-color: #ff6b9d;
+            background: #ff6b9d;
+        }
+
+        .option-card.selected .option-radio::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 17px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .option-card.selected .option-text {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ccc;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            flex: 1;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+            justify-content: center;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .progress-dot.completed {
+            background: #4caf50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .progress-dot.current {
+            background: #ff6b9d;
+            width: 24px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(255, 107, 157, 0.6);
+        }
+
+        .sidebar-progress {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            padding: 25px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.2);
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .sidebar-progress-circle {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+
+        .sidebar-progress-circle svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+        }
+
+        .progress-circle-fill {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff6b9d;
+        }
+
+        .sidebar-progress-text {
+            font-size: 13px;
+            color: #999;
+        }
+
+        /* 新增：快速测试按钮样式 */
+        .quick-test-panel {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            z-index: 999;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .quick-test-btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .quick-test-btn.low {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .quick-test-btn.medium {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        .quick-test-btn.high {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+        }
+
+        .quick-test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+        }
+
+        .quick-test-label {
+            color: #999;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-progress {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 30px auto;
+                padding: 0 20px;
+            }
+
+            .test-card {
+                padding: 40px 25px;
+            }
+
+            .question-text {
+                font-size: 22px;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .btn-back {
+                order: 2;
+            }
+
+            .btn-next {
+                order: 1;
+            }
+
+            .quick-test-panel {
+                bottom: 20px;
+                padding: 10px 15px;
+                gap: 10px;
+                flex-wrap: wrap;
+                max-width: 90%;
+            }
+
+            .quick-test-label {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+    <script src="js/questions.js"></script>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <div class="top-progress-bar">
+        <div class="top-progress-fill" id="topProgress"></div>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">💝</div>
+                <div class="logo-text">恋爱占有欲测试</div>
+            </div>
+            <div class="progress-info">
+                <span class="progress-text" id="progressText">1/42</span>
+                <span>|</span>
+                <span id="timeElapsed">00:00</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="test-card">
+            <div class="dimension-tag" id="dimensionTag">
+                🎯 控制欲望维度
+            </div>
+
+            <div class="question-header">
+                <div class="question-number">
+                    第 <span id="questionNum">1</span> 题 / 共 42 题
+                </div>
+                <h2 class="question-text" id="questionText">
+                    当你的伴侣和异性朋友单独出去时,你会有什么感受?
+                </h2>
+                <p class="question-subtitle" id="questionSubtitle">
+                    请根据你的真实感受选择最符合的选项
+                </p>
+            </div>
+
+            <div class="options-container" id="optionsContainer">
+                <!-- 动态生成 -->
+            </div>
+
+            <div class="button-container">
+                <button class="btn btn-back" id="btnBack">
+                    ← 上一题
+                </button>
+                <button class="btn btn-next" id="btnNext" disabled>
+                    下一题 →
+                </button>
+            </div>
+
+            <div class="progress-dots" id="progressDots">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-progress">
+        <div class="sidebar-progress-circle">
+            <svg width="80" height="80">
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ff6b9d;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#ffa07a;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <circle class="progress-circle-bg" cx="40" cy="40" r="36"></circle>
+                <circle class="progress-circle-fill" cx="40" cy="40" r="36" 
+                    stroke-dasharray="226" stroke-dashoffset="226" id="progressCircle"></circle>
+            </svg>
+            <div class="progress-percentage" id="progressPercentage">2%</div>
+        </div>
+        <div class="sidebar-progress-text">测试进度</div>
+    </div>
+
+    <!-- 新增：快速测试面板 -->
+    <div class="quick-test-panel">
+        <span class="quick-test-label">🧪 快速测试：</span>
+        <button class="quick-test-btn low" onclick="quickTest(1)">低占有欲</button>
+        <button class="quick-test-btn medium" onclick="quickTest(3)">中等占有欲</button>
+        <button class="quick-test-btn high" onclick="quickTest(5)">高占有欲</button>
+        <button class="quick-test-btn" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); color: white;" onclick="quickTestRandom()">随机填写</button>
+    </div>
+
+    <script>
+        // 确保questions.js已加载
+        if (typeof getQuestions === 'undefined') {
+            alert('题目文件加载失败,请刷新页面重试');
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const testMode = urlParams.get('mode') || 'self';
+        localStorage.setItem('testMode', testMode);
+        
+        const testquestions = window.getQuestions(testMode);
+        let currentQuestion = 0;
+        let answers = [];
+        let startTime = Date.now();
+
+        // ========== 新增：快速测试函数 ==========
+        
+        /**
+         * 快速测试 - 用指定分数填充所有答案
+         * @param {number} score - 1(低), 3(中), 5(高)
+         */
+        function quickTest(score) {
+            if (!confirm(`确定要用"${score === 1 ? '低' : score === 3 ? '中等' : '高'}占有欲"的答案快速填充所有题目吗？\n\n这将直接跳转到结果页面。`)) {
+                return;
+            }
+            
+            // 用指定分数填充所有42个答案
+            answers = Array(42).fill(score);
+            
+            // 保存并跳转
+            saveAndSubmit();
+        }
+
+        /**
+         * 随机测试 - 随机生成答案
+         */
+        function quickTestRandom() {
+            if (!confirm('确定要随机生成所有答案吗？\n\n这将随机选择1-5分，直接跳转到结果页面。')) {
+                return;
+            }
+            
+            // 生成42个随机答案(1-5)
+            answers = Array(42).fill(0).map(() => Math.floor(Math.random() * 5) + 1);
+            
+            // 显示生成的答案分布
+            const distribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+            answers.forEach(a => distribution[a]++);
+            console.log('随机生成的答案分布:', distribution);
+            
+            // 保存并跳转
+            saveAndSubmit();
+        }
+
+        /**
+         * 保存答案并跳转到结果页
+         */
+        function saveAndSubmit() {
+            localStorage.setItem('testAnswers', JSON.stringify(answers));
+            localStorage.setItem('testTime', new Date().toISOString());
+            
+            // 显示提示
+            const loadingDiv = document.createElement('div');
+            loadingDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); color: #ff6b9d; padding: 30px 50px; border-radius: 20px; font-size: 18px; z-index: 9999; text-align: center;';
+            loadingDiv.innerHTML = '✓ 测试完成！<br><span style="font-size: 14px; color: #999;">正在跳转到结果页...</span>';
+            document.body.appendChild(loadingDiv);
+            
+            // 延迟跳转，让用户看到提示
+            setTimeout(() => {
+                window.location.href = 'result.html';
+            }, 800);
+        }
+
+        // ========== 原有的正常测试逻辑 ==========
+
+        function init() {
+            generateProgressDots();
+            updateQuestion();
+            setupEventListeners();
+            startTimer();
+        }
+
+        function generateProgressDots() {
+            const dotsContainer = document.getElementById('progressDots');
+            for (let i = 0; i < 42; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                if (i === 0) dot.classList.add('current');
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateQuestion() {
+            const q = testquestions[currentQuestion] || testquestions[0];
+            
+            document.getElementById('dimensionTag').innerHTML = q.dimension;
+            document.getElementById('questionNum').textContent = currentQuestion + 1;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('questionSubtitle').textContent = q.subtitle;
+            document.getElementById('progressText').textContent = `${currentQuestion + 1}/42`;
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            q.options.forEach((option, index) => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.dataset.value = index + 1;
+                optionCard.innerHTML = `
+                    <div class="option-radio"></div>
+                    <div class="option-text">${option}</div>
+                `;
+                optionsContainer.appendChild(optionCard);
+            });
+
+            updateProgress();
+            setupOptionListeners();
+            
+            document.getElementById('btnBack').disabled = currentQuestion === 0;
+            document.getElementById('btnNext').disabled = true;
+            
+            if (answers[currentQuestion]) {
+                const selectedOption = document.querySelector(`[data-value="${answers[currentQuestion]}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('selected');
+                    document.getElementById('btnNext').disabled = false;
+                }
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / 42) * 100;
+            
+            document.getElementById('topProgress').style.width = progress + '%';
+            
+            const circumference = 226;
+            const offset = circumference - (progress / 100) * circumference;
+            document.getElementById('progressCircle').style.strokeDashoffset = offset;
+            document.getElementById('progressPercentage').textContent = Math.round(progress) + '%';
+            
+            const dots = document.querySelectorAll('.progress-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.remove('current', 'completed');
+                if (index < currentQuestion) {
+                    dot.classList.add('completed');
+                } else if (index === currentQuestion) {
+                    dot.classList.add('current');
+                }
+            });
+        }
+
+        function setupOptionListeners() {
+            document.querySelectorAll('.option-card').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.option-card').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    this.classList.add('selected');
+                    answers[currentQuestion] = parseInt(this.dataset.value);
+                    document.getElementById('btnNext').disabled = false;
+                });
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('btnBack').addEventListener('click', () => {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    updateQuestion();
+                }
+            });
+
+            document.getElementById('btnNext').addEventListener('click', () => {
+                if (currentQuestion < 41) {
+                    currentQuestion++;
+                    updateQuestion();
+                } else {
+                    submitTest();
+                }
+            });
+        }
+
+        function startTimer() {
+            setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                const seconds = (elapsed % 60).toString().padStart(2, '0');
+                document.getElementById('timeElapsed').textContent = `${minutes}:${seconds}`;
+            }, 1000);
+        }
+
+        function submitTest() {
+            saveAndSubmit();
+        }
+
+        init();
+    </script>
+</body>
+</html>

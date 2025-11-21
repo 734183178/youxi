@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的测试历史 - 恋爱占有欲测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0a1e 0%, #2d1b3d 50%, #1a0a1e 100%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            color: #999;
+            font-size: 16px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ff6b9d;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            border: 2px solid #ff6b9d;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 107, 157, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .history-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            transition: all 0.3s;
+        }
+
+        .history-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 107, 157, 0.4);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 22px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .rpi-badge {
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .card-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .info-label {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 30px;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            color: #999;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
+        }
+
+        .stats-summary {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(196, 69, 105, 0.1) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 107, 157, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+
+    <div class="container">
+        <a href="index.html" class="back-btn">
+            ← 返回首页
+        </a>
+
+        <div class="header">
+            <h1>📊 我的测试历史</h1>
+            <p>追踪你的成长轨迹</p>
+        </div>
+
+        <div id="content"></div>
+    </div>
+
+    <script src="js/scoring.js"></script>
+    <script>
+        function displayHistory() {
+            const history = getTestHistory();
+            const content = document.getElementById('content');
+
+            if (history.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">还没有测试记录</div>
+                        <a href="index.html" class="btn-primary">开始第一次测试</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // 计算统计数据
+            const avgRPI = Math.round(history.reduce((sum, r) => sum + r.rpi, 0) / history.length);
+            const latestRPI = history[0].rpi;
+            const change = history.length > 1 ? latestRPI - history[1].rpi : 0;
+
+            content.innerHTML = `
+                <div class="stats-summary">
+                    <h3 style="color: #ff6b9d; margin-bottom: 10px;">📈 整体概览</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">${history.length}</div>
+                            <div class="stat-label">测试次数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${avgRPI}</div>
+                            <div class="stat-label">平均 RPI</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${latestRPI}</div>
+                            <div class="stat-label">最新 RPI</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${change > 0 ? '+' : ''}${change}</div>
+                            <div class="stat-label">较上次变化</div>
+                        </div>
+                    </div>
+                </div>
+
+                ${history.map((record, index) => `
+                    <div class="history-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                ${index === 0 ? '🌟 ' : ''}测试 #${history.length - index}
+                            </div>
+                            <div class="rpi-badge" style="background: ${record.levelColor}">
+                                RPI ${record.rpi}
+                            </div>
+                        </div>
+
+                        <div class="card-info">
+                            <div class="info-item">
+                                <div class="info-label">测试时间</div>
+                                <div class="info-value">${new Date(record.timestamp).toLocaleString('zh-CN')}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">测试模式</div>
+                                <div class="info-value">${record.testMode === 'partner' ? '👥 伴侣评测' : '🪞 自我评测'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">等级</div>
+                                <div class="info-value">${record.levelName}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">控制欲</div>
+                                <div class="info-value">${record.dimensions.control.score}/50</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">嫉妒度</div>
+                                <div class="info-value">${record.dimensions.jealousy.score}/50</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">依赖度</div>
+                                <div class="info-value">${record.dimensions.dependency.score}/50</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        window.addEventListener('load', displayHistory);
+    </script>
+</body>
+</html>
