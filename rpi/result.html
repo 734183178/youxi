@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,8 +49,15 @@
         }
 
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .completion-icon {
@@ -59,15 +67,23 @@
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
         }
-        
+
         .rpi-icon {
             font-size: 60px;
             margin-bottom: 20px;
             animation: bounce 1s ease-in-out;
         }
+
         .completion-title {
             font-size: 32px;
             background: linear-gradient(135deg, #ff6b9d 0%, #ffa07a 100%);
@@ -108,8 +124,15 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .rpi-section::before {
@@ -124,8 +147,13 @@
         }
 
         @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .rpi-content {
@@ -200,10 +228,10 @@
         .rpi-progress-bar {
             position: relative;
             height: 12px;
-            background: linear-gradient(90deg, 
-                rgba(100, 200, 100, 0.3) 0%, 
-                rgba(255, 200, 100, 0.3) 50%, 
-                rgba(255, 107, 157, 0.3) 100%);
+            background: linear-gradient(90deg,
+                    rgba(100, 200, 100, 0.3) 0%,
+                    rgba(255, 200, 100, 0.3) 50%,
+                    rgba(255, 107, 157, 0.3) 100%);
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 10px;
@@ -233,8 +261,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.1); }
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
         }
 
         .rpi-scale-marks {
@@ -298,7 +333,7 @@
             border-radius: 20px;
             border: 1px solid rgba(255, 107, 157, 0.15);
             margin-bottom: 25px;
-        }         
+        }
 
         .analysis-box h3 {
             color: #ff6b9d;
@@ -313,7 +348,7 @@
             line-height: 1.8;
             margin-bottom: 15px;
         }
-        
+
         #suggestionContent {
             color: #ccc;
             font-size: 15px;
@@ -776,26 +811,411 @@
             color: #fff;
         }
 
-        /* 响应式 */
+        /* 响应式 - 移动端优化 */
         @media (max-width: 768px) {
+
+            /* === 容器左右留白优化 === */
+            .container {
+                padding: 0 12px;
+                margin: 20px auto;
+            }
+
+            /* === 顶部完成横幅压缩 50% === */
+            .completion-banner {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+                border-radius: 20px;
+            }
+
+            .completion-icon {
+                font-size: 36px;
+                margin-bottom: 12px;
+            }
+
+            .completion-title {
+                font-size: 22px;
+                margin-bottom: 10px;
+            }
+
+            /* 隐藏装饰性测试信息 */
+            .test-info {
+                display: none;
+            }
+
+            /* === RPI 核心区域优化 === */
+            .rpi-section {
+                padding: 30px 15px;
+                margin-bottom: 20px;
+                border-radius: 20px;
+            }
+
+            .rpi-icon {
+                font-size: 40px;
+                margin-bottom: 12px;
+            }
+
+            .rpi-label {
+                font-size: 15px;
+                margin-bottom: 12px;
+            }
+
             .rpi-score {
-                font-size: 80px;
+                font-size: 72px;
+                margin-bottom: 12px;
+            }
+
+            .rpi-level {
+                padding: 8px 20px;
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+
+            .rpi-summary {
+                font-size: 15px;
+                margin-bottom: 15px;
+                line-height: 1.6;
+            }
+
+            .percentile {
+                padding: 8px 18px;
+                font-size: 13px;
+            }
+
+            /* RPI 进度条容器 */
+            .rpi-progress-container {
+                padding: 18px 20px;
+                margin: 20px auto 15px;
+            }
+
+            .rpi-scale-labels {
+                font-size: 12px;
+                margin-bottom: 12px;
+            }
+
+            .rpi-scale-marks {
+                font-size: 11px;
+            }
+
+            /* === 通用 Section 压缩 === */
+            .section {
+                padding: 30px 15px;
+                margin-bottom: 20px;
+                border-radius: 20px;
+            }
+
+            .section-header {
+                margin-bottom: 30px;
+            }
+
+            .section-icon {
+                font-size: 36px;
+                margin-bottom: 12px;
             }
 
             .section-title {
                 font-size: 24px;
+                margin-bottom: 12px;
             }
 
+            .section-subtitle {
+                font-size: 14px;
+            }
+
+            /* === 雷达图压缩高度 === */
+            .radar-container {
+                padding: 20px 10px;
+                margin-bottom: 30px;
+            }
+
+            .radar-chart {
+                height: 280px;
+                /* 从 400px 压缩到 280px */
+            }
+
+            #radarSvg {
+                width: 280px;
+                height: 280px;
+            }
+
+            /* === 维度卡片优化 === */
             .dimensions-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .dimension-card {
+                padding: 20px 15px;
+                border-radius: 18px;
+            }
+
+            .dimension-name {
+                font-size: 18px;
+            }
+
+            .dimension-score {
+                font-size: 24px;
+            }
+
+            .dimension-desc {
+                font-size: 13px;
+            }
+
+            /* === 分析框优化 === */
+            .analysis-box {
+                padding: 20px 15px;
+                margin-bottom: 18px;
+                border-radius: 15px;
+            }
+
+            .analysis-box h3 {
+                font-size: 18px;
+                margin-bottom: 12px;
+            }
+
+            .analysis-box p {
+                font-size: 14px;
+            }
+
+            /* === 维度深度分析优化 === */
+            .dimension-deep-analysis {
+                margin-top: 15px;
+                padding-top: 15px;
+            }
+
+            .deep-analysis-title {
+                font-size: 15px;
+                margin-bottom: 8px;
+            }
+
+            .deep-analysis-description {
+                font-size: 13px;
+                margin-bottom: 12px;
+            }
+
+            .deep-analysis-list-title {
+                font-size: 13px;
+                margin-bottom: 6px;
+            }
+
+            .deep-analysis-list li {
+                font-size: 12px;
+            }
+
+            /* === 组合模式分析优化 === */
+            .pattern-card {
+                padding: 20px 15px;
+                margin-bottom: 18px;
+                border-radius: 18px;
+            }
+
+            .pattern-title {
+                font-size: 18px;
+                margin-bottom: 12px;
+            }
+
+            .pattern-description {
+                font-size: 14px;
+            }
+
+            .pattern-section-title {
+                font-size: 14px;
+            }
+
+            .pattern-section li {
+                font-size: 13px;
+            }
+
+            /* === 学习资料优化 === */
+            .resources-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .resource-card {
+                padding: 20px 15px;
+            }
+
+            .resource-icon {
+                font-size: 32px;
+                margin-bottom: 15px;
+            }
+
+            .resource-title {
+                font-size: 18px;
+            }
+
+            .resource-desc {
+                font-size: 13px;
+            }
+
+            /* === 升级卡片优化 === */
+            .upgrade-card {
+                padding: 25px 15px;
+                margin: 25px 0;
+                border-radius: 20px;
+            }
+
+            .upgrade-badge {
+                font-size: 12px;
+                padding: 6px 15px;
+                margin-bottom: 15px;
+            }
+
+            .upgrade-title {
+                font-size: 22px;
+                margin-bottom: 12px;
+            }
+
+            .upgrade-desc {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+
+            .upgrade-features {
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+
+            .upgrade-feature {
+                font-size: 13px;
+            }
+
+            /* === 隐私保障优化 === */
+            .privacy-guarantee {
+                padding: 30px 15px;
+                margin: 30px auto;
+                border-radius: 20px;
+            }
+
+            .privacy-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 36px;
+                margin-bottom: 20px;
+            }
+
+            .privacy-guarantee h2 {
+                font-size: 24px;
+                margin-bottom: 15px;
+            }
+
+            .privacy-guarantee>p {
+                font-size: 14px;
+                margin-bottom: 25px;
+            }
+
+            .privacy-features {
+                gap: 25px;
+                flex-wrap: wrap;
+            }
+
+            .privacy-feature-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+
+            .privacy-feature span {
+                font-size: 14px;
+            }
+
+            /* === 行动号召区优化 === */
+            .action-section {
+                padding: 35px 15px;
+                margin: 25px 0;
+                border-radius: 20px;
             }
 
             .action-title {
-                font-size: 28px;
+                font-size: 24px;
+                margin-bottom: 15px;
+                line-height: 1.3;
+            }
+
+            .action-subtitle {
+                font-size: 15px;
+                margin-bottom: 25px;
+            }
+
+            .action-buttons {
+                gap: 12px;
+                flex-direction: column;
+            }
+
+            .btn {
+                padding: 16px 30px;
+                font-size: 15px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* === 提醒框优化 === */
+            .reminder-box {
+                padding: 18px 15px;
+                gap: 12px;
+            }
+
+            .reminder-icon {
+                font-size: 20px;
+            }
+
+            .reminder-box strong {
+                font-size: 15px;
+                margin-bottom: 6px;
+            }
+
+            .reminder-box p {
+                font-size: 13px;
+            }
+
+            /* === 目标框优化 === */
+            .goal-box {
+                padding: 15px;
+                margin-bottom: 12px;
+            }
+
+            .goal-box strong {
+                font-size: 14px;
+                margin-bottom: 6px;
+            }
+
+            /* === 底部提示 === */
+            body>div:last-child {
+                padding: 25px 15px;
+            }
+
+            body>div:last-child p {
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* 超小屏幕额外优化 (< 375px) */
+        @media (max-width: 375px) {
+            .container {
+                padding: 0 10px;
+            }
+
+            .rpi-score {
+                font-size: 64px;
+            }
+
+            .section-title {
+                font-size: 22px;
+            }
+
+            .radar-chart {
+                height: 250px;
+            }
+
+            #radarSvg {
+                width: 250px;
+                height: 250px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="animated-bg"></div>
 
@@ -824,23 +1244,23 @@
         <!-- RPI核心得分 -->
         <div class="rpi-section">
             <div class="rpi-content">
-                <div class="rpi-icon">💖</div> 
+                <div class="rpi-icon">💖</div>
                 <div class="rpi-label">恋爱占有欲指数 (RPI)</div>
                 <div class="rpi-score" id="rpiScore">68</div>
                 <div class="rpi-level" id="rpiLevel">很高(爱到极致)</div>
-                
+
                 <div class="rpi-progress-container">
                     <div class="rpi-scale-labels">
                         <div class="rpi-scale-label">自由自在</div>
                         <div class="rpi-scale-label">氛到好处</div>
                         <div class="rpi-scale-label active">爱到极致</div>
                     </div>
-                    
+
                     <div class="rpi-progress-bar">
                         <div class="rpi-progress-fill" id="rpiFill"></div>
                         <div class="rpi-progress-marker" id="rpiMarker"></div>
                     </div>
-                    
+
                     <div class="rpi-scale-marks">
                         <span class="rpi-scale-mark">0</span>
                         <span class="rpi-scale-mark">50</span>
@@ -849,7 +1269,8 @@
                 </div>
 
                 <p class="rpi-summary" id="rpiSummary">
-                    你的恋爱占有欲指数为 <strong style="color: #ff6b9d;">68</strong>,处于 <strong style="color: #ffa07a;">很高(爱到极致)</strong> 水平
+                    你的恋爱占有欲指数为 <strong style="color: #ff6b9d;">68</strong>,处于 <strong
+                        style="color: #ffa07a;">很高(爱到极致)</strong> 水平
                 </p>
                 <div class="percentile" id="percentile">
                     💫 你的占有欲强度超过了 58% 的测试者
@@ -1025,7 +1446,7 @@
         // ============================================
         // 核心函数:从 scoring.js 导入的计算逻辑
         // ============================================
-        
+
         /**
          * 更新结果显示 - 完整版
          */
@@ -1074,7 +1495,7 @@
          */
         function updateRPICore(result, possessive) {
             document.getElementById('rpiScore').textContent = result.rpi;
-            
+
             const levelElement = document.getElementById('rpiLevel');
             levelElement.textContent = result.levelName;
             levelElement.style.background = `linear-gradient(135deg, ${result.levelColor} 0%, ${adjustColor(result.levelColor, -20)} 100%)`;
@@ -1115,9 +1536,9 @@
             const selectedDesc = levelDescriptions[randomIndex];
 
             document.getElementById('toneBadge').textContent = selectedDesc.tone;
-            document.getElementById('meaningText').textContent = 
+            document.getElementById('meaningText').textContent =
                 selectedDesc.meaning.replace(/你/g, pronoun).replace(/你的/g, possessive);
-            document.getElementById('suggestionText').textContent = 
+            document.getElementById('suggestionText').textContent =
                 selectedDesc.suggestion.replace(/你/g, pronoun).replace(/你的/g, possessive);
         }
 
@@ -1131,8 +1552,8 @@
             }
 
             const goals = result.personalizedAnalysis.goals;
-            
-            document.getElementById('suggestionContent').textContent = 
+
+            document.getElementById('suggestionContent').textContent =
                 goals.replace(/你/g, pronoun).replace(/你的/g, possessive);
         }
 
@@ -1361,9 +1782,9 @@
          */
         function displayPatternAnalysis(dimensions, pronoun, possessive) {
             const section = document.getElementById('patternAnalysisSection');
-            
+
             const patterns = dimensions.control.patterns || [];
-            
+
             if (!patterns || patterns.length === 0) {
                 section.style.display = 'none';
                 return;
@@ -1542,51 +1963,51 @@
             updateResultDisplay(result, testMode);
         });
         // ============================================
-// 添加按钮事件监听器
-// ============================================
-document.addEventListener('DOMContentLoaded', function() {
-    // 为伴侣也测一次
-    const partnerTestBtns = document.querySelectorAll('.btn-secondary');
-    partnerTestBtns.forEach(btn => {
-        if (btn.textContent.includes('为伴侣也测一次')) {
-            btn.addEventListener('click', function() {
-                localStorage.setItem('testMode', 'partner');
-                window.location.href = 'test.html?mode=partner';
+        // 添加按钮事件监听器
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function () {
+            // 为伴侣也测一次
+            const partnerTestBtns = document.querySelectorAll('.btn-secondary');
+            partnerTestBtns.forEach(btn => {
+                if (btn.textContent.includes('为伴侣也测一次')) {
+                    btn.addEventListener('click', function () {
+                        localStorage.setItem('testMode', 'partner');
+                        window.location.href = 'test.html?mode=partner';
+                    });
+                }
             });
-        }
-    });
 
-    // 查看历史记录
-    const historyBtns = document.querySelectorAll('.btn-outline');
-    if (historyBtns[0] && historyBtns[0].textContent.includes('查看历史记录')) {
-        historyBtns[0].addEventListener('click', function() {
-            showHistoryModal();
-        });
-    }
+            // 查看历史记录
+            const historyBtns = document.querySelectorAll('.btn-outline');
+            if (historyBtns[0] && historyBtns[0].textContent.includes('查看历史记录')) {
+                historyBtns[0].addEventListener('click', function () {
+                    showHistoryModal();
+                });
+            }
 
-    // 重新测试
-    if (historyBtns[1] && historyBtns[1].textContent.includes('重新测试')) {
-        historyBtns[1].addEventListener('click', function() {
-            if (confirm('确定要重新测试吗？当前结果将被保存到历史记录中。')) {
-                localStorage.removeItem('testAnswers');
-                localStorage.setItem('testMode', 'self');
-                window.location.href = 'test.html?mode=self';
+            // 重新测试
+            if (historyBtns[1] && historyBtns[1].textContent.includes('重新测试')) {
+                historyBtns[1].addEventListener('click', function () {
+                    if (confirm('确定要重新测试吗？当前结果将被保存到历史记录中。')) {
+                        localStorage.removeItem('testAnswers');
+                        localStorage.setItem('testMode', 'self');
+                        window.location.href = 'test.html?mode=self';
+                    }
+                });
             }
         });
-    }
-});
 
-// 显示历史记录的模态框
-function showHistoryModal() {
-    const history = getTestHistory();
-    
-    if (history.length === 0) {
-        alert('还没有历史记录哦！完成更多测试后就能看到你的成长轨迹了 📈');
-        return;
-    }
+        // 显示历史记录的模态框
+        function showHistoryModal() {
+            const history = getTestHistory();
 
-    // 创建模态框HTML
-    const modalHTML = `
+            if (history.length === 0) {
+                alert('还没有历史记录哦！完成更多测试后就能看到你的成长轨迹了 📈');
+                return;
+            }
+
+            // 创建模态框HTML
+            const modalHTML = `
         <div id="historyModal" style="
             position: fixed;
             top: 0;
@@ -1683,20 +2104,21 @@ function showHistoryModal() {
         </div>
     `;
 
-    // 添加到页面
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-}
+            // 添加到页面
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
 
-// 添加淡入动画
-const style = document.createElement('style');
-style.textContent = `
+        // 添加淡入动画
+        const style = document.createElement('style');
+        style.textContent = `
     @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
     }
 `;
-document.head.appendChild(style);
+        document.head.appendChild(style);
     </script>
 
 </body>
+
 </html>
