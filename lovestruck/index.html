@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖 恋爱脑等级测评</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 自动测试弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(255, 107, 157, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.75rem;
+            color: #9C27B0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .modal-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-option-btn {
+            padding: 1rem 1.5rem;
+            border: 2px solid;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            background: white;
+        }
+        
+        .modal-option-btn:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-option-low {
+            color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        
+        .modal-option-low:hover {
+            background: #E8F5E9;
+        }
+        
+        .modal-option-medium {
+            color: #FBC02D;
+            border-color: #FBC02D;
+        }
+        
+        .modal-option-medium:hover {
+            background: #FFF9C4;
+        }
+        
+        .modal-option-high {
+            color: #F44336;
+            border-color: #F44336;
+        }
+        
+        .modal-option-high:hover {
+            background: #FFEBEE;
+        }
+        
+        .modal-option-random {
+            color: #9C27B0;
+            border-color: #9C27B0;
+        }
+        
+        .modal-option-random:hover {
+            background: #F3E5F5;
+        }
+        
+        .modal-close {
+            width: 100%;
+            padding: 0.75rem;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 12px;
+            color: #666;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            background: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- 介绍页 -->
+        <div id="intro-page" class="page active">
+            <div class="container">
+                <div class="floating-hearts">
+                    <span class="heart">💕</span>
+                    <span class="heart">💗</span>
+                    <span class="heart">💖</span>
+                    <span class="heart">💙</span>
+                </div>
+                
+                <div class="intro-card">
+                    <h1 class="main-title">
+                        <span class="title-icon">💖</span>
+                        恋爱脑等级测评
+                        <span class="title-icon">💖</span>
+                    </h1>
+                    <p class="subtitle">测测你的恋爱脑有几级？</p>
+                    
+                    <div class="intro-content">
+                        <div class="intro-brief">
+                            <p>📊 本测评包含<strong>32道题目</strong>，从依赖程度、浪漫幻想、失恋抗性、投入度、理智程度、自我保留6个维度，全面评估你的恋爱脑等级。</p>
+                            <p>🎯 共分为<strong>9个等级</strong>，从「理智清醒」到「满级恋爱脑」，看看你属于哪一级～</p>
+                            <p>⚠️ 请根据你的<strong>真实想法</strong>作答，测评结果仅供娱乐参考。恋爱脑不是病，适度才最美！</p>
+                        </div>
+                        
+                        <div class="scoring-guide-compact">
+                            <h4>👍 评分标准</h4>
+                            <div class="score-options-compact">
+                                <span class="score-tag-compact tag-1">1分<br>非常不符合</span>
+                                <span class="score-tag-compact tag-2">2分<br>不太符合</span>
+                                <span class="score-tag-compact tag-3">3分<br>一般</span>
+                                <span class="score-tag-compact tag-4">4分<br>比较符合</span>
+                                <span class="score-tag-compact tag-5">5分<br>非常符合</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="intro-buttons">
+                        <button id="start-btn" class="btn btn-primary">
+                            开始测评 💕
+                        </button>
+                        
+                        <button id="history-btn" class="btn btn-secondary">
+                            查看历史记录 📋
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试页 -->
+        <div id="test-page" class="page">
+            <div class="container">
+                <div class="test-card">
+                    <div class="test-header">
+                        <h2 class="test-title">恋爱脑等级测评</h2>
+                        <div class="test-progress-info">
+                            <span class="current-question">第 <span id="current-num">1</span> 题</span>
+                            <span class="total-questions">共 32 题</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <div class="progress-percent" id="progress-percent">3.1%</div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <h3 id="question-text" class="question-text"></h3>
+                        
+                        <div id="options-container" class="options-container">
+                            <!-- 选项动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <div class="test-footer">
+                        <button id="prev-btn" class="btn btn-outline" style="visibility: hidden;">
+                            ← 上一题
+                        </button>
+                        <div class="remaining-questions">
+                            剩余 <span id="remaining">31</span> 题
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果页 -->
+        <div id="result-page" class="page">
+            <div class="container">
+                <div class="result-card">
+                    <!-- 总体结果 -->
+                    <div id="overall-result" class="overall-result">
+                        <!-- 动态生成 -->
+                    </div>
+                    
+                    <!-- 雷达图和维度列表 -->
+                    <div class="analysis-section">
+                        <div class="radar-container">
+                            <h3 class="section-title">📊 六维雷达图</h3>
+                            <canvas id="radar-chart"></canvas>
+                        </div>
+                        
+                        <div class="dimensions-list">
+                            <h3 class="section-title">📈 详细维度分析</h3>
+                            <div id="dimensions-container">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 详细建议 -->
+                    <div id="suggestions-section" class="suggestions-section">
+                        <!-- 动态生成 -->
+                    </div>
+                    
+                    <!-- 推荐资料 -->
+                    <div class="resources-section">
+                        <h4 class="resources-title">📚 更多恋爱相关资料</h4>
+                        <div class="resources-links">
+                            <a href="#" class="resource-link resource-link-1" target="_blank" rel="noopener noreferrer">
+                                📖 恋爱心理学指南
+                            </a>
+                            <a href="#" class="resource-link resource-link-2" target="_blank" rel="noopener noreferrer">
+                                💡 情感关系自测
+                            </a>
+                            <a href="#" class="resource-link resource-link-3" target="_blank" rel="noopener noreferrer">
+                                ✨ 自我成长建议
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="result-actions">
+                        <button id="restart-btn" class="btn btn-primary">
+                            重新测评 💕
+                        </button>
+                        <button id="view-history-btn" class="btn btn-secondary">
+                            查看历史记录 📋
+                        </button>
+                    </div>
+                    
+                    <div class="disclaimer">
+                        本测评结果仅供娱乐参考，不构成任何专业建议 💖
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史记录页 -->
+        <div id="history-page" class="page">
+            <div class="container">
+                <div class="history-card">
+                    <h2 class="history-title">📋 测评历史记录</h2>
+                    <div id="history-container" class="history-container">
+                        <!-- 动态生成 -->
+                    </div>
+                    <button id="back-to-intro-btn" class="btn btn-primary">
+                        返回首页
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 自动测试选择弹窗 -->
+        <div id="auto-test-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">🤖 选择自动测试模式</h3>
+                    <p class="modal-subtitle">系统将自动生成答案并显示结果</p>
+                </div>
+                
+                <div class="modal-options">
+                    <button id="auto-test-low" class="modal-option-btn modal-option-low">
+                        🧠 低分模式（理智清醒）
+                    </button>
+                    <button id="auto-test-medium" class="modal-option-btn modal-option-medium">
+                        💜 中分模式（适度恋爱脑）
+                    </button>
+                    <button id="auto-test-high" class="modal-option-btn modal-option-high">
+                        💗 高分模式（重度恋爱脑）
+                    </button>
+                    <button id="auto-test-random" class="modal-option-btn modal-option-random">
+                        🎲 随机模式（随机分数）
+                    </button>
+                </div>
+                
+                <button id="close-modal-btn" class="modal-close">
+                    取消
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
