@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心理年龄测试 - 测试模式</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 测试模式专用样式 */
+        .test-control-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-width: 280px;
+        }
+
+        .test-control-panel h3 {
+            font-size: 16px;
+            color: #10b981;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .test-control-panel p {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .test-btn {
+            width: 100%;
+            padding: 10px 16px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            background: #10b981;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .test-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .test-btn.secondary {
+            background: #6b7280;
+        }
+
+        .test-btn.secondary:hover {
+            background: #4b5563;
+        }
+
+        .test-btn.danger {
+            background: #ef4444;
+        }
+
+        .test-btn.danger:hover {
+            background: #dc2626;
+        }
+
+        .age-input-group {
+            margin-bottom: 12px;
+        }
+
+        .age-input-group label {
+            display: block;
+            font-size: 12px;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .age-input-group input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        }
+
+        .test-info {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 6px;
+            padding: 8px;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #92400e;
+        }
+
+        @media (max-width: 640px) {
+            .test-control-panel {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 测试控制面板 -->
+    <div class="test-control-panel">
+        <h3>
+            🧪 测试控制面板
+        </h3>
+        <p>快速填充答案以测试不同分数段的结果</p>
+
+        <div class="age-input-group">
+            <label>设置实际年龄</label>
+            <input type="number" id="testActualAge" value="25" min="8" max="100">
+        </div>
+
+        <button class="test-btn" onclick="autoFillTest('young')">
+            😊 年轻模式（心理年龄会更小）
+        </button>
+        
+        <button class="test-btn" onclick="autoFillTest('normal')">
+            😌 正常模式（心理年龄相近）
+        </button>
+        
+        <button class="test-btn" onclick="autoFillTest('mature')">
+            🤔 成熟模式（心理年龄会更大）
+        </button>
+        
+        <button class="test-btn" onclick="autoFillTest('random')">
+            🎲 随机模式（完全随机选择）
+        </button>
+
+        <button class="test-btn secondary" onclick="resetTest()">
+            🔄 重置测试
+        </button>
+
+        <div class="test-info">
+            💡 提示：点击按钮会自动填充所有答案并跳转到结果页
+        </div>
+    </div>
+
+    <!-- 主测试内容 -->
+    <!-- 介绍页 -->
+    <div id="introPage" class="page active">
+        <div class="container">
+            <div class="card">
+                <h1 class="intro-title">心理年龄测试</h1>
+                <p class="intro-subtitle">Psychological Age Test - 测试模式</p>
+
+                <p class="intro-text">
+                    心理年龄是指一个人在心理和精神方面所表现出的年龄特征，与实际年龄并不完全一致。人的一生共经历8个心理时期，包括胎儿期、婴儿期、幼儿期、童年期、少年期、青年期、中年期、老年期。
+                </p>
+
+                <p class="intro-text">
+                    本测试通过32道题目，从生活态度、行为习惯、思维方式等多个维度评估您的心理年龄，帮助您了解自己的心理状态。
+                </p>
+
+                <div class="info-box">
+                    <h3>📋 测试说明</h3>
+                    <p>• 共32道题目，预计用时5-8分钟</p>
+                    <p>• 请根据真实感受作答，没有对错之分</p>
+                    <p>• 每道题目都必须作答才能继续</p>
+                    <p>• 建议在安静的环境中完成测试</p>
+                </div>
+
+                <div class="age-input-box">
+                    <label for="actualAge">请输入您的实际年龄</label>
+                    <input 
+                        type="number" 
+                        id="actualAge" 
+                        min="8" 
+                        max="100" 
+                        placeholder="18"
+                        required
+                    >
+                    <p style="font-size: 14px; color: #059669; margin-top: 8px;">
+                        （用于计算心理年龄与实际年龄的差距）
+                    </p>
+                </div>
+
+                <button class="start-btn" onclick="startTest()" id="startBtn" disabled>
+                    开始测试
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 答题页 -->
+    <div id="quizPage" class="page">
+        <div class="container quiz-container">
+            <div class="card">
+                <h2 class="quiz-header">心理年龄测试</h2>
+
+                <!-- 进度区 -->
+                <div class="progress-section">
+                    <div class="progress-text">
+                        <div>
+                            <span class="progress-current" id="currentQuestion">1</span>
+                            <span class="progress-total">/ 32</span>
+                        </div>
+                        <span class="progress-percent" id="progressPercent">3%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <!-- 题目区 -->
+                <div class="question-text" id="questionText"></div>
+
+                <!-- 选项区 -->
+                <ul class="options-list" id="optionsList"></ul>
+
+                <!-- 底部导航 -->
+                <div class="quiz-footer">
+                    <button class="prev-btn" onclick="prevQuestion()" id="prevBtn" disabled>
+                        ← 上一题
+                    </button>
+                    <span class="remaining-text">
+                        还剩 <strong id="remainingCount">32</strong> 题
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果页 -->
+    <div id="resultPage" class="page">
+        <div class="container result-container">
+            <div class="card">
+                <h2 class="result-title">心理年龄测试结果</h2>
+
+                <!-- 年龄对比 -->
+                <div class="result-comparison">
+                    <div class="age-box">
+                        <div class="age-label">您的心理年龄</div>
+                        <div class="age-value mental-age" id="mentalAgeDisplay"></div>
+                    </div>
+                    <div class="age-box">
+                        <div class="age-label">您的实际年龄</div>
+                        <div class="age-value actual-age" id="actualAgeDisplay"></div>
+                    </div>
+                </div>
+
+                <!-- 表情图标和评价 -->
+                <div class="result-emoji">
+                    <div class="emoji-icon" id="resultEmoji"></div>
+                    <div class="result-message" id="resultMessage"></div>
+                </div>
+
+                <!-- 详细描述 -->
+                <div class="result-description" id="resultDescription"></div>
+
+                <!-- 资料推荐 -->
+                <div class="resources-section">
+                    <h3 class="resources-title">📚 相关资源推荐</h3>
+                    <p class="resources-subtitle">更多心理健康与自我认知相关内容</p>
+                    <div class="resources-links">
+                        <a href="https://www.example.com/psychology" class="resource-link" target="_blank" rel="noopener noreferrer">
+                            📖 心理健康自测工具
+                        </a>
+                        <a href="https://www.example.com/growth" class="resource-link" target="_blank" rel="noopener noreferrer">
+                            💡 个人成长建议
+                        </a>
+                        <a href="https://www.example.com/articles" class="resource-link" target="_blank" rel="noopener noreferrer">
+                            ✨ 心理学科普文章
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 重新测试 -->
+                <div class="restart-section">
+                    <button class="restart-btn" onclick="restartTest()">
+                        重新测试
+                    </button>
+                    <p class="disclaimer">
+                        * 本测试仅供娱乐和自我了解参考，不能作为专业心理评估依据。<br>
+                        如有心理健康方面的困扰，建议咨询专业心理咨询师。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入主脚本 -->
+    <script src="script.js"></script>
+    
+    <!-- 测试模式专用脚本 -->
+    <script>
+        // ==================== 测试模式函数 ====================
+        
+        // 自动填充测试
+        function autoFillTest(mode) {
+            // 设置实际年龄
+            const testAge = parseInt(document.getElementById('testActualAge').value) || 25;
+            actualAge = testAge;
+            document.getElementById('actualAge').value = testAge;
+            
+            // 根据模式选择答案
+            answers = {};
+            
+            CONFIG.questions.forEach((question, index) => {
+                let selectedLabel;
+                
+                switch(mode) {
+                    case 'young':
+                        // 选择A（最年轻的选项）
+                        selectedLabel = 'A';
+                        break;
+                    
+                    case 'normal':
+                        // 选择C（中性选项）
+                        selectedLabel = 'C';
+                        break;
+                    
+                    case 'mature':
+                        // 选择E（最成熟的选项）
+                        selectedLabel = 'E';
+                        break;
+                    
+                    case 'random':
+                        // 随机选择
+                        const labels = ['A', 'B', 'C', 'D', 'E'];
+                        selectedLabel = labels[Math.floor(Math.random() * labels.length)];
+                        break;
+                    
+                    default:
+                        selectedLabel = 'C';
+                }
+                
+                answers[question.id] = selectedLabel;
+            });
+            
+            // 直接显示结果
+            showResult();
+            
+            console.log(`测试模式：${mode}，实际年龄：${testAge}，答案已填充`);
+        }
+        
+        // 重置测试（测试模式专用）
+        function resetTest() {
+            restartTest();
+            console.log('测试已重置');
+        }
+        
+        // 页面加载时显示测试模式提示
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('%c🧪 测试模式已启用', 'color: #10b981; font-size: 16px; font-weight: bold;');
+            console.log('使用右上角的控制面板快速测试不同结果');
+        });
+    </script>
+</body>
+</html>
