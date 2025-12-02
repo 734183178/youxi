@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>心理年龄测试</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <!-- ==================== 介绍页 ==================== -->
     <div id="introPage" class="page active">
         <div class="container">
             <div class="card">
-                <h1 class="intro-title">心理年龄测试</h1>
+                <h1 class="intro-title" id="introTitle" onclick="toggleQuickTest()">心理年龄测试</h1>
                 <p class="intro-subtitle">Psychological Age Test</p>
 
                 <p class="intro-text">
@@ -32,14 +34,7 @@
 
                 <div class="age-input-box">
                     <label for="actualAge">请输入您的实际年龄</label>
-                    <input 
-                        type="number" 
-                        id="actualAge" 
-                        min="8" 
-                        max="100" 
-                        placeholder="18"
-                        required
-                    >
+                    <input type="number" id="actualAge" min="8" max="100" placeholder="18" required>
                     <p style="font-size: 14px; color: #059669; margin-top: 8px;">
                         （用于计算心理年龄与实际年龄的差距）
                     </p>
@@ -48,6 +43,15 @@
                 <button class="start-btn" onclick="startTest()" id="startBtn" disabled>
                     开始测试
                 </button>
+
+                <!-- 快速测试按钮 -->
+                <button class="quick-test-btn" onclick="quickTest()" id="quickTestBtn" style="display: none;">
+                    🚀 快速测试
+                </button>
+                <p class="quick-test-note"
+                    style="font-size: 12px; color: #6b7280; margin-top: 8px; text-align: center;">
+                    （快速测试将自动填写年龄并随机选择答案，直接显示结果）
+                </p>
             </div>
         </div>
     </div>
@@ -94,43 +98,61 @@
     <!-- ==================== 结果页 ==================== -->
     <div id="resultPage" class="page">
         <div class="container result-container">
-            <div class="card">
-                <h2 class="result-title">心理年龄测试结果</h2>
+            <!-- 顶部标语横幅 -->
+            <div class="result-banner">
+                <p>探索你内心的真实年龄，了解自己的心理状态</p>
+            </div>
 
-                <!-- 年龄对比 -->
-                <div class="result-comparison">
-                    <div class="age-box">
-                        <div class="age-label">您的心理年龄</div>
-                        <div class="age-value mental-age" id="mentalAgeDisplay"></div>
-                    </div>
-                    <div class="age-box">
-                        <div class="age-label">您的实际年龄</div>
-                        <div class="age-value actual-age" id="actualAgeDisplay"></div>
+            <div class="card">
+                <h2 class="result-title">您的心理年龄测试结果</h2>
+
+                <!-- 圆形年龄显示 -->
+                <div class="result-age-circle">
+                    <div class="age-circle">
+                        <div class="age-number" id="mentalAgeDisplay"></div>
+                        <div class="age-label-small">心理年龄</div>
                     </div>
                 </div>
 
-                <!-- 表情图标和评价 -->
-                <div class="result-emoji">
-                    <div class="emoji-icon" id="resultEmoji"></div>
-                    <div class="result-message" id="resultMessage"></div>
+                <!-- 实际年龄信息 - 简洁文字，无背景框 -->
+                <div class="age-info-simple">
+                    <p>您的实际年龄：<strong id="actualAgeDisplay"></strong></p>
+                    <p id="ageDifferenceText"></p>
+                </div>
+
+                <!-- 年龄刻度渐变条 -->
+                <div class="age-scale-wrapper">
+                    <div class="age-scale-bar">
+                        <div class="age-indicator" id="ageIndicator"></div>
+                    </div>
+                    <div class="age-scale-labels">
+                        <span>15岁</span>
+                        <span>25岁</span>
+                        <span>35岁</span>
+                        <span>45岁</span>
+                        <span>60岁</span>
+                    </div>
                 </div>
 
                 <!-- 详细描述 -->
-                <div class="result-description" id="resultDescription"></div>
+                <div class="result-description-new" id="resultDescription"></div>
+
+                <!-- 建议框 -->
+                <div class="result-suggestion" id="resultSuggestion"></div>
+
 
                 <!-- 资料推荐 -->
                 <div class="resources-section">
-                    <h3 class="resources-title">📚 相关资源推荐</h3>
-                    <p class="resources-subtitle">更多心理健康与自我认知相关内容</p>
+                    <h3 class="resources-title">📚 心理成长资源推荐</h3>
+                    <p class="resources-subtitle">探索内心，关照自己的每一面</p>
                     <div class="resources-links">
-                        <a href="https://www.example.com/psychology" class="resource-link" target="_blank" rel="noopener noreferrer">
-                            📖 心理健康自测工具
+                        <a href="https://xhslink.com/m/9D0epdzjqnw" class="resource-link" target="_blank"
+                            rel="noopener noreferrer">
+                            📖 更多心理自测工具
                         </a>
-                        <a href="https://www.example.com/growth" class="resource-link" target="_blank" rel="noopener noreferrer">
-                            💡 个人成长建议
-                        </a>
-                        <a href="https://www.example.com/articles" class="resource-link" target="_blank" rel="noopener noreferrer">
-                            ✨ 心理学科普文章
+                        <a href="https://pan.quark.cn/s/266f60aa5bbf" class="resource-link" target="_blank"
+                            rel="noopener noreferrer">
+                            💡 2026重启人生365天时间规划表
                         </a>
                     </div>
                 </div>
@@ -141,7 +163,7 @@
                         重新测试
                     </button>
                     <p class="disclaimer">
-                        * 本测试仅供娱乐和自我了解参考，不能作为专业心理评估依据。<br>
+                        * 本测试仅供自我了解参考，不能作为专业心理评估依据。<br>
                         如有心理健康方面的困扰，建议咨询专业心理咨询师。
                     </p>
                 </div>
@@ -151,4 +173,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
