@@ -138,97 +138,13 @@ function quickTest() {
     currentQuestionIndex = 0;
     answers = {};
 
-    // 决定心理年龄比实际年龄大还是小（50%概率）
-    const isOlder = Math.random() < 0.5;
-    const ageDifference = Math.floor(Math.random() * 11) + 5; // 5-15岁的差异
-
-    // 根据需要的差异生成有偏好的答案
+    // 完全随机选择答案，不强制控制差异
     CONFIG.questions.forEach(question => {
-        let selectedOption;
-
-        if (isOlder) {
-            // 心理年龄比实际年龄大：选择偏向成熟的选项（D、E）
-            const matureOptions = ['D', 'E'];
-            const bias = Math.random() < 0.7; // 70%概率选择成熟选项
-            if (bias) {
-                const randomMature = Math.floor(Math.random() * matureOptions.length);
-                selectedOption = CONFIG.options.find(opt => opt.label === matureOptions[randomMature]);
-            } else {
-                const randomIndex = Math.floor(Math.random() * CONFIG.options.length);
-                selectedOption = CONFIG.options[randomIndex];
-            }
-        } else {
-            // 心理年龄比实际年龄小：选择偏向年轻的选项（A、B）
-            const youngOptions = ['A', 'B'];
-            const bias = Math.random() < 0.7; // 70%概率选择年轻选项
-            if (bias) {
-                const randomYoung = Math.floor(Math.random() * youngOptions.length);
-                selectedOption = CONFIG.options.find(opt => opt.label === randomYoung);
-            } else {
-                const randomIndex = Math.floor(Math.random() * CONFIG.options.length);
-                selectedOption = CONFIG.options[randomIndex];
-            }
-        }
-
+        // 随机选择一个选项
+        const randomIndex = Math.floor(Math.random() * CONFIG.options.length);
+        const selectedOption = CONFIG.options[randomIndex];
         answers[question.id] = selectedOption.label;
     });
-
-    // 检查当前生成的心理年龄，如果差异不够则强制调整
-    const currentMentalAge = calculateMentalAge();
-    const currentDiff = Math.abs(currentMentalAge - actualAge);
-
-    // 如果差异小于5岁，强制调整关键题目的答案
-    if (currentDiff < 5) {
-        const questionsToAdjust = Math.min(15, CONFIG.questions.length); // 调整最多15题
-
-        for (let i = 0; i < questionsToAdjust; i++) {
-            const questionId = i + 1;
-            const weights = CONFIG.questionWeights[questionId];
-
-            if (isOlder) {
-                // 需要增加心理年龄：选择最大权重的选项（E或D）
-                let maxWeight = -Infinity;
-                let bestOption = 'E';
-                for (let option in weights) {
-                    if (weights[option] > maxWeight) {
-                        maxWeight = weights[option];
-                        bestOption = option;
-                    }
-                }
-                answers[questionId] = bestOption;
-            } else {
-                // 需要减少心理年龄：选择最小权重的选项（A或B）
-                let minWeight = Infinity;
-                let bestOption = 'A';
-                for (let option in weights) {
-                    if (weights[option] < minWeight) {
-                        minWeight = weights[option];
-                        bestOption = option;
-                    }
-                }
-                answers[questionId] = bestOption;
-            }
-        }
-    }
-
-    // 验证最终结果，确保达到5-15岁差异
-    let finalMentalAge = calculateMentalAge();
-    let finalDiff = Math.abs(finalMentalAge - actualAge);
-
-    // 如果还是不够，进行最后一次强制调整
-    if (finalDiff < 5) {
-        // 根据需要的差异调整最后5个关键题目
-        for (let i = 0; i < 5; i++) {
-            const questionId = CONFIG.questions.length - i;
-            const weights = CONFIG.questionWeights[questionId];
-
-            if (isOlder) {
-                answers[questionId] = 'E'; // 最大权重选项
-            } else {
-                answers[questionId] = 'A'; // 最小权重选项
-            }
-        }
-    }
 
     // 直接显示结果
     showResult();
@@ -341,23 +257,38 @@ function showResult() {
     // 切换到结果页
     showPage('resultPage');
 
-    // 显示年龄
-    document.getElementById('mentalAgeDisplay').textContent = `${mentalAge}`;
+    // 显示心理年龄和实际年龄
+    document.getElementById('mentalAgeDisplay').textContent = `${mentalAge}岁`;
     document.getElementById('actualAgeDisplay').textContent = `${actualAge}岁`;
 
-    // 设置年龄指示器位置（将年龄映射到15-60岁范围）
-    const normalizedAge = Math.max(15, Math.min(60, mentalAge));
-    const indicatorPosition = ((normalizedAge - 15) / (60 - 15)) * 100;
-    document.getElementById('ageIndicator').style.left = `${indicatorPosition}%`;
-
-    // 设置年龄差文字
-    const ageDiffText = document.getElementById('ageDifferenceText');
-    if (ageDiff > 0) {
-        ageDiffText.textContent = `您的心理年龄比实际年龄年轻 ${ageDiff} 岁，心态非常年轻！`;
-    } else if (ageDiff < 0) {
-        ageDiffText.textContent = `您的心理年龄比实际年龄成熟 ${Math.abs(ageDiff)} 岁，展现出了超越年龄的智慧。`;
+    // 根据年龄差异选择表情
+    let emoji = '🤔'; // 默认表情
+    if (ageDiff > 15) {
+        emoji = '😄'; // 非常年轻
+    } else if (ageDiff > 8) {
+        emoji = '😊'; // 比较年轻
+    } else if (ageDiff > 3) {
+        emoji = '🙂'; // 稍微年轻
+    } else if (ageDiff >= -3) {
+        emoji = '😐'; // 基本一致
+    } else if (ageDiff >= -8) {
+        emoji = '🤔'; // 稍微成熟
+    } else if (ageDiff >= -15) {
+        emoji = '😔'; // 比较成熟
     } else {
-        ageDiffText.textContent = '您的心理年龄与实际年龄完全一致，心态平衡得很好！';
+        emoji = '😰'; // 非常成熟
+    }
+    document.querySelector('.emoji-icon').textContent = emoji;
+
+    // 设置年龄差文字(带高亮数字)
+    const ageDiffText = document.getElementById('ageDifferenceText');
+    const absDiff = Math.abs(ageDiff);
+    if (ageDiff > 0) {
+        ageDiffText.innerHTML = `您的心理年龄年轻<span class="age-diff-number">${absDiff}</span>岁`;
+    } else if (ageDiff < 0) {
+        ageDiffText.innerHTML = `您的心理年龄年长<span class="age-diff-number">${absDiff}</span>岁`;
+    } else {
+        ageDiffText.innerHTML = '您的心理年龄与实际年龄<span class="age-diff-number">一致</span>';
     }
 
     // ==================== 心理年龄段分析和建议生成 ====================
@@ -437,7 +368,9 @@ function restartTest() {
 
 // ==================== 全局变量 ====================
 let quickTestClickCount = 0;
-let quickTestMaxClicks = 10;
+let quickTestClickTimes = []; // 记录点击时间戳
+const quickTestRequiredClicks = 5; // 需要的点击次数
+const quickTestTimeWindow = 10000; // 时间窗口(毫秒): 10秒
 
 // ==================== 页面加载完成 ====================
 document.addEventListener('DOMContentLoaded', function() {
@@ -446,15 +379,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ==================== 快速测试隐藏/显示功能 ====================
 function toggleQuickTest() {
-    quickTestClickCount++;
+    const now = Date.now();
 
-    if (quickTestClickCount >= quickTestMaxClicks) {
-        // 第10次点击时显示快速测试按钮
+    // 添加当前点击时间戳
+    quickTestClickTimes.push(now);
+
+    // 移除10秒之外的旧时间戳
+    quickTestClickTimes = quickTestClickTimes.filter(time => now - time < quickTestTimeWindow);
+
+    // 检查是否在10秒内点击了5次
+    if (quickTestClickTimes.length >= quickTestRequiredClicks) {
+        // 显示快速测试按钮
         document.getElementById('quickTestBtn').style.display = 'block';
-        console.log(`快速测试已激活 (第${quickTestClickCount}次点击)`);
+        console.log(`快速测试已激活`);
     } else {
-        // 前9次点击隐藏快速测试按钮
+        // 前4次点击隐藏快速测试按钮
         document.getElementById('quickTestBtn').style.display = 'none';
-        console.log(`快速测试未激活 (第${quickTestClickCount}次点击，还需点击${quickTestMaxClicks - quickTestClickCount}次)`);
+        console.log(`快速测试未激活 (${quickTestTimeWindow / 1000}秒内点击${quickTestClickTimes.length}次，还需点击${quickTestRequiredClicks - quickTestClickTimes.length}次)`);
     }
 }

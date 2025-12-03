@@ -104,34 +104,31 @@
             </div>
 
             <div class="card">
-                <h2 class="result-title">您的心理年龄测试结果</h2>
+                <h2 class="result-title">心理年龄测试结果</h2>
 
-                <!-- 圆形年龄显示 -->
-                <div class="result-age-circle">
-                    <div class="age-circle">
-                        <div class="age-number" id="mentalAgeDisplay"></div>
-                        <div class="age-label-small">心理年龄</div>
+                <!-- 年龄卡片区域 -->
+                <div class="age-cards-wrapper">
+                    <!-- 心理年龄卡片 -->
+                    <div class="age-card mental-age-card">
+                        <div class="age-card-label">您的心理年龄</div>
+                        <div class="age-card-value" id="mentalAgeDisplay">35岁</div>
+                    </div>
+
+                    <!-- 实际年龄卡片 -->
+                    <div class="age-card actual-age-card">
+                        <div class="age-card-label">您的实际年龄</div>
+                        <div class="age-card-value" id="actualAgeDisplay">25岁</div>
                     </div>
                 </div>
 
-                <!-- 实际年龄信息 - 简洁文字，无背景框 -->
-                <div class="age-info-simple">
-                    <p>您的实际年龄：<strong id="actualAgeDisplay"></strong></p>
-                    <p id="ageDifferenceText"></p>
+                <!-- 表情图标 -->
+                <div class="emoji-section">
+                    <div class="emoji-icon">🤔</div>
                 </div>
 
-                <!-- 年龄刻度渐变条 -->
-                <div class="age-scale-wrapper">
-                    <div class="age-scale-bar">
-                        <div class="age-indicator" id="ageIndicator"></div>
-                    </div>
-                    <div class="age-scale-labels">
-                        <span>15岁</span>
-                        <span>25岁</span>
-                        <span>35岁</span>
-                        <span>45岁</span>
-                        <span>60岁</span>
-                    </div>
+                <!-- 年龄差异提示 -->
+                <div class="age-difference-text" id="ageDifferenceText">
+                    您的心理年龄年长10岁
                 </div>
 
                 <!-- 详细描述 -->
