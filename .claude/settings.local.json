@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push origin main)",
+      "Bash(git checkout HEAD -- \"c:\\Users\\admin\\Desktop\\仓库\\youxi\\family\\index.html\")",
+      "Bash(dir \"c:\\Users\\admin\\Desktop\\仓库\\youxi\")",
+      "Bash(dir \"c:\\Users\\admin\\Desktop\\仓库\\youxi\\animal\")",
+      "Bash(dir \"c:\\Users\\admin\\Desktop\\仓库\\youxi\\Darkpersonality\")",
+      "Bash(echo '<!DOCTYPE html>\n<html lang=\"\"zh-CN\"\">\n<head>\n  <meta charset=\"\"UTF-8\"\">\n  <meta name=\"\"viewport\"\" content=\"\"width=device-width, initial-scale=1.0\"\">\n  <title>黑暗人格特质测评 | Dark Personality Assessment</title>\n\n  <script src=\"\"https://cdn.tailwindcss.com\"\"></script>\n  <script crossorigin src=\"\"https://unpkg.com/react@18/umd/react.production.min.js\"\"></script>\n  <script crossorigin src=\"\"https://unpkg.com/react-dom@18/umd/react-dom.production.min.js\"\"></script>\n  <script src=\"\"https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js\"\"></script>\n\n  <link rel=\"\"stylesheet\"\" href=\"\"style.css\"\">\n</head>\n<body>\n  <div id=\"\"root\"\"></div>\n  <script src=\"\"script.js\"\"></script>\n</body>\n</html>')",
+      "Bash(start index.html)",
+      "Bash(dir \"c:\\Users\\admin\\Desktop\\仓库\\youxi\\scl-90zice\")",
+      "Bash(start \"c:\\Users\\admin\\Desktop\\仓库\\youxi\\scl-90zice\\index.html\")",
+      "Bash(git add .)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
