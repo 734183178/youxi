@@ -7,7 +7,7 @@ class RedeemModal {
 
         // 🔐 API配置
         this.API_CONFIG = {
-            url: 'http://101.132.176.113:8080/verify_code.php',
+            url: 'https://youxi-eosin.vercel.app/api/verify-code',
             key: 'K9mP2xQ7nL4vB8wT6jF3hR5yU1cN0sA9gD'
         };
     }
@@ -152,17 +152,17 @@ class RedeemModal {
     // API验证兑换码
     async verifyRedemptionCodeAPI(code) {
         try {
-            const response = await fetch(this.API_CONFIG.url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-API-KEY': this.API_CONFIG.key
-                },
-                body: JSON.stringify({
-                    action: 'verify',
-                    code: code
-                })
-            });
+const response = await fetch(this.API_CONFIG.url, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',  // ✅ 改回JSON格式
+        'X-API-KEY': this.API_CONFIG.key
+    },
+    body: JSON.stringify({  // ✅ 改回JSON格式
+        action: 'verify',
+        code: code
+    })
+});
 
             if (!response.ok) {
                 throw new Error('网络响应错误');
