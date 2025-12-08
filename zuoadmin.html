@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兑换码管理后台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- 头部 -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">🎫 兑换码管理后台</h1>
+            <p class="text-gray-600">批量生成、查看和管理兑换码</p>
+        </div>
+
+        <!-- 统计信息卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="text-gray-600 text-sm mb-2">总数量</div>
+                <div class="text-3xl font-bold text-blue-600" id="totalCount">-</div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="text-gray-600 text-sm mb-2">未使用</div>
+                <div class="text-3xl font-bold text-green-600" id="unusedCount">-</div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="text-gray-600 text-sm mb-2">已使用</div>
+                <div class="text-3xl font-bold text-red-600" id="usedCount">-</div>
+            </div>
+        </div>
+
+        <!-- 操作区域 -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">批量生成兑换码</h2>
+            
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">生成数量</label>
+                    <input 
+                        type="number" 
+                        id="generateCount" 
+                        value="10" 
+                        min="1" 
+                        max="1000"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="输入要生成的数量"
+                    >
+                </div>
+                
+                <div class="flex items-end">
+                    <button 
+                        onclick="generateCodes()"
+                        id="generateBtn"
+                        class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors shadow-md"
+                    >
+                        🎲 生成兑换码
+                    </button>
+                </div>
+            </div>
+
+            <div id="generateResult" class="mt-4 hidden">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-800 mb-2">✅ 生成成功！</h3>
+                    <p class="text-sm text-green-700 mb-3" id="generateMessage"></p>
+                    <div class="flex gap-2">
+                        <button onclick="copyGeneratedCodes()" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm rounded transition-colors">
+                            📋 复制兑换码
+                        </button>
+                        <button onclick="loadAllCodes()" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded transition-colors">
+                            🔄 刷新列表
+                        </button>
+                    </div>
+                    <div id="generatedCodesPreview" class="mt-3 p-3 bg-white rounded border text-sm font-mono max-h-40 overflow-y-auto"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 兑换码列表 -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">兑换码列表</h2>
+                <div class="flex gap-2">
+                    <button onclick="loadAllCodes()" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded transition-colors">
+                        🔄 刷新
+                    </button>
+                    <button onclick="exportCodes()" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm rounded transition-colors">
+                        📥 导出CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-4 flex gap-2">
+                <button onclick="filterCodes('all')" id="filterAll" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors">
+                    全部
+                </button>
+                <button onclick="filterCodes('unused')" id="filterUnused" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+                    未使用
+                </button>
+                <button onclick="filterCodes('used')" id="filterUsed" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+                    已使用
+                </button>
+            </div>
+
+            <div id="codesTable" class="overflow-x-auto">
+                <div class="text-center py-8 text-gray-500">
+                    <div class="loading mx-auto mb-2"></div>
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://youxi-eosin.vercel.app/api';
+        const API_KEY = 'K9mP2xQ7nL4vB8wT6jF3hR5yU1cN0sA9gD';
+        
+        let allCodes = [];
+        let generatedCodes = [];
+        let currentFilter = 'all';
+
+        // 页面加载时获取统计和列表
+        window.addEventListener('load', () => {
+            loadStats();
+            loadAllCodes();
+        });
+
+        // 加载统计信息
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/verify-code?action=stats`, {
+                    headers: { 'X-API-KEY': API_KEY }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('totalCount').textContent = data.data.total;
+                    document.getElementById('unusedCount').textContent = data.data.unused;
+                    document.getElementById('usedCount').textContent = data.data.used;
+                }
+            } catch (error) {
+                console.error('加载统计失败:', error);
+            }
+        }
+
+        // 生成兑换码
+        async function generateCodes() {
+            const count = parseInt(document.getElementById('generateCount').value);
+            
+            if (count < 1 || count > 1000) {
+                alert('请输入1-1000之间的数量');
+                return;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> 生成中...';
+
+            try {
+                const response = await fetch(`${API_URL}/generate-codes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-KEY': API_KEY
+                    },
+                    body: JSON.stringify({ count: count })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    generatedCodes = data.codes;
+                    document.getElementById('generateMessage').textContent = 
+                        `成功生成 ${generatedCodes.length} 个兑换码`;
+                    
+                    const preview = generatedCodes.slice(0, 10).join('\n');
+                    document.getElementById('generatedCodesPreview').textContent = 
+                        preview + (generatedCodes.length > 10 ? '\n...' : '');
+                    
+                    document.getElementById('generateResult').classList.remove('hidden');
+                    
+                    loadStats();
+                    loadAllCodes();
+                } else {
+                    alert('生成失败: ' + data.message);
+                }
+            } catch (error) {
+                alert('生成失败: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🎲 生成兑换码';
+            }
+        }
+
+        // 复制生成的兑换码
+        function copyGeneratedCodes() {
+            const text = generatedCodes.join('\n');
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`已复制 ${generatedCodes.length} 个兑换码到剪贴板`);
+            });
+        }
+
+        // 加载所有兑换码
+        async function loadAllCodes() {
+            try {
+                const response = await fetch(`${API_URL}/list-codes`, {
+                    headers: { 'X-API-KEY': API_KEY }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    allCodes = data.codes;
+                    displayCodes();
+                }
+            } catch (error) {
+                console.error('加载列表失败:', error);
+                document.getElementById('codesTable').innerHTML = 
+                    '<div class="text-center py-8 text-red-500">加载失败，请刷新重试</div>';
+            }
+        }
+
+        // 过滤兑换码
+        function filterCodes(filter) {
+            currentFilter = filter;
+            
+            // 更新按钮样式
+            document.querySelectorAll('[id^="filter"]').forEach(btn => {
+                btn.className = 'px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors';
+            });
+            document.getElementById('filter' + filter.charAt(0).toUpperCase() + filter.slice(1))
+                .className = 'px-4 py-2 bg-blue-500 text-white rounded';
+            
+            displayCodes();
+        }
+
+        // 显示兑换码列表
+        function displayCodes() {
+            let filteredCodes = allCodes;
+            
+            if (currentFilter === 'unused') {
+                filteredCodes = allCodes.filter(c => !c.is_used);
+            } else if (currentFilter === 'used') {
+                filteredCodes = allCodes.filter(c => c.is_used);
+            }
+
+            if (filteredCodes.length === 0) {
+                document.getElementById('codesTable').innerHTML = 
+                    '<div class="text-center py-8 text-gray-500">暂无数据</div>';
+                return;
+            }
+
+            let html = `
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">兑换码</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">创建时间</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">使用时间</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+            `;
+
+            filteredCodes.forEach(code => {
+                const statusBadge = code.is_used 
+                    ? '<span class="px-2 py-1 text-xs rounded bg-red-100 text-red-800">已使用</span>'
+                    : '<span class="px-2 py-1 text-xs rounded bg-green-100 text-green-800">未使用</span>';
+                
+                html += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${code.id}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-bold text-blue-600">${code.code}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">${statusBadge}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(code.created_at)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${code.used_at ? formatDate(code.used_at) : '-'}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('codesTable').innerHTML = html;
+        }
+
+        // 导出CSV
+        function exportCodes() {
+            let csv = 'ID,兑换码,状态,创建时间,使用时间\n';
+            
+            allCodes.forEach(code => {
+                csv += `${code.id},${code.code},${code.is_used ? '已使用' : '未使用'},${formatDate(code.created_at)},${code.used_at ? formatDate(code.used_at) : ''}\n`;
+            });
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `兑换码列表_${timestamp}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 格式化日期
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    </script>
+</body>
+</html>
