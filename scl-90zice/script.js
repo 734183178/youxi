@@ -649,7 +649,7 @@ const SCL90Assessment = () => {
           React.createElement('h4', { className: "text-lg sm:text-xl font-bold text-gray-800 mb-4 text-center" }, '📚 心理成长资源推荐'),
           React.createElement('div', { className: "flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center" },
             React.createElement('a', {
-              href: "https://www.xiaohongshu.com/goods-detail/6930516cb577840001fa197c?xsec_token=XBAsyd94WIm08wrhcWb0d1DmVn0jkSm5-OPaB77XST6lk=&xsec_source=app_share&instation_link=xhsdiscover%3A%2F%2Fgoods_detail%2F6930516cb577840001fa197c%3Ftrade_ext%3DeyJjaGFubmVsSW5mbyI6bnVsbCwiZHNUb2tlbkluZm8iOm51bGwsInNoYXJlTGluayI6Imh0dHBzOi8vd3d3LnhpYW9ob25nc2h1LmNvbS9nb29kcy1kZXRhaWwvNjkzMDUxNmNiNTc3ODQwMDAxZmExOTdjP2FwcHVpZD02NTRiMjQ1NDAwMDAwMDAwMzAwMzFmNDMiLCJsaXZlSW5mbyI6bnVsbCwic2hvcEluZm8iOm51bGwsImdvb2RzTm90ZUluZm8iOm51bGwsImNoYXRJbmZvIjpudWxsLCJzZWFyY2hJbmZvIjpudWxsLCJwcmVmZXIiOm51bGx9%26rate_limit_meta%3DitemId%253D6930516cb577840001fa197b%26source%3D%26rn%3Dtrue&xhsshare=CopyLink&appuid=654b24540000000030031f43&apptime=1768293381&share_id=0e576b052e76494fafa904354b1f4f60",
+              href: "https://xhslink.com/m/3LtCsbr1Ans",
               target: "_blank",
               rel: "noopener noreferrer",
               className: "flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 text-center text-sm sm:text-base shadow-lg hover:shadow-xl"
