@@ -654,7 +654,7 @@ const SCL90Assessment = () => {
               rel: "noopener noreferrer",
               className: "flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 text-center text-sm sm:text-base shadow-lg hover:shadow-xl"
             },
-              '📖 原生家庭影响测评'
+              '📖 （小红书好评赠送）原生家庭影响测评'
             ),
             React.createElement('a', {
               href: "https://pan.quark.cn/s/2b82132839d2",
