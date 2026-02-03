@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>期末评语AI智能排版生成器</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* --- 基础设置 --- */
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* --- 核心控制面板 --- */
+        .control-panel {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-top: 5px solid #f97316; 
+        }
+
+        .panel-header {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #f97316;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* 第一行：参数设置 */
+        .row-settings {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .input-item { display: flex; align-items: center; gap: 8px; }
+        .input-item label { font-weight: bold; font-size: 14px; color: #555; }
+        
+        input, select {
+            padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; outline: none;
+        }
+        input:focus, select:focus { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
+        
+        .divider { border: 0; border-top: 2px dashed #e0e0e0; margin: 25px 0; }
+
+        /* 第二行：上传区域 */
+        .row-upload { text-align: center; }
+        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        
+        .btn-upload-big {
+            background-color: #fff7ed;
+            border: 2px dashed #fdba74;
+            color: #c2410c;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 10px; transition: 0.2s;
+        }
+        .btn-upload-big:hover { border-color: #f97316; background: #ffedd5; }
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer;
+        }
+
+        /* 第三行：列选择 */
+        .row-selectors { display: flex; justify-content: center; gap: 50px; }
+        .selector-box { display: flex; flex-direction: column; gap: 5px; width: 200px; }
+        .selector-box label { font-size: 14px; color: #666; text-align: center; }
+        .selector-box select { width: 100%; text-align: center; }
+
+        /* 第四行：操作按钮 */
+        .row-actions { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
+        .btn {
+            padding: 10px 25px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold;
+            cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; color: white;
+        }
+        .btn-preview { background-color: #f59e0b; }
+        .btn-preview:hover { background-color: #d97706; }
+        .btn-print { background-color: #3b82f6; }
+        .btn-print:hover { background-color: #2563eb; }
+        .btn-pdf { background-color: #ef4444; }
+        .btn-pdf:hover { background-color: #dc2626; }
+        .btn:disabled { background-color: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
+
+        /* --- 预览区 --- */
+        #preview-container { margin-top: 40px; display: flex; flex-direction: column; align-items: center; }
+
+        .a4-page {
+            width: 210mm; height: 297mm;
+            background: white;
+            padding: 15mm; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+            page-break-after: always;
+            position: relative;
+        }
+
+        .card-grid {
+            display: grid; width: 100%; height: 100%;
+            grid-template-columns: repeat(var(--cols), 1fr);
+            grid-template-rows: repeat(var(--rows), 1fr);
+            gap: 15mm 10mm;
+        }
+
+        /* --- 卡片通用布局 --- */
+        .card { 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            transition: 0.3s;
+            overflow: hidden; 
+        }
+
+        .card-body { 
+            font-size: 16px; 
+            line-height: 1.6; 
+            flex: 1; 
+            text-align: justify; 
+            margin-bottom: 10px; 
+            z-index: 1; 
+        }
+
+        .card-footer { 
+            text-align: right; 
+            font-size: 14px; 
+            margin-top: auto; 
+            padding-top: 5px;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        /* ==============================
+           🎨 风格定义 
+           ============================== */
+
+        /* 1. ⭐ 虚线星星 */
+        .theme-star-dash {
+            border: 2px dashed #1e3a8a;
+            border-radius: 12px;
+            background: #f8fafc;
+        }
+        .theme-star-dash .card-header {
+            text-align: center; color: #1e3a8a; font-weight: bold; font-size: 18px; 
+            margin-bottom: 12px; border-bottom: 1px dashed #93c5fd; padding-bottom: 8px;
+        }
+        .theme-star-dash .card-header::before { content: "⭐"; margin-right: 5px; color: #f59e0b; }
+        .theme-star-dash .card-body { color: #334155; }
+        .theme-star-dash .card-footer { color: #1e3a8a; }
+        .theme-star-dash::after {
+            content: "✨"; position: absolute; bottom: 10px; left: 15px; 
+            font-size: 24px; opacity: 0.5;
+        }
+
+        /* 2. 🔖 红色书签 (修复版：增加 padding-left 防止文字被遮挡) */
+        .theme-ribbon-red {
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            border-radius: 4px;
+            border: 1px solid #eee; 
+        }
+        .theme-ribbon-red .card-header {
+            font-size: 18px; font-weight: bold; color: #b91c1c; 
+            margin-bottom: 15px; 
+            /* 关键修改：左边距增加到45px，给书签留位置 */
+            padding-left: 45px; 
+            padding-bottom: 5px; border-bottom: 2px solid #fee2e2;
+        }
+        .theme-ribbon-red::before {
+            content: "★"; color: white; display: flex; justify-content: center; padding-top: 5px; font-size: 12px;
+            position: absolute; top: -5px; left: 15px;
+            width: 24px; height: 40px;
+            background: #dc2626;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%);
+        }
+        .theme-ribbon-red .card-body { color: #444; }
+        .theme-ribbon-red .card-footer { color: #b91c1c; }
+
+        /* 3. 📐 数学几何 */
+        .theme-math-geo {
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .theme-math-geo::before {
+            content: ""; position: absolute; bottom: 0; left: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 60px 0 0 60px;
+            border-color: transparent transparent transparent #e0f2fe; 
+            z-index: 0;
+        }
+        .theme-math-geo .card-header {
+            font-family: 'Courier New', Courier, monospace; 
+            font-weight: 900; font-size: 18px; color: #000;
+            border-left: 5px solid #3b82f6; padding-left: 10px; margin-bottom: 12px;
+            display: flex; align-items: center;
+        }
+        .theme-math-geo .card-header::after { content: "📐"; margin-left: auto; font-size: 16px; opacity: 0.8;}
+        .theme-math-geo .card-body { position: relative; z-index: 1; }
+        .theme-math-geo .card-footer { color: #3b82f6; font-family: monospace; }
+
+        /* 4. 📖 红色语录 */
+        .theme-red-notebook {
+            border: 3px solid #ef4444;
+            border-radius: 20px;
+            background: #fff;
+        }
+        .theme-red-notebook .card-header {
+            text-align: center; color: #b91c1c; font-weight: bold; font-size: 18px;
+            margin-bottom: 10px;
+            background: #fef2f2; border-radius: 10px; padding: 5px;
+        }
+        .theme-red-notebook .card-header::before { content: "❝"; margin-right: 5px; color: #fca5a5; }
+        .theme-red-notebook .card-header::after { content: "❞"; margin-left: 5px; color: #fca5a5; }
+        .theme-red-notebook .card-body { color: #555; }
+        .theme-red-notebook .card-footer { color: #ef4444; font-weight: bold; text-decoration: underline; text-decoration-color: #fca5a5; }
+
+        /* 5. 粉色简约 */
+        .theme-pink { border: 2px solid #fbcfe8; border-radius: 16px; background: #fff; }
+        .theme-pink .card-header { text-align: center; color: #db2777; font-weight: bold; font-size: 18px; margin-bottom: 12px; border-bottom: 1px dotted #fbcfe8; padding-bottom: 5px;}
+        .theme-pink .card-header::after { content: "🌸"; margin-left: 5px; }
+        .theme-pink .card-body { color: #4b5563; }
+        .theme-pink .card-footer { color: #db2777; font-style: italic; }
+
+        /* 6. 绿色清新 */
+        .theme-green { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; }
+        .theme-green .card-header { display: flex; align-items: center; border-bottom: 1px dashed #86efac; padding-bottom: 5px; margin-bottom: 12px; font-weight: bold; color: #15803d; font-size: 18px;}
+        .theme-green .card-header::after { content: "🍀"; margin-left: auto; }
+        .theme-green .card-body { color: #374151; }
+        .theme-green .card-footer { color: #15803d; }
+
+        /* 7. 活力橙 */
+        .theme-orange { border: 2px solid #fdba74; background: #fff7ed; border-radius: 12px; }
+        .theme-orange .card-header { text-align: center; color: #c2410c; font-weight: bold; font-size: 18px; background: #ffedd5; padding: 6px; border-radius: 8px; margin-bottom: 12px; }
+        .theme-orange .card-header::before { content: "🍊"; margin-right: 5px; }
+        .theme-orange .card-body { color: #431407; }
+        .theme-orange .card-footer { color: #ea580c; }
+
+        /* 8. 极简黑白 */
+        .theme-simple { border: 1px solid #000; padding: 15px; }
+        .theme-simple .card-header { font-weight: 900; font-size: 20px; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 12px; }
+        .theme-simple .card-body { font-family: "KaiTi", "楷体", serif; color: #000; font-size: 17px; }
+        .theme-simple .card-footer { color: #000; }
+
+        /* --- 打印控制 --- */
+        @media print {
+            .control-panel, h2 { display: none !important; }
+            body { background: white; padding: 0; margin: 0; }
+            #preview-container { margin: 0; }
+            @page { margin: 0; size: A4 portrait; }
+            .a4-page { box-shadow: none; margin: 0 auto; page-break-after: always; padding: 10mm 15mm; width: 100%; }
+            * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="control-panel">
+        <div class="panel-header">
+            <i class="fas fa-robot"></i> 期末评语AI智能排版生成器
+        </div>
+        
+        <div class="row-settings">
+            <div class="input-item">
+                <label>行数</label>
+                <input type="number" id="rowsInput" value="3" min="1" max="5" style="width: 50px;">
+            </div>
+            <div class="input-item">
+                <label>列数</label>
+                <input type="number" id="colsInput" value="2" min="1" max="3" style="width: 50px;">
+            </div>
+            <div class="input-item">
+                <label>🎨 风格选择</label>
+                <select id="styleSelect">
+                    <option value="theme-star-dash">⭐ 虚线星星 (新)</option>
+                    <option value="theme-ribbon-red">🔖 红色书签 (新)</option>
+                    <option value="theme-math-geo">📐 数学几何 (新)</option>
+                    <option value="theme-red-notebook">📖 红色语录 (新)</option>
+                    <option disabled>──────────</option>
+                    <option value="theme-pink">🌸 粉色简约</option>
+                    <option value="theme-green">🍀 绿色清新</option>
+                    <option value="theme-orange">🍊 活力橙风</option>
+                    <option value="theme-simple">📝 极简黑白 (省墨)</option>
+                </select>
+            </div>
+            <div class="input-item">
+                <label>✍️ 签名</label>
+                <input type="text" id="signInput" value="爱你的橙子老师" style="width: 150px;">
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="row-upload">
+            <div class="upload-btn-wrapper">
+                <button class="btn-upload-big">
+                    <i class="fas fa-folder-open"></i> <span id="fileNameDisplay">点击上传 Excel 文件</span>
+                </button>
+                <input type="file" id="fileUpload" accept=".xlsx, .xls">
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="row-selectors">
+            <div class="selector-box">
+                <label>选择 [姓名] 列</label>
+                <select id="nameColSelect" disabled><option>等待上传...</option></select>
+            </div>
+            <div class="selector-box">
+                <label>选择 [评语] 列</label>
+                <select id="commentColSelect" disabled><option>等待上传...</option></select>
+            </div>
+        </div>
+
+        <div class="row-actions">
+            <button class="btn btn-preview" onclick="generateCards()">
+                <i class="fas fa-magic"></i> 生成预览
+            </button>
+            <button class="btn btn-print" onclick="window.print()">
+                <i class="fas fa-print"></i> 打印
+            </button>
+            <button class="btn btn-pdf" onclick="exportPDF()">
+                <i class="fas fa-file-pdf"></i> 导出 PDF
+            </button>
+        </div>
+    </div>
+
+    <div id="preview-container">
+        <div style="color: #999; margin-top: 50px;">(预览区域)</div>
+    </div>
+
+    <script>
+        let excelData = [];
+
+        document.getElementById('fileUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            document.getElementById('fileNameDisplay').innerText = "已加载: " + file.name;
+            document.querySelector('.btn-upload-big').style.borderColor = "#f97316";
+            document.querySelector('.btn-upload-big').style.color = "#c2410c";
+            document.querySelector('.btn-upload-big').style.backgroundColor = "#ffedd5";
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                excelData = XLSX.utils.sheet_to_json(worksheet);
+
+                if (excelData.length > 0) {
+                    populateSelectors(excelData[0]);
+                } else {
+                    alert('Excel 文件似乎是空的');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        function populateSelectors(rowObj) {
+            const keys = Object.keys(rowObj);
+            const nameSel = document.getElementById('nameColSelect');
+            const commSel = document.getElementById('commentColSelect');
+            
+            nameSel.innerHTML = ''; nameSel.disabled = false;
+            commSel.innerHTML = ''; commSel.disabled = false;
+
+            keys.forEach(key => {
+                nameSel.add(new Option(key, key));
+                commSel.add(new Option(key, key));
+            });
+
+            keys.forEach(key => {
+                if (key.match(/名|Name|Student/i)) nameSel.value = key;
+                if (key.match(/评|语|Content|Comment/i)) commSel.value = key;
+            });
+        }
+
+        function generateCards() {
+            if (excelData.length === 0) {
+                alert('请先上传 Excel 文件！');
+                return;
+            }
+
+            const container = document.getElementById('preview-container');
+            container.innerHTML = '';
+
+            const rows = parseInt(document.getElementById('rowsInput').value);
+            const cols = parseInt(document.getElementById('colsInput').value);
+            const style = document.getElementById('styleSelect').value;
+            const sign = document.getElementById('signInput').value;
+            const nameKey = document.getElementById('nameColSelect').value;
+            const commKey = document.getElementById('commentColSelect').value;
+
+            const perPage = rows * cols;
+            const totalPages = Math.ceil(excelData.length / perPage);
+
+            for (let i = 0; i < totalPages; i++) {
+                const page = document.createElement('div');
+                page.className = 'a4-page';
+                
+                const grid = document.createElement('div');
+                grid.className = 'card-grid';
+                grid.style.setProperty('--rows', rows);
+                grid.style.setProperty('--cols', cols);
+
+                const chunk = excelData.slice(i * perPage, (i + 1) * perPage);
+                
+                chunk.forEach(data => {
+                    const card = document.createElement('div');
+                    card.className = `card ${style}`;
+                    const studentName = data[nameKey] || '';
+                    const studentComm = data[commKey] || '';
+                    
+                    card.innerHTML = `
+                        <div class="card-header">${studentName}</div>
+                        <div class="card-body">${studentComm}</div>
+                        <div class="card-footer">${sign}</div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                page.appendChild(grid);
+                container.appendChild(page);
+            }
+            
+            container.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+
+        function exportPDF() {
+            alert("💡 温馨提示：\n\n为了 PDF 最完美，请在弹出的打印窗口中：\n1. 目标打印机选择【另存为 PDF】\n2. 展开【更多设置】\n3. 取消勾选【页眉和页脚】(如果系统没有自动取消的话)");
+            window.print();
+        }
+    </script>
+</body>
+</html>
